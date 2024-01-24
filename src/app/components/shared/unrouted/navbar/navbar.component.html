@@ -6,21 +6,24 @@
     </a>
   </div>
   <div class="buttons-container flex space-x-10 mr-10">
-    <button class="flex items-center text-white">
+    <button *ngIf="strUserName" class="flex items-center text-white">
       <i class="fas fa-comment text-xl"></i>
     </button>
-    <button class="flex items-center text-white">
+    <button *ngIf="strUserName" class="flex items-center text-white">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
-    <button class="flex items-center text-white">
-      <span class="mr-2">Username</span>
+    <button *ngIf="strUserName" (click)="doSessionUserView($event)" class="flex items-center text-white">
+      <span class="mr-2">{{ strUserName }}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
         <img src="" alt="" class="">
       </div>
     </button>
-    <button class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
+    <button *ngIf="strUserName" class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
       <span class="mr-2">Publish</span>
       <i class="fas fa-upload"></i>
+    </button>
+    <button routerLink="/login" *ngIf="!strUserName" class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
+      <span  class="mr-2">Login</span>
     </button>
   </div>
 </nav>

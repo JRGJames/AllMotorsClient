@@ -46,8 +46,8 @@ export class SessionService {
     isSessionActive(): Boolean {
         let strToken: string | null = localStorage.getItem('token');
         if (strToken) {
-            let oDecodedToken: IToken = this.parseJwt(strToken);
-            if (Date.now() >= oDecodedToken.exp * 1000) {                
+            let decodedToken: IToken = this.parseJwt(strToken);
+            if (Date.now() >= decodedToken.exp * 1000) {                
                 return false;                
             } else {                
                 return true;
@@ -68,6 +68,10 @@ export class SessionService {
         } else {
             return "";
         }
+    }
+
+    on(): Observable<SessionEvent> {
+        return this.subjectSession.asObservable();
     }
 
     emit(oEvent: SessionEvent): void {

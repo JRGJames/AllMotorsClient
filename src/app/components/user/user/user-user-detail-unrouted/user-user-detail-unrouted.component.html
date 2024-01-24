@@ -1,0 +1,25 @@
+<div>
+  <table class="table table-striped table-hover">
+      <tbody>
+          <tr>
+              <th>User</th>
+              <td>{{oUser.name}} {{oUser.lastname}}</td>
+          </tr>
+          <tr>
+              <th>Email</th>
+              <td>{{oUser.email}}</td>
+          </tr>
+          <tr>
+              <th>Username</th>
+              <td>{{oUser.username}}</td>
+          </tr>
+          <tr>
+              <th>Role</th>
+              <td>
+                  <span *ngIf="oUser.role==true">Admin</span>
+                  <span *ngIf="oUser.role==false">User</span>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>

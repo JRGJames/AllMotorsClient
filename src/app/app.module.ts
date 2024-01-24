@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+
 
 import { CryptoService } from './service/crypto.service';
 import { SessionService } from './service/session.service';
@@ -18,20 +20,30 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/shared/routed/login/login.component';
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
+import { UserUserDetailUnroutedComponent } from './components/user/user/user-user-detail-unrouted/user-user-detail-unrouted.component';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     TrimPipe,
     NavbarComponent,
-    LoginComponent
+    LoginComponent,
+    UserUserDetailUnroutedComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DynamicDialogModule
+
   ],
   providers: [
+    DialogService,
     SessionService,
     UserService,
     CarService,
