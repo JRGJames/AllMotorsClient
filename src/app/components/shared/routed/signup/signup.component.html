@@ -2,7 +2,7 @@
   loading="lazy">
   <div class="inset-0 backdrop-blur-sm absolute"></div>
   <div class="login-form max-w-md mx-auto mt-8 relative">
-    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" (ngSubmit)="onSubmit()" [formGroup]="userForm ">
       <p class="text-center font-bold text-3xl mb-8">Signup</p>
       <div class="space-y-5">
         <input
@@ -15,7 +15,7 @@
             <input
               class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
               [type]="getPasswordInputType('password')" id="password" formControlName="password" placeholder="Password"
-              [ngClass]="{ 'border-b-red-300 border-b-2': loginForm.hasError('passwordMismatch') && (loginForm.get('password')?.dirty || loginForm.get('cpassword')?.dirty) }">
+              [ngClass]="{ 'border-b-red-300 border-b-2': userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty) }">
             <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
               (click)="togglePasswordVisibility('password')" type="button">
               <i
@@ -26,7 +26,7 @@
             <input
               class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
               [type]="getPasswordInputType('cpassword')" id="cpassword" formControlName="cpassword" placeholder="Confirm password"
-              [ngClass]="{ 'border-b-red-300 border-b-2': loginForm.hasError('passwordMismatch') && (loginForm.get('password')?.dirty || loginForm.get('cpassword')?.dirty) }">
+              [ngClass]="{ 'border-b-red-300 border-b-2': userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty) }">
             <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
               (click)="togglePasswordVisibility('cpassword')" type="button">
               <i

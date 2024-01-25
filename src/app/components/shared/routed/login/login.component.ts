@@ -67,14 +67,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onReset() {
-    this.loginForm.reset();
-  }
-
-  onRegister() {
-    this.router.navigate(['/user/user/new']);
-  }
-
   loginAdmin() {
     this.loginForm.setValue({
       usernameOrEmail: 'ElNano',
