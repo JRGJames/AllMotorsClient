@@ -21,7 +21,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/shared/routed/login/login.component';
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
 import { UserUserDetailUnroutedComponent } from './components/user/user/user-user-detail-unrouted/user-user-detail-unrouted.component';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
 
 
@@ -39,11 +38,8 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    DynamicDialogModule
-
   ],
   providers: [
-    DialogService,
     SessionService,
     UserService,
     CarService,

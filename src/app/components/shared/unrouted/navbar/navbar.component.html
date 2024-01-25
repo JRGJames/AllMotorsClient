@@ -1,4 +1,4 @@
-<nav class="bg-gray-800 bg-opacity-80 p-4 flex justify-between items-center">
+<nav *ngIf="router.url !== '/login'" class="bg-gray-800 bg-opacity-80 flex justify-between items-center h-16">
   <div class="logo-container flex items-center ml-10">
     <i class="fas fa-cog text-white text-2xl mr-2"></i>
     <a routerLink="/" class="text-white font-bold text-3xl">
@@ -12,18 +12,32 @@
     <button *ngIf="strUserName" class="flex items-center text-white">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
-    <button *ngIf="strUserName" (click)="doSessionUserView($event)" class="flex items-center text-white">
+    <button *ngIf="strUserName" (click)="toggleDropdown()" class="flex items-center bg-green-500 text-white relative">
       <span class="mr-2">{{ strUserName }}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
         <img src="" alt="" class="">
       </div>
+
+      <div *ngIf="showDropdown" class="absolute right-0 top-full p-6 bg-gray-300 bg-opacity-50 backdrop-blur-lg rounded-b-lg shadow-sm">
+        <button class="flex items-start text-gray-600 ">
+          Configuration
+        </button>
+        <button class="flex items-start text-gray-600 mt-2">
+          Profile
+        </button>
+        <button (click)="logout()" class="flex items-start text-gray-600 mt-2">
+          Logout
+        </button>
+      </div>
     </button>
+
+
     <button *ngIf="strUserName" class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
       <span class="mr-2">Publish</span>
       <i class="fas fa-upload"></i>
     </button>
-    <button routerLink="/login" *ngIf="!strUserName" class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
-      <span  class="mr-2">Login</span>
-    </button>
+    <a routerLink="/login" *ngIf="!strUserName" class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
+      <span class="mr-2">Login</span>
+    </a>
   </div>
 </nav>

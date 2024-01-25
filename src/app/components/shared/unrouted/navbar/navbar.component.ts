@@ -4,8 +4,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { IUser, SessionEvent } from 'src/app/model/model';
 import { SessionService } from 'src/app/service/session.service';
 import { UserService } from 'src/app/service/user.service';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { UserUserDetailUnroutedComponent } from 'src/app/components/user/user/user-user-detail-unrouted/user-user-detail-unrouted.component';
 
 @Component({
   selector: 'app-navbar',
@@ -17,12 +15,12 @@ export class NavbarComponent implements OnInit {
   strUserName: string = "";
   sessionUser: IUser | null = null;
   strUrl: string = "";
+  showDropdown: boolean = false;
 
   constructor(
     private sessionService: SessionService,
-    public dialogService: DialogService,
     private userService: UserService,
-    private router: Router,
+    public router: Router,
   ) {
 
     this.router.events.subscribe((ev) => {
@@ -63,24 +61,13 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  doSessionUserView($event: Event) {
-    if (this.sessionUser) {
-      let ref: DynamicDialogRef | undefined;
-      ref = this.dialogService.open(UserUserDetailUnroutedComponent, {
-        data: {
-          id: this.sessionUser.id
-        },
-        header: 'User Detail',
-        width: '50%',
-        contentStyle: { overflow: 'auto' },
-        baseZIndex: 10000,
-        maximizable: false
-      });
-    }
-    return false;
+  toggleDropdown() {
+    this.showDropdown = !this.showDropdown;
   }
 
-  isUserLoggedIn(): boolean {
-    return !!this.strUserName;
+  logout() {
+    this.sessionService.logout();
+    this.sessionService.emit({ type: 'logout' });
+    this.router.navigate(['/home']);
   }
 }

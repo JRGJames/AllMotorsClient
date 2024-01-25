@@ -28,8 +28,8 @@ export class SessionService {
     }
 
     login(sUsername: string, sPassword: string): Observable<string> {
-        return this.http.post<string>(this.sUrl, { username: sUsername, password: sPassword });        
-    }
+        return this.http.post<string>(`${this.sUrl}/login`, { username: sUsername, password: sPassword });
+      }      
 
     setToken(token: string): void {
         localStorage.setItem('token', token);        
