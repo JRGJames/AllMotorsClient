@@ -1,22 +1,23 @@
-<div class="flex items-center justify-center h-screen bg-cover" [style.background-image]="backgroundImage" loading="lazy">
-  <div class="absolute inset-0 backdrop-blur-sm"></div>
+<div class="flex items-center justify-center h-auto bg-cover absolute inset-0" [style.background-image]="backgroundImage"
+  loading="lazy">
+  <div class="inset-0 backdrop-blur-sm absolute"></div>
   <div class="login-form max-w-md mx-auto mt-8 relative">
     <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
       <p class="text-center font-bold text-3xl mb-8">Login</p>
       <div class="space-y-5">
         <input
           class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text" id="username" formControlName="username" placeholder="Username or email">
-          <div class="relative">
-            <input
-              class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
-              [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password">
-            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
-              (click)="togglePasswordVisibility()" type="button">
-              <i
-                [ngClass]="{'fas': passwordVisible, 'far': !passwordVisible, 'fa-eye': passwordVisible, 'fa-eye-slash': !passwordVisible}"></i>
-            </button>
-          </div>
+          type="text" id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email">
+        <div class="relative">
+          <input
+            class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+            [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password">
+          <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
+            (click)="togglePasswordVisibility()" type="button">
+            <i
+              [ngClass]="{'fas': passwordVisible, 'far': !passwordVisible, 'fa-eye': passwordVisible, 'fa-eye-slash': !passwordVisible}"></i>
+          </button>
+        </div>
         <div class="text-center">
           <a href="#" class="text-blue-500 hover:underline">Forgot password?</a>
         </div>
@@ -36,7 +37,7 @@
           </div>
         </div>
         <div class="text-center">
-          <p>Don't have an account? <a href="#" class="text-blue-500 hover:underline">Signup</a>
+          <p>Don't have an account? <a routerLink="/signup" class="text-blue-500 hover:underline">Signup</a>
           </p>
         </div>
         <div class="flex items-center">
@@ -44,7 +45,7 @@
           <span class="mx-2 text-gray-400 text-md">OR</span>
           <hr class="w-1/2 border-t-2 border-gray-200">
         </div>
-        
+
         <div class="justify-center space-y-4">
           <button
             class="bg-gray-100 hover:bg-gray-200 text-black w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"
@@ -56,7 +57,7 @@
             class="bg-gray-100 hover:bg-gray-200 text-black w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"
             type="button">Login with Microsoft</button>
         </div>
-      </div> 
+      </div>
     </form>
   </div>
 </div>

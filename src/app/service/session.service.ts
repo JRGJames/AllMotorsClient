@@ -29,10 +29,10 @@ export class SessionService {
 
     login(sUsername: string, sPassword: string): Observable<string> {
         return this.http.post<string>(`${this.sUrl}/login`, { username: sUsername, password: sPassword });
-      }      
+      }
 
     setToken(token: string): void {
-        localStorage.setItem('token', token);        
+        localStorage.setItem('token', token);
     }
 
     getToken(): string | null {
@@ -40,19 +40,19 @@ export class SessionService {
     }
 
     logout(): void {
-        localStorage.removeItem('token');        
+        localStorage.removeItem('token');
     }
 
     isSessionActive(): Boolean {
         let strToken: string | null = localStorage.getItem('token');
         if (strToken) {
             let decodedToken: IToken = this.parseJwt(strToken);
-            if (Date.now() >= decodedToken.exp * 1000) {                
-                return false;                
-            } else {                
+            if (Date.now() >= decodedToken.exp * 1000) {
+                return false;
+            } else {
                 return true;
             }
-        } else {        
+        } else {
             return false;
         }
     }

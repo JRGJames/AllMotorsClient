@@ -3,12 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/shared/routed/home/home.component';
 import { LoginComponent } from './components/shared/routed/login/login.component'; 
+import { SignupComponent } from './components/shared/routed/signup/signup.component';
 
 const routes: Routes = [
 
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent},
   { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
+
 ];
 
 @NgModule({

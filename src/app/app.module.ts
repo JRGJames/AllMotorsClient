@@ -19,6 +19,7 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/shared/routed/login/login.component';
+import { SignupComponent } from './components/shared/routed/signup/signup.component';
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
 import { UserUserDetailUnroutedComponent } from './components/user/user/user-user-detail-unrouted/user-user-detail-unrouted.component';
 
@@ -31,6 +32,7 @@ import { UserUserDetailUnroutedComponent } from './components/user/user/user-use
     TrimPipe,
     NavbarComponent,
     LoginComponent,
+    SignupComponent,
     UserUserDetailUnroutedComponent
   ],
   imports: [

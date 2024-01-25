@@ -1,0 +1,67 @@
+<div class="flex items-center justify-center h-auto bg-cover absolute inset-0" [style.background-image]="backgroundImage"
+  loading="lazy">
+  <div class="inset-0 backdrop-blur-sm absolute"></div>
+  <div class="login-form max-w-md mx-auto mt-8 relative">
+    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+      <p class="text-center font-bold text-3xl mb-8">Signup</p>
+      <div class="space-y-5">
+        <input
+          class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="text" id="email" formControlName="email" placeholder="Email">
+        <input
+          class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="text" id="username" formControlName="username" placeholder="Username">
+          <div class="relative">
+            <input
+              class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+              [type]="getPasswordInputType('password')" id="password" formControlName="password" placeholder="Password"
+              [ngClass]="{ 'border-b-red-300 border-b-2': loginForm.hasError('passwordMismatch') && (loginForm.get('password')?.dirty || loginForm.get('cpassword')?.dirty) }">
+            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
+              (click)="togglePasswordVisibility('password')" type="button">
+              <i
+                [ngClass]="{'fas': passwordVisible['password'], 'far': !passwordVisible['password'], 'fa-eye': passwordVisible['password'], 'fa-eye-slash': !passwordVisible['password']}"></i>
+            </button>
+          </div>
+          <div class="relative">
+            <input
+              class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+              [type]="getPasswordInputType('cpassword')" id="cpassword" formControlName="cpassword" placeholder="Confirm password"
+              [ngClass]="{ 'border-b-red-300 border-b-2': loginForm.hasError('passwordMismatch') && (loginForm.get('password')?.dirty || loginForm.get('cpassword')?.dirty) }">
+            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
+              (click)="togglePasswordVisibility('cpassword')" type="button">
+              <i
+                [ngClass]="{'fas': passwordVisible['cpassword'], 'far': !passwordVisible['cpassword'], 'fa-eye': passwordVisible['cpassword'], 'fa-eye-slash': !passwordVisible['cpassword']}"></i>
+            </button>
+          </div>
+      </div>
+      <div class="space-y-4 mt-4">
+        <div>
+          <button
+            class="bg-sky-500 hover:bg-sky-600 text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            type="submit">Signup</button>
+        </div>
+        <div class="text-center">
+          <p>Already have an account? <a routerLink="/login" class="text-blue-500 hover:underline">Login</a>
+          </p>
+        </div>
+        <div class="flex items-center">
+          <hr class="w-1/2 border-t-2 border-gray-200">
+          <span class="mx-2 text-gray-400 text-md">OR</span>
+          <hr class="w-1/2 border-t-2 border-gray-200">
+        </div>
+
+        <div class="justify-center space-y-4">
+          <button
+            class="bg-gray-100 hover:bg-gray-200 text-black w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            type="button">Login with Google</button>
+          <button
+            class="bg-gray-100 hover:bg-gray-200 text-black w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            type="button">Login with Facebook</button>
+          <button
+            class="bg-gray-100 hover:bg-gray-200 text-black w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+            type="button">Login with Microsoft</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<nav *ngIf="router.url !== '/login'" class="bg-gray-800 bg-opacity-80 flex justify-between items-center h-16">
+<nav class="bg-gray-700 bg-opacity-95 flex justify-between items-center h-16 sticky z-10">
   <div class="logo-container flex items-center ml-10">
     <i class="fas fa-cog text-white text-2xl mr-2"></i>
     <a routerLink="/" class="text-white font-bold text-3xl">
@@ -18,7 +18,8 @@
         <img src="" alt="" class="">
       </div>
 
-      <div *ngIf="showDropdown" class="absolute right-0 top-full p-6 bg-gray-300 bg-opacity-50 backdrop-blur-lg rounded-b-lg shadow-sm">
+      <div *ngIf="showDropdown"
+        class="absolute right-0 top-full p-6 bg-gray-300 bg-opacity-50 backdrop-blur-lg rounded-b-lg shadow-sm">
         <button class="flex items-start text-gray-600 ">
           Configuration
         </button>
