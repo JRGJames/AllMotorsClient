@@ -1,0 +1,33 @@
+<div class="carousel-container static text-white shadow-lg flex object-cover" style="height: 40em;">
+    <div class="flex relative w-full">
+      <a href="" class="w-full relative">
+        <img class="object-cover w-full h-full" src="../../../../../assets/images/image1.jpg" alt="Slide {{currentPage}}">
+        <div class="gradient object-cover absolute top-0 w-full h-full"></div>
+        <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
+        <div class="absolute top-0 left-0 w-full">
+          <div class="ml-8 mt-8">
+            <h1 class="text-5xl font-bold">Car Title</h1>
+            <div class="flex mt-5 space-x-4">
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Transmission</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Engine</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Distance km</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Horsepower hp</p>
+            </div>
+            <h3 class="mt-5 text-4xl">Price €</h3>
+          </div>
+        </div>
+      </a>
+      <div class="absolute left-0 right-0 bottom-0 flex items-center  backdrop-blur-sm bg-black bg-opacity-5 justify-between w-full">
+        <button class="text-white font-bold py-2 px-6" (click)="prevPage()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="mt-auto mb-3">
+          <p class="text-sm font-bold">Page {{currentPage}} of {{images.length}}</p>
+        </div>
+        <button class="text-white font-bold py-2 px-6" (click)="nextPage()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
