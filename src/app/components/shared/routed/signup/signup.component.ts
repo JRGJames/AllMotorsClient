@@ -68,6 +68,7 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+
     if (this.userForm.valid) {
       if (this.operation == 'NEW') {
         const hashedPassword = this.cryptoService.getSHA256(this.userForm.value.password);

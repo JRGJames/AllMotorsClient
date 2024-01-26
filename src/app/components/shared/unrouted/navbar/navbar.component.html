@@ -12,13 +12,13 @@
     <button *ngIf="strUserName" class="flex h-11 items-center text-white">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
-    <button *ngIf="strUserName" (click)="toggleDropdown()" class="flex items-center h-full text-white relative">
+    <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton class="flex items-center h-full text-white relative">
       <span class="mr-2">{{ strUserName }}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
         <img src="" alt="" class="">
       </div>
 
-      <div *ngIf="showDropdown"
+      <div *ngIf="showDropdown" #dropdownButton
         class="absolute right-0 top-full bg-gray-100 bg-opacity-70 backdrop-blur-lg rounded-b-lg shadow-sm">
         <button class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 text-gray-600 w-full py-2 px-6">
           Configuration
