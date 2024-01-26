@@ -1,0 +1,28 @@
+<div class="carousel-container relative bg-gray-800 text-white shadow-lg flex object-cover" style="height: 40em;">
+  <div class="flex">
+    <a href="" class="w-full absolute">
+      <img class="object-cover absolute w-full h-full" [src]="images[currentPage - 1]" alt="Slide {{currentPage}}">
+      <div class="absolute">
+        <h1 class="ml-8 mt-8 text-5xl">Mercedes GLE 300d</h1>
+        <div class="flex space-x-4">
+          <p class="ml-8 mt-5 bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Transmission</p>
+          <p class="mt-5 bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Engine</p>
+          <p class="mt-5 bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Distance km</p>
+          <p class="mt-5 bg-gray-300 text-gray-600 rounded-2xl px-4 text-md">Horsepower hp</p>
+        </div>
+        <h3 class="ml-8 mt-5 text-4xl">16.250€</h3>
+      </div>
+    </a>
+    <div class="absolute left-0 right-0 bottom-0 flex items-center justify-between">
+      <button class="text-white font-bold py-2 px-6" (click)="prevPage()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="mt-auto mb-3">
+        <p class="text-sm">Page {{currentPage}} of {{images.length}}</p>
+      </div>
+      <button class="text-white font-bold py-2 px-6" (click)="nextPage()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
