@@ -13,6 +13,7 @@ import { Component, OnInit } from '@angular/core';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
+  submitted: boolean = false;
   status: HttpErrorResponse | null = null;
   passwordVisible = false; // Variable para controlar la visibilidad de la contraseña
   backgroundImage: string = '';
@@ -49,6 +50,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     if (this.loginForm.valid) {
       const username = this.loginForm.value.usernameOrEmail;
       const hashedPassword = this.cryptoService.getSHA256(this.loginForm.value.password);
@@ -88,5 +90,16 @@ export class LoginComponent implements OnInit {
   // Método para obtener el tipo de entrada de contraseña
   getPasswordInputType() {
     return this.passwordVisible ? 'text' : 'password';
+  }
+
+  hasError(controlName: string): boolean {
+    const control = this.loginForm.get(controlName);
+    return control ? control.invalid && (control.dirty || control.touched) : false;
+  }
+  
+  getErrorClasses(controlName: string): { [key: string]: boolean } {
+    return { 
+      'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName) 
+    };
   }
 }

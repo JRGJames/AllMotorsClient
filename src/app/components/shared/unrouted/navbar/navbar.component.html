@@ -1,11 +1,11 @@
-<nav class="bg-gray-700 top-0 bg-opacity-95 flex justify-between items-center h-16 sticky z-10">
+<nav class="bg-gray-700 top-0 backdrop-blur-sm bg-opacity-90 flex justify-between items-center h-16 sticky z-10">
   <div class="logo-container flex items-center ml-10">
     <i class="fas fa-cog text-white text-2xl mr-2"></i>
     <a routerLink="/" class="text-white font-bold text-3xl">
       AllMotors
     </a>
   </div>
-  <div class="buttons-container flex space-x-10 mr-10">
+  <div class="buttons-container flex space-x-12 mr-10">
     <button *ngIf="strUserName" class="flex items-center text-white">
       <i class="fas fa-comment text-xl"></i>
     </button>
@@ -19,14 +19,14 @@
       </div>
 
       <div *ngIf="showDropdown"
-        class="absolute right-0 top-full bg-gray-300 bg-opacity-50 backdrop-blur-lg rounded-b-lg shadow-sm">
-        <button class="flex items-start text-gray-600 w-full py-2 px-6">
+        class="absolute right-0 top-full bg-gray-100 bg-opacity-70 backdrop-blur-lg rounded-b-lg shadow-sm">
+        <button class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 text-gray-600 w-full py-2 px-6">
           Configuration
         </button>
-        <button class="flex items-start hover:bg-gray-400 w-full text-gray-600 py-2 px-6">
+        <button class="flex items-start hover:bg-gray-200 hover:bg-opacity-40  w-full text-gray-600 py-2 px-6">
           Profile
         </button>
-        <button (click)="logout()" class="flex items-start hover:bg-gray-400 w-full rounded-b-lg text-gray-600 py-2 px-6">
+        <button (click)="logout()" class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 w-full rounded-b-lg text-gray-600 py-2 px-6">
           Logout
         </button>
       </div>

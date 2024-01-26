@@ -7,11 +7,11 @@
       <div class="space-y-5">
         <input
           class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text" id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email">
+          type="text" id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email" [ngClass]="getErrorClasses('usernameOrEmail')">
         <div class="relative">
           <input
             class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
-            [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password">
+            [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password" [ngClass]="getErrorClasses('password')">
           <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
             (click)="togglePasswordVisibility()" type="button">
             <i

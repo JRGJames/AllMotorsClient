@@ -7,10 +7,10 @@
       <div class="space-y-5">
         <input
           class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text" id="email" formControlName="email" placeholder="Email">
+          type="text" id="email" formControlName="email" placeholder="Email" [ngClass]="getErrorClasses('email')">
         <input
           class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text" id="username" formControlName="username" placeholder="Username">
+          type="text" id="username" formControlName="username" placeholder="Username" [ngClass]="getErrorClasses('username')">
           <div class="relative">
             <input
               class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
@@ -34,7 +34,7 @@
             </button>
           </div>
       </div>
-      <div class="space-y-4 mt-4">
+      <div class="space-y-4 mt-5">
         <div>
           <button
             class="bg-sky-500 hover:bg-sky-600 text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline"

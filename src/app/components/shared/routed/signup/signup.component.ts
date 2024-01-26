@@ -19,6 +19,7 @@ export class SignupComponent implements OnInit {
   userForm!: FormGroup;
   user: IUser = {} as IUser;
   status: HttpErrorResponse | null = null;
+  submitted: boolean = false;
   passwordVisible: { [key: string]: boolean } = {
     password: false,
     cpassword: false,
@@ -66,6 +67,7 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     if (this.userForm.valid) {
       if (this.operation == 'NEW') {
         const hashedPassword = this.cryptoService.getSHA256(this.userForm.value.password);
@@ -74,8 +76,7 @@ export class SignupComponent implements OnInit {
         this.userService.create(this.userForm.value).subscribe({
           next: (data: IUser) => {
             this.user = data;
-            this.initializeForm(this.user);
-            this.router.navigate(['/']);
+            this.router.navigate(['/', this.user]);
           },
           error: (error: HttpErrorResponse) => {
             this.status = error;
@@ -98,6 +99,17 @@ export class SignupComponent implements OnInit {
     const cpassword = form.get('cpassword')?.value;
 
     return password === cpassword ? null : { passwordMismatch: true };
+  }
+
+  hasError(controlName: string): boolean {
+    const control = this.userForm.get(controlName);
+    return control ? control.invalid && (control.dirty || control.touched) : false;
+  }
+  
+  getErrorClasses(controlName: string): { [key: string]: boolean } {
+    return { 
+      'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName) 
+    };
   }
 
 }
