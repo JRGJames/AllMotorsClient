@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/shared/routed/home/home.component';
 import { LoginComponent } from './components/shared/routed/login/login.component'; 
 import { SignupComponent } from './components/shared/routed/signup/signup.component';
+import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 
 const routes: Routes = [
 
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent},
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'upload', component: CarFormComponent },
 
 ];
 

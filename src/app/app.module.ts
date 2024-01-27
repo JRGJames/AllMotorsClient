@@ -23,7 +23,7 @@ import { SignupComponent } from './components/shared/routed/signup/signup.compon
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
 import { FooterComponent } from './components/shared/unrouted/footer/footer.component';
 
-import { UserUserDetailUnroutedComponent } from './components/user/user/user-user-detail-unrouted/user-user-detail-unrouted.component';
+import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 
 
 
@@ -36,7 +36,7 @@ import { UserUserDetailUnroutedComponent } from './components/user/user/user-use
     SignupComponent,
     NavbarComponent,
     FooterComponent,
-    UserUserDetailUnroutedComponent
+    CarFormComponent,
   ],
   imports: [
     HttpClientModule,

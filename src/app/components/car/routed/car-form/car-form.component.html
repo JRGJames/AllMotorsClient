@@ -1,0 +1,61 @@
+<div class="flex items-center justify-center p-10">
+
+  <div class="bg-white shadow-lg overflow-hidden w-full rounded-lg">
+    <div class="bg-sky-600 p-6">
+      <h2 class="card-title text-white text-2xl font-bold">Car Information</h2>
+    </div>
+    <div class="card-content p-6">
+      <form class="grid gap-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label for="brand" class="label text-gray-700">Brand</label>
+            <div>
+              <select id="brand" class="border-2 rounded-lg text-gray-400 h-10 border-gray-300 w-56">
+                <option value="">BMW</option>
+                <option value=""></option>
+                <option value=""></option>
+                <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div class="space-y-2"><label for="model" class="label text-gray-700">Model</label><select id="model"
+              class="input border-gray-300 focus:border-indigo-500">
+              <option value="">Select Model</option>
+            </select></div>
+        </div>
+        <div class="gap-4">
+          <div class="space-y-2">
+            <label for="year" class="label text-gray-700">Year</label>
+            <input id="year" placeholder="Enter year" class="input border-gray-300 focus:border-indigo-500" type="date">
+          </div>
+          <div class="space-y-2"><label for="color" class="label text-gray-700">Color</label><input id="color"
+              placeholder="Enter color" class="input border-gray-300 focus:border-indigo-500"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2"><label for="price" class="label text-gray-700">Price</label><input id="price"
+              placeholder="Enter price" class="input border-gray-300 focus:border-indigo-500" type="number"></div>
+          <div class="space-y-2"><label for="door-number" class="label text-gray-700">Door Number</label><input
+              id="door-number" placeholder="Enter door number" class="input border-gray-300 focus:border-indigo-500"
+              type="number"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2"><label for="passenger-number" class="label text-gray-700">Passenger
+              Number</label><input id="passenger-number" placeholder="Enter passenger number"
+              class="input border-gray-300 focus:border-indigo-500" type="number"></div>
+          <div class="space-y-2"><label for="horsepower" class="label text-gray-700">Horsepower</label><input
+              id="horsepower" placeholder="Enter horsepower" class="input border-gray-300 focus:border-indigo-500"
+              type="number"></div>
+        </div>
+        <div class="space-y-2"><label for="mileage" class="label text-gray-700">Mileage</label><input id="mileage"
+            placeholder="Enter mileage" class="input border-gray-300 focus:border-indigo-500" type="number"></div>
+        <div class="space-y-2"><label for="additional-details" class="label text-gray-700">Additional</label><textarea
+            id="additional-details" placeholder="Enter additional details"
+            class="textarea border-gray-300 focus:border-indigo-500 min-h-[100px]"></textarea></div>
+        <div class="space-y-2"><label for="photos" class="label text-gray-700">Photos</label><input id="photos"
+            multiple="" class="input border-gray-300 focus:border-indigo-500" type="file"></div>
+      </form>
+    </div>
+    <div class="card-footer bg-gray-50 p-6"><button type="submit"
+        class="button bg-indigo-500 hover:bg-indigo-600 text-white w-full py-2 rounded">Publish</button></div>
+  </div>
+</div>
