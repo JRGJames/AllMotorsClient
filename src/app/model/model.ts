@@ -75,15 +75,16 @@ export interface ICar extends IEntity {
     distance: number;
     engine: string;
     price: number;
-    pleate: string;
+    plate: string;
     type: string;
     location: string;
+    emissions: number;
     description: string;
-    owner: IUser;
-    consuption: number;
+    consumption: number;
     dgtSticker: string;
     lastItv: Date;
-    lastUpdate: IUser;
+    lastUpdate: Date;
+    owner: IUser;
 }
 
 export interface ICarPage extends IPage<ICar> {
