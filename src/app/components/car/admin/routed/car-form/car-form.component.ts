@@ -2,9 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ICar, IUser, formOperation } from 'src/app/model/model';
-import { CarService } from '../../../../service/car.service';
-import { UserService } from '../../../../service/user.service';
-import { SessionService } from '../../../../service/session.service';
+import { CarService } from '../../../../../service/car.service';
+import { UserService } from '../../../../../service/user.service';
+import { SessionService } from '../../../../../service/session.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-car-form',
@@ -25,14 +27,15 @@ export class CarFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private carService: CarService,
     private userService: UserService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private router: Router
+
   ) {
     this.initializeForm(this.car);
   }
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
-      id: [car.id],
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       // images: [car.images, Validators.required],
@@ -95,9 +98,9 @@ export class CarFormComponent implements OnInit {
           next: (data: ICar) => {
             this.car = { owner: this.user } as ICar;
             this.initializeForm(this.car);
+            this.router.navigate(['/car', data.id]);
           },
           error: (error: HttpErrorResponse) => {
-            console.error('Create error:', error);
             this.status = error;
           }
         });
@@ -106,6 +109,7 @@ export class CarFormComponent implements OnInit {
           next: (data: ICar) => {
             this.car = data;
             this.initializeForm(this.car);
+            this.router.navigate(['/car', data.id]);
           },
           error: (error: HttpErrorResponse) => {
             this.status = error;

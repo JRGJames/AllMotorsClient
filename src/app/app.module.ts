@@ -22,8 +22,9 @@ import { LoginComponent } from './components/shared/routed/login/login.component
 import { SignupComponent } from './components/shared/routed/signup/signup.component';
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
 import { FooterComponent } from './components/shared/unrouted/footer/footer.component';
+import { CarFormComponent } from './components/car/admin/routed/car-form/car-form.component';
+import { CarDetailComponent } from './components/car/admin/routed/car-detail/car-detail.component';
 
-import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 
 
 
@@ -37,6 +38,7 @@ import { CarFormComponent } from './components/car/routed/car-form/car-form.comp
     NavbarComponent,
     FooterComponent,
     CarFormComponent,
+    CarDetailComponent,
   ],
   imports: [
     HttpClientModule,
