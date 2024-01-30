@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit, Optional } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ICar } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 
@@ -9,18 +10,22 @@ import { CarService } from 'src/app/service/car.service';
   styleUrls: ['./car-detail.component.css'],
 })
 export class CarDetailComponent implements OnInit {
-  @Input() id: number = 1;
+  showPhoneNumber: boolean = false;
+  id!: number;
 
   car: ICar = { owner: {} } as ICar;
   status: HttpErrorResponse | null = null;
 
   constructor(
-    private carService:CarService,
-  ) {
-  }
+    private carService: CarService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    this.getOne();
+    this.route.params.subscribe(params => {
+      this.id = +params['id'];
+      this.getOne();
+    });
   }
 
   getOne(): void {
@@ -31,8 +36,10 @@ export class CarDetailComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.status = error;
       }
+    });
+  }
 
-    })
-
+  togglePhoneNumber(): void {
+    this.showPhoneNumber = !this.showPhoneNumber;
   }
 }

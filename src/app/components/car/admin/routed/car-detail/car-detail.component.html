@@ -19,12 +19,17 @@
       </div>
       <div class="flex items-center gap-2">
         <div class="grid gap-2">
-          <label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold text-gray-700" for="contact">
+          <label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold text-gray-700"
+            for="contact">
             Contact Information
           </label>
           <p class="text-lg text-gray-600">
-            {{car.owner.username}} - {{car.owner.phone}}
+            {{ car.owner.username }} - 
+            <span *ngIf="!showPhoneNumber"></span>
+            <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
+            <a class="cursor-pointer text-gray-700" (click)="togglePhoneNumber()">{{ showPhoneNumber ? '' : 'Show phone number' }}</a>
           </p>
+          
           <div class="flex items-center gap-2">
             <i class="fas fa-star text-gray-500"></i>
             <p class="text-base text-gray-800">
@@ -56,7 +61,8 @@
           </p>
         </div>
       </div>
-      <button class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors w-full">
+      <button
+        class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors w-full">
         Contact Seller
       </button>
     </div>
@@ -119,7 +125,8 @@
           </p>
         </div>
       </div>
-      <hr *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions" class="border-2 rounded-lg border-gray-600">
+      <hr *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions"
+        class="border-2 rounded-lg border-gray-600">
       <div *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions" class="flex">
         <div class="flex justify-evenly w-full">
           <div *ngIf="car.plate" class="flex flex-row bg-gray-200 rounded-lg hover:shadow-sm">
@@ -132,9 +139,15 @@
           </div>
           <div *ngIf="car.dgtSticker" class="flex flex-col items-center gap-2">
             <p>DGT Sticker:</p>
-            <p class="text-gray-800 py-1 px-3 text-lg font-bold bg-green-500 rounded-3xl hover:shadow-sm">
-              {{car.dgtSticker}}
+            <p [ngClass]="{
+              'bg-green-500': car.dgtSticker === 'C',
+              'bg-yellow-300': car.dgtSticker === 'D',
+              'bg-blue-500': car.dgtSticker === '0',
+              'bg-red-500': car.dgtSticker === 'ECO'
+            }">
+              {{ car.dgtSticker }}
             </p>
+
           </div>
           <div *ngIf="car.lastItv" class="flex flex-col items-center">
             <p>Last ITV:</p>
@@ -157,17 +170,16 @@
         </div>
       </div>
       <div class="flex h-96 gap-10">
-        <div class="w-1/2">
+        <div *ngIf="car.description" class="w-1/2">
           <p class="text-gray-600 h-full">
             {{car.description}}
           </p>
         </div>
-        <div class="bg-sky-500 rounded-lg w-1/2">
-          <!-- Contenido para el segundo elemento -->
+        <div [ngClass]="{'w-full': !car.description, 'w-1/2': car.description}" class="bg-sky-500 rounded-lg">
         </div>
         <!-- <div style="height: 400px; width: 50%;">
           <google-map [options]="options" (mapClick)="moveMap($event)" (mapMousemove)="move($event)" style="height: 100%; width: 100%;"></google-map>
-        </div> -->       
+        </div> -->
       </div>
     </div>
   </div>
