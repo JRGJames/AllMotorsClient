@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'upload', component: CarFormComponent },
-  { path: 'car/:id', component: CarDetailComponent },
+  { path: 'car', component: CarDetailComponent },
 ];
 
 @NgModule({

@@ -1,83 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <div class="flex flex-col lg:flex-row gap-8 p-8">
-    <div class="lg:w-1/3">
+<!--
+// v0 by Vercel.
+// https://v0.dev/t/ySfUQn7FHwU
+-->
+<div class="items-start max-w-7xl mx-auto py-10">
+  <div class="flex gap-10">
+    <div class="items-start h-auto w-11/12 relative">
+      <a href="" class="h-full">
+        <img class="object-cover h-full hover:shadow-lg rounded-lg" src="../../../../../../assets/images/image1.jpg">
+      </a>
+      <button class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 rounded-lg">
+        <i class="fas fa-bookmark"></i>
+      </button>
+    </div>
+    <div class="grid gap-4 md:gap-10 items-start w-full">
+      <div class="grid gap-4">
+        <h1 class="font-bold text-3xl lg:text-4xl text-gray-800">
+          2022 Tesla Model S
+        </h1>
+        <div class="text-4xl font-bold text-gray-800">
+          Price€
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="grid gap-2">
+          <label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold text-gray-700" for="contact">
+            Contact Information
+          </label>
+          <p class="text-lg text-gray-600">
+            Username - (123) 456-7890
+          </p>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-star text-gray-500"></i>
+            <p class="text-base text-gray-800">
+              4,5
+            </p>
+            <p>
+              (123)
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-10 mt-4">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-map-marker-alt text-lg text-gray-600"></i>
+          <p class="text-lg text-gray-800">
+            Valencia
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fas fa-calendar-alt text-lg text-gray-600"></i>
+          <p class="text-lg text-gray-800">
+            2018
+          </p>
+        </div>
+        
+      </div>
+      <button class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors w-full">
+        Contact Seller
+      </button>
+    </div>
+  </div>
+  <div class="flex py-10">
+    <div class="aditional-information space-y-10">
+      <div class="flex space-x-16 w-full">
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">directions_car</i>
+          <p class="text-base text-gray-800">
+            McLaren
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">label</i>
+          <p class="text-base text-gray-800">
+            Artura
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">location_on</i>
+          <p class="text-base text-gray-800">
+            100,000km
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">directions_run</i>
+          <p class="text-base text-gray-800">
+            Sporty
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">whatshot</i>
+          <p class="text-base text-gray-800">
+            547hp
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">local_gas_station</i>
+          <p class="text-base text-gray-800">
+            Gasoline
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">settings</i>
+          <p class="text-base text-gray-800">
+            Manual
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">event_seat</i>
+          <p class="text-base text-gray-800">
+            2 seats
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="material-icons text-5xl text-gray-500">meeting_room</i>
+          <p class="text-base text-gray-800">
+            2 doors
+          </p>
+        </div>
+      </div>
       <div>
-        <img src="/src/assets/images/image1.jpg" class="w-full h-64 object-cover rounded-lg" alt="Car Image">
-      </div>
-      <h2 class="text-2xl font-bold mt-4">Car title</h2>
-      <h3 class="text-xl">Price</h3>
-      <div class="mt-4">
-        <p class="font-semibold">Username</p>
-        <div class="bg-gray-300 h-1 mt-2"></div>
-      </div>
-      <div class="flex justify-between mt-4">
-        <div>
-          <p class="font-semibold">Location</p>
-        </div>
-        <div>
-          <p class="font-semibold">Year</p>
-        </div>
-      </div>
-    </div>
-    <div class="lg:w-1/3">
-      <div class="info mt-8 lg:mt-0">
-        <div>
-          <p class="font-semibold">Horsepower</p>
-        </div>
-        <div>
-          <p class="font-semibold">Engine</p>
-        </div>
-        <div>
-          <p class="font-semibold">Transmission</p>
-        </div>
-        <div>
-          <p class="font-semibold">Type</p>
-        </div>
-        <div>
-          <p class="font-semibold">Distance</p>
-        </div>
-        <div>
-          <p class="font-semibold">Seats</p>
-        </div>
-        <div>
-          <p class="font-semibold">Doors</p>
-        </div>
-      </div>
-    </div>
-    <div class="lg:w-1/3">
-      <div class="aditional-info mt-8 lg:mt-0">
-        <div>
-          <p class="font-semibold">Emissions</p>
-        </div>
-        <div>
-          <p class="font-semibold">Color</p>
-        </div>
-        <div>
-          <p class="font-semibold">Consumption</p>
-        </div>
-        <div>
-          <p class="font-semibold">Plate</p>
-        </div>
-        <div>
-          <p class="font-semibold">DGT Sticker</p>
-        </div>
-        <div>
-          <p class="font-semibold">Last ITV</p>
-        </div>
-      </div>
-      <div class="description mt-8">
-        <p class="font-semibold">Description</p>
+        <p class="text-gray-600 ">
+          The 2022 Tesla Model S stands out as a cutting-edge, all-electric sedan that seamlessly combines performance
+          and sustainability. With its sleek design, this vehicle not only turns heads on the road but also contributes
+          to a greener future.
+
+          Under the hood, the Model S boasts remarkable acceleration and precise handling, providing a thrilling driving
+          experience. Its electric drivetrain delivers power with efficiency, making it a standout option in the world
+          of electric vehicles. The extended driving range ensures that you can confidently embark on longer journeys
+          without the worry of frequent recharging.
+        </p>
       </div>
     </div>
   </div>
-  
-</body>
-</html>
 
+</div>
