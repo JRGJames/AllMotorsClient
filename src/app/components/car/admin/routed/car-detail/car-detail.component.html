@@ -14,7 +14,7 @@
           {{car.brand}} {{car.model}}
         </h1>
         <div class="text-2xl lg:text-3xl font-bold text-gray-800">
-          {{car.price}}€
+          {{ car.price | thousandSeparator }}€
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -28,7 +28,7 @@
           <div class="flex items-center gap-2">
             <i class="fas fa-star text-gray-500"></i>
             <p class="text-base text-gray-800">
-              4,5
+              {{car.owner.rating}}
             </p>
             <p>
               (123)
@@ -62,7 +62,7 @@
     </div>
   </div>
   <div class="flex py-12">
-    <div class="aditional-information space-y-12">
+    <div class="aditional-information space-y-12 w-full">
       <div class="flex w-full justify-between">
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-car text-3xl text-gray-700"></i>
@@ -79,7 +79,7 @@
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-road text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            {{car.distance}}km
+            {{ car.distance | roundToThousandth }}km
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
@@ -91,7 +91,7 @@
         <div class="flex flex-col items-center gap-3">
           <i class="fa-solid fa-gauge-high text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            {{car.horsepower}}hp
+            {{ car.horsepower | thousandSeparator }}hp
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
@@ -109,20 +109,20 @@
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-chair text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            2 seats
+            {{car.seats}} seats
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-door-open text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            2 doors
+            {{car.doors}} doors
           </p>
         </div>
       </div>
-      <hr class="border-2 rounded-lg border-gray-600">
-      <div class="flex">
-        <div class="flex justify-between w-full">
-          <div class="flex flex-row bg-gray-200 rounded-lg hover:shadow-sm">
+      <hr *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions" class="border-2 rounded-lg border-gray-600">
+      <div *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions" class="flex">
+        <div class="flex justify-evenly w-full">
+          <div *ngIf="car.plate" class="flex flex-row bg-gray-200 rounded-lg hover:shadow-sm">
             <div class="bg-blue-600 p-5 rounded-l-lg text-white">
               <p class="text-2xl font-bold">E</p>
             </div>
@@ -130,50 +130,44 @@
               <h1 class="text-4xl font-bold text-center">{{car.plate}}</h1>
             </div>
           </div>
-          <div class="flex flex-col items-center gap-2">
+          <div *ngIf="car.dgtSticker" class="flex flex-col items-center gap-2">
             <p>DGT Sticker:</p>
             <p class="text-gray-800 py-1 px-3 text-lg font-bold bg-green-500 rounded-3xl hover:shadow-sm">
-              C
+              {{car.dgtSticker}}
             </p>
           </div>
-          <div class="flex flex-col items-center">
+          <div *ngIf="car.lastItv" class="flex flex-col items-center">
             <p>Last ITV:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
-              11/2020
+              {{car.lastItv}}
             </p>
           </div>
-          <div class="flex flex-col items-center">
+          <div *ngIf="car.consumption" class="flex flex-col items-center">
             <p>Consumption:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
-              11.2l/100km
+              {{car.consumption}}l/100km
             </p>
           </div>
-          <div class="flex flex-col items-center">
+          <div *ngIf="car.emissions" class="flex flex-col items-center">
             <p>Emissions:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
-              95g CO2/km
+              {{car.emissions}}g CO2/km
             </p>
           </div>
         </div>
       </div>
       <div class="flex h-96 gap-10">
         <div class="w-1/2">
-          <p class="text-gray-600 h-full whitespace-normal">
-            The 2022 Tesla Model S stands out as a cutting-edge, all-electric sedan that seamlessly combines performance
-            and sustainability. With its sleek design, this vehicle not only turns heads on the road but also contributes
-            to a greener future.
-      
-            Under the hood, the Model S boasts remarkable acceleration and precise handling, providing a thrilling driving
-            experience. Its electric drivetrain delivers power with efficiency, making it a standout option in the world
-            of electric vehicles. The extended driving range ensures that you can confidently embark on longer journeys
-            without the worry of frequent recharging.
+          <p class="text-gray-600 h-full">
+            {{car.description}}
           </p>
+        </div>
+        <div class="bg-sky-500 rounded-lg w-1/2">
+          <!-- Contenido para el segundo elemento -->
         </div>
         <!-- <div style="height: 400px; width: 50%;">
           <google-map [options]="options" (mapClick)="moveMap($event)" (mapMousemove)="move($event)" style="height: 100%; width: 100%;"></google-map>
-        </div> -->
-        
-        
+        </div> -->       
       </div>
     </div>
   </div>

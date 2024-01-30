@@ -15,6 +15,8 @@ import { ChatService } from './service/chat.service';
 import { MessageService } from './service/message.service';
 
 import { TrimPipe } from './pipes/trim.pipe';
+import { ThousandSeparatorPipe } from './pipes/thousandSeparator.pipe';
+import { RoundToThousandthPipe } from './pipes/roundToThousandth.pipe';
 
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
@@ -35,6 +37,8 @@ import { CarDetailComponent } from './components/car/admin/routed/car-detail/car
   declarations: [
     AppComponent,
     TrimPipe,
+    ThousandSeparatorPipe,
+    RoundToThousandthPipe,
     LoginComponent,
     SignupComponent,
     NavbarComponent,
