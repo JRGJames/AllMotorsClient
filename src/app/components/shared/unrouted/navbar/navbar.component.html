@@ -33,11 +33,11 @@
     </button>
 
 
-    <button *ngIf="strUserName" class="h-11 flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg" routerLink="/upload">
+    <button *ngIf="strUserName" class="h-11 flex items-center bg-sky-600 hover:bg-sky-700 transition-colors text-white px-6 py-2 rounded-lg" routerLink="/upload">
       <span class="mr-2">Publish</span>
       <i class="fas fa-upload"></i>
     </button>
-    <button routerLink="/login" *ngIf="!strUserName" class="flex items-center bg-sky-600 text-white px-6 py-2 rounded-lg">
+    <button routerLink="/login" *ngIf="!strUserName" class="flex items-center hover:bg-sky-700 transition-colors   bg-sky-600 text-white px-6 py-2 rounded-lg">
       <span class="mr-2">Login</span>
     </button>
   </div>

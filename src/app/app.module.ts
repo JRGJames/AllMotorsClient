@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+import { GoogleMapsModule } from '@angular/google-maps';
+
 
 
 import { CryptoService } from './service/crypto.service';
@@ -45,6 +47,7 @@ import { CarDetailComponent } from './components/car/admin/routed/car-detail/car
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    GoogleMapsModule 
   ],
   providers: [
     SessionService,
