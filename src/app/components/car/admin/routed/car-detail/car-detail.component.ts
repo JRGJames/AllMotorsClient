@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Input, OnInit, Optional } from '@angular/core';
+import { ICar } from 'src/app/model/model';
+import { CarService } from 'src/app/service/car.service';
 
 @Component({
   selector: 'app-car-detail',
@@ -6,30 +9,30 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./car-detail.component.css'],
 })
 export class CarDetailComponent implements OnInit {
-  options: google.maps.MapOptions = {
-    center: { lat: 40, lng: -20 },
-    zoom: 4,
-  };
+  @Input() id: number = 1;
 
-  center: google.maps.LatLngLiteral = { lat: 40, lng: -20 };
-  display: google.maps.LatLngLiteral = { lat: 40, lng: -20 };
+  car: ICar = { owner: {} } as ICar;
+  status: HttpErrorResponse | null = null;
 
-  moveMap(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      this.center = event.latLng.toJSON();
-    }
+  constructor(
+    private carService:CarService,
+  ) {
   }
 
-  move(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      this.display = event.latLng.toJSON();
-    }
+  ngOnInit() {
+    this.getOne();
   }
 
-  constructor() {}
+  getOne(): void {
+    this.carService.get(this.id).subscribe({
+      next: (data: ICar) => {
+        this.car = data;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.status = error;
+      }
 
-  ngOnInit(): void {
-    this.center = { lat: 40, lng: -20 };
-    this.display = { lat: 40, lng: -20 };
+    })
+
   }
 }

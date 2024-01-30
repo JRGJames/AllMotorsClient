@@ -11,10 +11,10 @@
     <div class="grid gap-4 md:gap-10 items-start w-full">
       <div class="grid gap-4">
         <h1 class="font-bold text-3xl lg:text-4xl text-gray-800">
-          2022 Tesla Model S
+          {{car.brand}} {{car.model}}
         </h1>
         <div class="text-2xl lg:text-3xl font-bold text-gray-800">
-          156.000€
+          {{car.price}}€
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -23,7 +23,7 @@
             Contact Information
           </label>
           <p class="text-lg text-gray-600">
-            Username - (123) 456-7890
+            {{car.owner.username}} - {{car.owner.phone}}
           </p>
           <div class="flex items-center gap-2">
             <i class="fas fa-star text-gray-500"></i>
@@ -40,19 +40,19 @@
         <div class="flex items-center gap-2">
           <i class="fas fa-map-marker-alt text-lg text-gray-600"></i>
           <p class="text-lg text-gray-800">
-            Valencia
+            {{car.location}}
           </p>
         </div>
         <div class="flex items-center gap-2">
           <i class="fas fa-calendar-alt text-lg text-gray-600"></i>
           <p class="text-lg text-gray-800">
-            2018
+            {{car.year}}
           </p>
         </div>
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-tag text-lg text-gray-600"></i>
           <p class="text-lg text-gray-800">
-            Black
+            {{car.color}}
           </p>
         </div>
       </div>
@@ -67,43 +67,43 @@
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-car text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            McLaren
+            {{car.brand}}
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-tag text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            Artura
+            {{car.model}}
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-road text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            100,000km
+            {{car.distance}}km
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-car-side text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            Sporty
+            {{car.type}}
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fa-solid fa-gauge-high text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            547hp
+            {{car.horsepower}}hp
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-gas-pump text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            Gasoline
+            {{car.fuel}}
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-cogs text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            Manual
+            {{car.gearbox}}
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
@@ -127,7 +127,7 @@
               <p class="text-2xl font-bold">E</p>
             </div>
             <div class="self-center w-full px-5 text-black">
-              <h1 class="text-4xl font-bold text-center">6041 CMB</h1>
+              <h1 class="text-4xl font-bold text-center">{{car.plate}}</h1>
             </div>
           </div>
           <div class="flex flex-col items-center gap-2">

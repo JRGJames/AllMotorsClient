@@ -71,9 +71,9 @@ export interface ICar extends IEntity {
     seats: number;
     doors: number;
     horsepower: number;
-    transmission: string;
+    gearbox: string;
     distance: number;
-    engine: string;
+    fuel: string;
     price: number;
     plate: string;
     type: string;
