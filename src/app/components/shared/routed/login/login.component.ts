@@ -95,9 +95,14 @@ export class LoginComponent implements OnInit {
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
   
-  getErrorClasses(controlName: string): { [key: string]: boolean } {
-  return { 
-    'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName) 
-  };
-}
+  getErrorClasses(controlName: string): {[key: string]: boolean} {
+    const control = this.loginForm.get(controlName);
+    const isInvalid = control?.invalid ?? false;
+    const shouldShowError = (control?.dirty || control?.touched || this.submitted) && isInvalid;
+  
+    return {
+      'border-b-red-300 border-b-2': shouldShowError,
+      '': !shouldShowError
+    };
+  }
 }

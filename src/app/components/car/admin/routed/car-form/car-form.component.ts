@@ -34,9 +34,8 @@ export class CarFormComponent implements OnInit {
     this.initializeForm(this.car);
   }
 
-  initializeForm(car: ICar) {
+  initializeForm(car: ICar, includeId: boolean = false) {
     this.carForm = this.formBuilder.group({
-      id: [car.id],
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       // images: [car.images, Validators.required],
@@ -51,8 +50,13 @@ export class CarFormComponent implements OnInit {
       price: [car.price, Validators.required],
       type: [car.type, Validators.required],
       location: [car.location, Validators.required],
+      boughtIn: [car.boughtIn, Validators.required],
+      currency: [car.currency, Validators.required],
       emissions: [car.emissions],
       consumption: [car.consumption],
+      acceleration: [car.acceleration],
+      engine: [car.engine],
+      drive: [car.drive],
       plate: [car.plate],
       dgtSticker: [car.dgtSticker],
       lastITV: [car.lastITV],
@@ -61,21 +65,24 @@ export class CarFormComponent implements OnInit {
         id: [car.owner.id, Validators.required]
       })
     });
+
+    
   }
 
   ngOnInit() {
-    if (this.operation == 'EDIT') {
+    if (this.operation === 'EDIT' && this.id) {
       this.carService.get(this.id).subscribe({
         next: (data: ICar) => {
           this.car = data;
-          this.initializeForm(this.car);
+          this.initializeForm(this.car, true); // Incluye el campo 'id' para la operación 'EDIT'
         },
         error: (error: HttpErrorResponse) => {
           this.status = error;
         }
-      })
+      });
     } else {
-      // Obtener el usuario actual al inicializar si es una nueva creación
+      // En el caso de la creación de un nuevo coche ('NEW'), inicializa el formulario sin 'id'
+      this.initializeForm(this.car); // No incluye el campo 'id'
       this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
         next: (data: IUser) => {
           this.user = data;
@@ -87,6 +94,7 @@ export class CarFormComponent implements OnInit {
       });
     }
   }
+  
 
   public hasError = (controlName: string, errorName: string) => {
     return this.carForm.controls[controlName].hasError(errorName);
@@ -97,6 +105,7 @@ export class CarFormComponent implements OnInit {
       if (this.operation === 'NEW') {
         this.carService.create(this.carForm.value).subscribe({
           next: (data: ICar) => {
+            console.log(data.id);
             this.car = { owner: this.user } as ICar;
             this.initializeForm(this.car);
             this.router.navigate(['/car/', data.id]);

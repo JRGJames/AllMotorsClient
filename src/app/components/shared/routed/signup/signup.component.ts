@@ -66,6 +66,7 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+    this.userForm.markAllAsTouched();  // Marca todos los controles como tocados
   
     if (this.userForm.valid) {
       if (this.operation === 'NEW') {
@@ -118,11 +119,19 @@ export class SignupComponent implements OnInit {
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
 
-  getErrorClasses(controlName: string): { [key: string]: boolean } {
+  getErrorClasses(controlName: string): {[key: string]: boolean} {
+    const control = this.userForm.get(controlName);
+    const isInvalid = control?.invalid ?? false;
+    const shouldShowError = (control?.dirty || control?.touched || this.submitted) && isInvalid;
+  
     return {
-      'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName)
+      'border-b-red-300 border-b-2': shouldShowError,
+      '': !shouldShowError
     };
   }
+  
+  
+  
 
 }
 

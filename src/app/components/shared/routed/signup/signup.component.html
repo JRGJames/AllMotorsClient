@@ -16,6 +16,7 @@
             <input
               class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
               [type]="getPasswordInputType('password')" id="password" formControlName="password" placeholder="Password"
+              [ngClass]="getErrorClasses('password')"
               [ngClass]="{ 'border-b-red-300 border-b-2': userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty) }">
             <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
               (click)="togglePasswordVisibility('password')" type="button">
@@ -27,6 +28,7 @@
             <input
               class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
               [type]="getPasswordInputType('cpassword')" id="cpassword" formControlName="cpassword" placeholder="Confirm password"
+              [ngClass]="getErrorClasses('password')"
               [ngClass]="{ 'border-b-red-300 border-b-2': userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty) }">
             <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
               (click)="togglePasswordVisibility('cpassword')" type="button">

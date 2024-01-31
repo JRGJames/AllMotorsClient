@@ -3,17 +3,17 @@
       <a href="" class="w-full relative">
         <img class="object-cover w-full h-full" src="../../../../../assets/images/image2.jpg" alt="Slide {{currentPage}}">
         <div class="gradient object-cover absolute top-0 w-full h-full"></div>
-        <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
+        <div class="gradient-lateral object-cover absolute top-0 w-full h-full">{{car.brand}} {{car.model}}</div>
         <div class="absolute top-0 left-0 w-full">
           <div class="ml-8 mt-8">
-            <h1 class="text-5xl font-bold">Car Title</h1>
+            <h1 class="text-5xl font-bold"></h1>
             <div class="flex mt-5 space-x-4">
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">Gearbox</p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">Fuel</p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">Distance km</p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">Horsepower hp</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.gearbox}}</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.fuel}}</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.distance}} km</p>
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.horsepower}} hp</p>
             </div>
-            <h3 class="mt-5 text-4xl">Price €</h3>
+            <h3 class="mt-5 text-4xl">{{car.price}} {{car.currency}}</h3>
           </div>
         </div>
       </a>
