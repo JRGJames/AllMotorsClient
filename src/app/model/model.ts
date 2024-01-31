@@ -87,7 +87,7 @@ export interface ICar extends IEntity {
     drive: string;
     engine: string;
     dgtSticker: string;
-    lastItv: Date;
+    lastITV: Date;
     lastUpdate: Date;
     owner: IUser;
 }

@@ -55,7 +55,7 @@ export class CarFormComponent implements OnInit {
       consumption: [car.consumption],
       plate: [car.plate],
       dgtSticker: [car.dgtSticker],
-      lastItv: [car.lastItv],
+      lastITV: [car.lastITV],
       description: [car.description],
       owner: this.formBuilder.group({
         id: [car.owner.id, Validators.required]

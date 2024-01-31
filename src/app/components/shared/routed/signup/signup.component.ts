@@ -51,9 +51,7 @@ export class SignupComponent implements OnInit {
     const images = [
       'image1.jpg',
       'image2.jpg',
-      'image3.jpg',
       'image4.jpg',
-      'image5.jpg',
       'image6.jpg',
       'image7.jpg',
       'image8.jpg',
@@ -71,21 +69,22 @@ export class SignupComponent implements OnInit {
   
     if (this.userForm.valid) {
       if (this.operation === 'NEW') {
-        const formData = {...this.userForm.value}; 
+        const formData = {...this.userForm.value};
         const plainPassword = formData.password; // Guarda la contraseña en texto plano
-        formData.password = this.cryptoService.getSHA256(formData.password); // Hashea la contraseña para la creación del usuario
-  
+        const hashedPassword = this.cryptoService.getSHA256(plainPassword); // Hashea la contraseña para la creación del usuario
+        formData.password = hashedPassword; // Reemplaza la contraseña en texto plano por la contraseña hasheada
+
         this.userService.create(formData).subscribe({
           next: (user: IUser) => {
             // Usuario creado exitosamente, ahora inicia sesión automáticamente
-            this.sessionService.login(user.username, this.cryptoService.getSHA256(this.cryptoService.getSHA256(formData.password))).subscribe({
+            // Usa el nombre de usuario y la contraseña en texto plano para el inicio de sesión
+            this.sessionService.login(formData.username, hashedPassword).subscribe({
               next: (token: string) => {
                 this.sessionService.setToken(token); // Guarda el token JWT en el almacenamiento local o en el servicio
                 this.router.navigate(['/']); // Redirige al usuario al home
               },
               error: (loginError: HttpErrorResponse) => {
                 console.error('Error al iniciar sesión automáticamente', loginError);
-                // Manejo de errores de inicio de sesión, si es necesario
               }
             });
           },
@@ -98,8 +97,6 @@ export class SignupComponent implements OnInit {
       }
     }
   }
-  
-
 
   togglePasswordVisibility(field: string) {
     this.passwordVisible[field] = !this.passwordVisible[field];

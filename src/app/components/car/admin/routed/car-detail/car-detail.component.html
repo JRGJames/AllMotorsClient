@@ -14,7 +14,7 @@
           {{car.brand}} {{car.model}}
         </h1>
         <div class="text-2xl lg:text-3xl font-bold text-gray-800">
-          {{ car.price | thousandSeparator }}€
+          {{ car.price | thousandSeparator }} {{ car.currency }} 
         </div>
       </div>
       <div class="flex items-center gap-2">
@@ -24,12 +24,13 @@
             Contact Information
           </label>
           <p class="text-lg text-gray-600">
-            {{ car.owner.username }} - 
+            {{ car.owner.username }} -
             <span *ngIf="!showPhoneNumber"></span>
             <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
-            <a class="cursor-pointer text-gray-700" (click)="togglePhoneNumber()">{{ showPhoneNumber ? '' : 'Show phone number' }}</a>
+            <a class="cursor-pointer text-gray-700" (click)="togglePhoneNumber()">
+              {{ showPhoneNumber ? '' : 'Show phone number'}}
+            </a>
           </p>
-          
           <div class="flex items-center gap-2">
             <i class="fas fa-star text-gray-500"></i>
             <p class="text-base text-gray-800">
@@ -85,7 +86,7 @@
         <div class="flex flex-col items-center gap-3">
           <i class="fas fa-road text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            {{ car.distance | roundToThousandth }}km
+            {{ car.distance | roundToThousandth }} km
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
@@ -97,7 +98,7 @@
         <div class="flex flex-col items-center gap-3">
           <i class="fa-solid fa-gauge-high text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            {{ car.horsepower | thousandSeparator }}hp
+            {{ car.horsepower | thousandSeparator }} hp
           </p>
         </div>
         <div class="flex flex-col items-center gap-3">
@@ -125,9 +126,12 @@
           </p>
         </div>
       </div>
-      <hr *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
+      <hr
+        *ngIf="car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
         class="border-2 rounded-lg border-gray-600">
-      <div *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions || car.acceleration || car.drive || car.engine" class="flex">
+      <div
+        *ngIf="car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
+        class="flex">
         <div class="flex justify-evenly w-full">
           <div *ngIf="car.plate" class="flex flex-row bg-gray-200 rounded-lg hover:shadow-sm">
             <div class="bg-blue-600 p-5 rounded-l-lg text-white">
@@ -141,36 +145,37 @@
             <p>DGT Sticker:</p>
             <p class="text-gray-800 py-1 px-3 text-lg font-bold rounded-3xl hover:shadow-sm" [ngClass]="{
               'bg-green-500': car.dgtSticker === 'C',
-              'bg-yellow-300': car.dgtSticker === 'D',
+              'bg-yellow-300': car.dgtSticker === 'B',
               'bg-blue-500': car.dgtSticker === '0',
-              'bg-red-500': car.dgtSticker === 'ECO'
+              'eco-gradient': car.dgtSticker === 'ECO'
             }">
-              {{ car.dgtSticker }}
+              {{car.dgtSticker}}
             </p>
+
           </div>
-          <div *ngIf="car.lastItv"  class="flex flex-col items-center">
+          <div *ngIf="car.consumption" class="flex flex-col items-center">
             <p>Last ITV:</p>
-            <p class="text-gray-800 p-2 text-lg font-bold">
-              {{ car.lastItv | customDate }}
-            </p>
-            
+              <p class="text-gray-800 p-2 text-lg font-bold">
+                {{ car.lastITV | date: 'MM/yyyy' }}
+              </p>
+
           </div>
           <div *ngIf="car.consumption" class="flex flex-col items-center">
             <p>Consumption:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
-              {{car.consumption}}l/100km
+              {{car.consumption}} l/100km
             </p>
           </div>
           <div *ngIf="car.emissions" class="flex flex-col items-center">
             <p>Emissions:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
-              {{car.emissions}}g CO2/km
+              {{car.emissions}} g CO2/km
             </p>
           </div>
           <div *ngIf="car.acceleration" class="flex flex-col items-center">
             <p>0-100km/h:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
-              {{car.acceleration}}s
+              {{car.acceleration}} s
             </p>
           </div>
           <div *ngIf="car.drive" class="flex flex-col items-center">
@@ -189,7 +194,7 @@
       </div>
       <div class="flex h-96 gap-10">
         <div *ngIf="car.description" class="w-1/2">
-          <p class="text-gray-600 h-full">
+          <p class="text-gray-700 h-full">
             {{car.description}}
           </p>
         </div>

@@ -30,7 +30,9 @@ export class CarDetailComponent implements OnInit {
 
   getOne(): void {
     this.carService.get(this.id).subscribe({
+      
       next: (data: ICar) => {
+        console.log(this.car.lastITV);
         this.car = data;
       },
       error: (error: HttpErrorResponse) => {
