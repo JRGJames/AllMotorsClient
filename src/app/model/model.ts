@@ -62,7 +62,7 @@ export interface ICar extends IEntity {
     brand: string;
     model: string;
     dateUpload: Date;
-    images: string[];
+    images: IImage[];
     status: string;
     views: number;
     saves: number;
@@ -93,6 +93,11 @@ export interface ICar extends IEntity {
 }
 
 export interface ICarPage extends IPage<ICar> {
+}
+
+export interface IImage {
+    imageUrl: string;
+    car: ICar;
 }
 
 export interface IChat extends IEntity {

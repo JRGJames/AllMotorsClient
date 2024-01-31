@@ -1,7 +1,7 @@
 <div class="carousel-container static text-white shadow-lg flex object-cover" style="height:40em;">
-  <div class="flex relative w-full" *ngIf="popularCars.length > 0">
+  <div class="flex relative w-full">
     <a href="" class="w-full relative">
-      <img class="object-cover w-full h-full" src="../../../../../assets/images/image2.jpg" alt="Slide {{currentPage}}">
+      <img class="object-cover w-full h-full" [src]="popularCars[currentPage - 1].images[0]" alt="Slide {{currentPage}}">
       <div class="gradient object-cover absolute top-0 w-full h-full"></div>
       <div class="gradient-lateral object-cover absolute top-0 w-full h-full">{{popularCars[currentPage - 1].brand}} {{popularCars[currentPage - 1].model}}</div>
       <div class="absolute top-0 left-0 w-full">
@@ -30,3 +30,4 @@
     </div>
   </div>
 </div>
+

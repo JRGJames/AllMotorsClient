@@ -6,6 +6,7 @@ import { CarService } from '../../../../../service/car.service';
 import { UserService } from '../../../../../service/user.service';
 import { SessionService } from '../../../../../service/session.service';
 import { Router } from '@angular/router';
+import { MediaService } from 'src/app/service/media.service';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class CarFormComponent implements OnInit {
     private carService: CarService,
     private userService: UserService,
     private sessionService: SessionService,
+    private mediaService: MediaService,
     private router: Router
 
   ) {
@@ -38,7 +40,7 @@ export class CarFormComponent implements OnInit {
     this.carForm = this.formBuilder.group({
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
-      // images: [car.images, Validators.required],
+      images: [car.images],
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
       seats: [car.seats, Validators.required],
@@ -66,7 +68,7 @@ export class CarFormComponent implements OnInit {
       })
     });
 
-    
+
   }
 
   ngOnInit() {
@@ -94,7 +96,7 @@ export class CarFormComponent implements OnInit {
       });
     }
   }
-  
+
 
   public hasError = (controlName: string, errorName: string) => {
     return this.carForm.controls[controlName].hasError(errorName);
@@ -128,4 +130,27 @@ export class CarFormComponent implements OnInit {
       }
     }
   }
+
+  upload(event: any) {
+    const MAX_FILES = 8;
+    const files: FileList = event.target.files;
+    if (files && files.length > 0) {
+      if (files.length > MAX_FILES) {
+        console.error('You can only upload a maximum of ' + MAX_FILES + ' files.');
+        // Aquí puedes mostrar un mensaje al usuario si lo deseas
+        return;
+      }
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+
+      this.mediaService.uploadMultipleFiles(formData)
+        .subscribe(response => {
+          console.log('Uploaded files:', response);
+        });
+    }
+  }
+
+
 }

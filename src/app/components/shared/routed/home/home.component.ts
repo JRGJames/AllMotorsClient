@@ -20,14 +20,14 @@ export class HomeComponent implements OnInit {
 
   loadPopularCars() {
     const amount = 5; // Cantidad de coches más visitados que deseas mostrar
-    this.carService.byViews(amount).subscribe(
-      (data: ICar[]) => {
+    this.carService.byViews(amount).subscribe({
+      next: (data: ICar[]) => {
         this.popularCars = data;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al cargar coches populares:', error);
       }
-    );
+    });
   }
 
   prevPage() {

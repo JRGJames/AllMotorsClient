@@ -131,6 +131,11 @@
             <input type="text" id="currency" formControlName="currency"
               class="border-2 rounded-lg text-gray-800 h-10 border-gray-300 w-full px-3" placeholder="€">
           </div>
+
+          <div class="space-y-2">
+            <label for="file" class="label text-gray-700">Currency:</label>
+            <input type="file" multiple (change)="upload($event)" accept="image/*"> 
+          </div>
         </div>
 
         <div class="mt-4">
