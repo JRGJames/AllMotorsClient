@@ -27,9 +27,15 @@ export class SessionService {
         return JSON.parse(jsonPayload);
     }
 
-    login(sUsername: string, sPassword: string): Observable<string> {
-        return this.http.post<string>(`${this.sUrl}/login`, { username: sUsername, password: sPassword });
-      }
+    login(sIdentifier: string, sPassword: string): Observable<string> {
+        const isEmail = sIdentifier.includes('@');
+        const payload = isEmail
+            ? { email: sIdentifier, password: sPassword }
+            : { username: sIdentifier, password: sPassword };
+    
+        return this.http.post<string>(`${this.sUrl}/login`, payload);
+    }
+    
 
     setToken(token: string): void {
         localStorage.setItem('token', token);

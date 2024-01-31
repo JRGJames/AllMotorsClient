@@ -68,24 +68,38 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-
+  
     if (this.userForm.valid) {
-      if (this.operation == 'NEW') {
-        const hashedPassword = this.cryptoService.getSHA256(this.userForm.value.password);
-        this.userForm.patchValue({ password: hashedPassword });
-
-        this.userService.create(this.userForm.value).subscribe({
-          next: (data: IUser) => {
-            this.user = data;
-            this.router.navigate(['/', this.user]);
+      if (this.operation === 'NEW') {
+        const formData = {...this.userForm.value}; 
+        const plainPassword = formData.password; // Guarda la contraseña en texto plano
+        formData.password = this.cryptoService.getSHA256(formData.password); // Hashea la contraseña para la creación del usuario
+  
+        this.userService.create(formData).subscribe({
+          next: (user: IUser) => {
+            // Usuario creado exitosamente, ahora inicia sesión automáticamente
+            this.sessionService.login(user.username, this.cryptoService.getSHA256(this.cryptoService.getSHA256(formData.password))).subscribe({
+              next: (token: string) => {
+                this.sessionService.setToken(token); // Guarda el token JWT en el almacenamiento local o en el servicio
+                this.router.navigate(['/']); // Redirige al usuario al home
+              },
+              error: (loginError: HttpErrorResponse) => {
+                console.error('Error al iniciar sesión automáticamente', loginError);
+                // Manejo de errores de inicio de sesión, si es necesario
+              }
+            });
           },
-          error: (error: HttpErrorResponse) => {
-            this.status = error;
+          error: (createError: HttpErrorResponse) => {
+            this.status = createError;
+            console.error('Error al crear usuario', createError);
+            // Manejo de errores de creación de usuario, si es necesario
           }
         });
       }
     }
   }
+  
+
 
   togglePasswordVisibility(field: string) {
     this.passwordVisible[field] = !this.passwordVisible[field];
@@ -106,10 +120,10 @@ export class SignupComponent implements OnInit {
     const control = this.userForm.get(controlName);
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
-  
+
   getErrorClasses(controlName: string): { [key: string]: boolean } {
-    return { 
-      'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName) 
+    return {
+      'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName)
     };
   }
 

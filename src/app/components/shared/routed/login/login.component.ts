@@ -98,8 +98,8 @@ export class LoginComponent implements OnInit {
   }
   
   getErrorClasses(controlName: string): { [key: string]: boolean } {
-    return { 
-      'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName) 
-    };
-  }
+  return { 
+    'border-b-red-300 border-b-2': this.submitted && this.hasError(controlName) 
+  };
+}
 }
