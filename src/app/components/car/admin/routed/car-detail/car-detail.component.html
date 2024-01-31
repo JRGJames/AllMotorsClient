@@ -125,9 +125,9 @@
           </p>
         </div>
       </div>
-      <hr *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions"
+      <hr *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
         class="border-2 rounded-lg border-gray-600">
-      <div *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions" class="flex">
+      <div *ngIf="car.plate || car.dgtSticker || car.lastItv || car.consumption || car.emissions || car.acceleration || car.drive || car.engine" class="flex">
         <div class="flex justify-evenly w-full">
           <div *ngIf="car.plate" class="flex flex-row bg-gray-200 rounded-lg hover:shadow-sm">
             <div class="bg-blue-600 p-5 rounded-l-lg text-white">
@@ -139,7 +139,7 @@
           </div>
           <div *ngIf="car.dgtSticker" class="flex flex-col items-center gap-2">
             <p>DGT Sticker:</p>
-            <p [ngClass]="{
+            <p class="text-gray-800 py-1 px-3 text-lg font-bold rounded-3xl hover:shadow-sm" [ngClass]="{
               'bg-green-500': car.dgtSticker === 'C',
               'bg-yellow-300': car.dgtSticker === 'D',
               'bg-blue-500': car.dgtSticker === '0',
@@ -165,6 +165,24 @@
             <p>Emissions:</p>
             <p class="text-gray-800 p-2 text-lg font-bold">
               {{car.emissions}}g CO2/km
+            </p>
+          </div>
+          <div *ngIf="car.acceleration" class="flex flex-col items-center">
+            <p>0-100km/h:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.acceleration}}s
+            </p>
+          </div>
+          <div *ngIf="car.drive" class="flex flex-col items-center">
+            <p>Drive:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.drive}}
+            </p>
+          </div>
+          <div *ngIf="car.engine" class="flex flex-col items-center">
+            <p>Engine:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.engine}}
             </p>
           </div>
         </div>

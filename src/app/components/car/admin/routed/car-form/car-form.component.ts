@@ -36,6 +36,7 @@ export class CarFormComponent implements OnInit {
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
+      id: [car.id],
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       // images: [car.images, Validators.required],
@@ -98,7 +99,7 @@ export class CarFormComponent implements OnInit {
           next: (data: ICar) => {
             this.car = { owner: this.user } as ICar;
             this.initializeForm(this.car);
-            this.router.navigate(['/car', data.id]);
+            this.router.navigate(['/car/', data.id]);
           },
           error: (error: HttpErrorResponse) => {
             this.status = error;
@@ -109,7 +110,7 @@ export class CarFormComponent implements OnInit {
           next: (data: ICar) => {
             this.car = data;
             this.initializeForm(this.car);
-            this.router.navigate(['/car', data.id]);
+            this.router.navigate(['/car/', data.id]);
           },
           error: (error: HttpErrorResponse) => {
             this.status = error;

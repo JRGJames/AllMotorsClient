@@ -81,6 +81,11 @@ export interface ICar extends IEntity {
     emissions: number;
     description: string;
     consumption: number;
+    currency: string;
+    boughtIn: string;
+    acceleration: number;
+    drive: string;
+    engine: string;
     dgtSticker: string;
     lastItv: Date;
     lastUpdate: Date;
