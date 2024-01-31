@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { API_URL } from 'src/environment/environment';
 import { IUser, IUserPage } from '../model/model';
 
@@ -14,6 +14,22 @@ export class UserService {
   constructor(
     private http: HttpClient
   ) { }
+
+  checkUsernameNotTaken(username: string): Observable<boolean> {
+    return this.http.get<{ isUsernameAvailable: boolean }>(this.url + '/username-check', {
+      params: { username }
+    }).pipe(
+      map(response => response.isUsernameAvailable)
+    );
+  }
+
+  checkEmailNotTaken(email: string): Observable<boolean> {
+    return this.http.get<{ isEmailAvailable: boolean }>(this.url + '/email-check', {
+      params: { email }
+    }).pipe(
+      map(response => response.isEmailAvailable)
+    );
+  }
 
   get(id: number): Observable<IUser> {
     return this.http.get<IUser>(this.url + '/get/' + id);

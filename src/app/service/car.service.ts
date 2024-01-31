@@ -51,5 +51,9 @@ export class CarService {
     empty(): Observable<number> {
       return this.http.delete<number>(this.url + "/empty");
     }
+
+    byViews(amount: number): Observable<ICar[]> {
+      return this.http.get<ICar[]>(this.url + "/get/byViews/" + amount);
+    }
   
 }

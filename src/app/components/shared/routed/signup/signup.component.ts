@@ -1,7 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable, catchError, map, of } from 'rxjs';
 import { IUser, formOperation } from 'src/app/model/model';
 import { CryptoService } from 'src/app/service/crypto.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -40,8 +41,8 @@ export class SignupComponent implements OnInit {
 
   initializeForm(user: IUser) {
     this.userForm = this.fb.group({
-      email: [user.email, [Validators.required, Validators.email]],
-      username: [user.username, [Validators.required]],
+      email: [user.email, [Validators.required, Validators.email], [this.uniqueEmailValidator(this.userService)]],
+      username: [user.username, [Validators.required], [this.uniqueEmailValidator(this.userService)]],
       password: [user.password, [Validators.required, Validators.minLength(8)]],
       cpassword: ['', [Validators.required, Validators.minLength(8)]],
     }, { validators: this.passwordMatchValidator });
@@ -130,8 +131,24 @@ export class SignupComponent implements OnInit {
     };
   }
   
+  uniqueUsernameValidator(userService: UserService): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return userService.checkUsernameNotTaken(control.value).pipe(
+        map(isUsernameAvailable => (isUsernameAvailable ? null : { usernameTaken: true })),
+        catchError(() => of(null))
+      );
+    };
+  }
   
-  
+  // Validador para el correo electrónico
+  uniqueEmailValidator(userService: UserService): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return userService.checkEmailNotTaken(control.value).pipe(
+        map(isEmailAvailable => (isEmailAvailable ? null : { emailTaken: true })),
+        catchError(() => of(null))
+      );
+    };
+  }
 
 }
 

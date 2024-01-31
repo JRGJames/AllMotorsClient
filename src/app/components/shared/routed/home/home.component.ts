@@ -1,8 +1,7 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ICar } from 'src/app/model/model';
+// En HomeComponent
+import { Component, OnInit } from '@angular/core';
 import { CarService } from 'src/app/service/car.service';
+import { ICar } from 'src/app/model/model';
 
 @Component({
   selector: 'app-home',
@@ -10,20 +9,25 @@ import { CarService } from 'src/app/service/car.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
-  @Input() images: string[] = [];
+  popularCars: ICar[] = [];
   currentPage: number = 1;
 
-  constructor(
-    private carService: CarService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private carService: CarService) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.id = +params['id'];
-      this.getOne();
-    });
+    this.loadPopularCars();
+  }
+
+  loadPopularCars() {
+    const amount = 5; // Cantidad de coches más visitados que deseas mostrar
+    this.carService.byViews(amount).subscribe(
+      (data: ICar[]) => {
+        this.popularCars = data;
+      },
+      (error) => {
+        console.error('Error al cargar coches populares:', error);
+      }
+    );
   }
 
   prevPage() {
@@ -33,31 +37,8 @@ export class HomeComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.currentPage < this.images.length) {
+    if (this.currentPage < this.popularCars.length) {
       this.currentPage++;
     }
-  }
-
-  showPhoneNumber: boolean = false;
-  id!: number;
-
-  car: ICar = { owner: {} } as ICar;
-  status: HttpErrorResponse | null = null;
-
-  
-
-  
-
-  getOne(): void {
-    this.carService.get(this.id).subscribe({
-      
-      next: (data: ICar) => {
-        console.log(this.car.lastITV);
-        this.car = data;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.status = error;
-      }
-    });
   }
 }
