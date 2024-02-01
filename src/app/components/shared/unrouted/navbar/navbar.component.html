@@ -6,13 +6,13 @@
     </a>
   </div>
   <div class="flex h-full items-center space-x-12 mr-10">
-    <button *ngIf="strUserName" class="items-center text-white">
+    <button *ngIf="strUserName" class="items-center text-white focus:outline-none">
       <i class="fas fa-comment text-xl"></i>
     </button>
-    <button *ngIf="strUserName" class="flex h-11 items-center text-white">
+    <button *ngIf="strUserName" class="flex h-11 items-center text-white focus:outline-none">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
-    <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton class="flex items-center h-full text-white relative">
+    <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton class="flex items-center h-full text-white relative focus:outline-none">
       <span class="mr-2">{{ strUserName }}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
         <img src="" alt="" class="">
