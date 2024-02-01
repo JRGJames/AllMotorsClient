@@ -14,11 +14,12 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#242424", endColorstr="#ffffff", GradientType=1);
 }
 
-.carousel-image {
-    transition: opacity 1s ease-in-out;
-    opacity: 0;
+.carousel-slide {
+    will-change: transform;
+    /* Optimiza las transformaciones */
 }
 
-.carousel-image.active {
-    opacity: 1;
+.carousel-image {
+
+    flex-shrink: 0;
 }

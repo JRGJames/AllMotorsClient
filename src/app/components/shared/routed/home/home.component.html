@@ -1,7 +1,9 @@
-<div class="carousel-container static text-white shadow-lg flex object-cover" style="height:40em;">
+<div class="static text-white shadow-lg flex object-cover" style="height:40em;">
   <div class="flex relative w-full">
-    <a [routerLink]="['/car', popularCars[currentPage-1].id]" class="w-full relative focus:outline-none">
-      <img class="carousel-image object-cover w-full h-full" [src]="popularCars[currentPage - 1].images[0]" alt="Slide {{currentPage}}">
+    <a [routerLink]="['/car', popularCars[currentPage-1].id]"
+      class="carousel-slide transition-transform duration-500 w-full relative focus:outline-none">
+      <img class="object-cover carousel-image w-full h-full"
+        [src]="'http://localhost:8083' + popularCars[currentPage-1].images[0].imageUrl">
       <div class="gradient object-cover absolute top-0 w-full h-full"></div>
       <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
       <div class="absolute top-0 left-0 w-full">
@@ -12,25 +14,29 @@
             <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].gearbox}}
             </p>
             <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].fuel}}</p>
-            <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].distance | roundToThousandth }} km</p>
-            <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].horsepower | thousandSeparator }} hp</p>
+            <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].distance |
+              roundToThousandth }} km</p>
+            <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].horsepower
+              | thousandSeparator }} hp</p>
           </div>
-          <h3 class="mt-5 text-4xl">{{popularCars[currentPage - 1].price | thousandSeparator}} {{popularCars[currentPage - 1].currency}}
+          <h3 class="mt-5 text-4xl">{{popularCars[currentPage - 1].price | thousandSeparator}} {{popularCars[currentPage
+            - 1].currency}}
           </h3>
         </div>
       </div>
     </a>
     <div
-      class="absolute left-0 right-0 bottom-0 flex items-center  backdrop-blur-sm bg-black bg-opacity-5 justify-between w-full">
+      class="absolute left-0 right-0 bottom-0 flex items-center backdrop-blur-sm bg-black bg-opacity-5 justify-between w-full">
       <button class="text-white font-bold py-2 px-6 focus:outline-none" (click)="prevPage()">
         <i class="fas fa-chevron-left"></i>
       </button>
-      <div class="mt-auto mb-3 flex justify-center space-x-2">
-        <div *ngFor="let car of popularCars; let i = index" [ngClass]="{'bg-gray-400': currentPage - 1 === i, 'bg-gray-300': currentPage - 1 !== i}" 
-             class="w-8 h-1 rounded-lg">
-        </div>
+      <div class="mt-auto mb-4 flex justify-center space-x-2">
+        <button *ngFor="let car of popularCars; let i = index" class="w-8 h-1 rounded-lg hover:bg-gray-400 transition-colors cursor-pointer"
+          [ngClass]="{'bg-gray-500': currentPage - 1 === i, 'bg-gray-300': currentPage - 1 !== i}"
+          (click)="changePage(i + 1)">
+        </button>
       </div>
-      
+
       <button class="text-white font-bold py-2 px-6 focus:outline-none" (click)="nextPage()">
         <i class="fas fa-chevron-right"></i>
       </button>

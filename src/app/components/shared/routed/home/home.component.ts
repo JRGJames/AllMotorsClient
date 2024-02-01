@@ -31,13 +31,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.carService.byViews(amount).subscribe({
       next: (data: ICar[]) => {
         this.popularCars = data;
+        console.log(this.popularCars);  // Verificar los datos recibidos
       },
       error: (error) => {
         console.error('Error al cargar coches populares:', error);
       }
     });
   }
-
+  
   startAutoChangePage() {
     this.autoChangePage = setInterval(() => {
       this.nextPage();
@@ -47,21 +48,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-    }else {
-      // Si llega al principio, vuelve a la última página
+    } else {
       this.currentPage = this.popularCars.length;
     }
-      this.resetAutoChangePage();  // Reiniciar el contador automático
+    this.resetAutoChangePage(); // Reiniciar el contador automático
   }
-  
+
   nextPage() {
     if (this.currentPage < this.popularCars.length) {
       this.currentPage++;
     } else {
-      // Si llega al final, vuelve a la primera página
       this.currentPage = 1;
     }
-    this.resetAutoChangePage();  // Reiniciar el contador automático
+    this.resetAutoChangePage(); // Reiniciar el contador automático
   }
 
   resetAutoChangePage() {
@@ -72,4 +71,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Iniciar un nuevo intervalo
     this.startAutoChangePage();
   }
+
+  changePage(newPage: number) {
+    this.currentPage = newPage;
+    this.resetAutoChangePage(); // Reinicia el intervalo automático para que comience desde la nueva imagen seleccionada
+  }
+  
 }

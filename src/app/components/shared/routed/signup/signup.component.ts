@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
 import { IUser, formOperation } from 'src/app/model/model';
 import { CryptoService } from 'src/app/service/crypto.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -69,36 +69,27 @@ export class SignupComponent implements OnInit {
     this.submitted = true;
     this.userForm.markAllAsTouched();  // Marca todos los controles como tocados
   
-    if (this.userForm.valid) {
-      if (this.operation === 'NEW') {
-        const formData = {...this.userForm.value};
-        const plainPassword = formData.password; // Guarda la contraseña en texto plano
-        const hashedPassword = this.cryptoService.getSHA256(plainPassword); // Hashea la contraseña para la creación del usuario
-        formData.password = hashedPassword; // Reemplaza la contraseña en texto plano por la contraseña hasheada
-
-        this.userService.create(formData).subscribe({
-          next: (user: IUser) => {
-            // Usuario creado exitosamente, ahora inicia sesión automáticamente
-            // Usa el nombre de usuario y la contraseña en texto plano para el inicio de sesión
-            this.sessionService.login(formData.username, hashedPassword).subscribe({
-              next: (token: string) => {
-                this.sessionService.setToken(token); // Guarda el token JWT en el almacenamiento local o en el servicio
-                this.router.navigate(['/']); // Redirige al usuario al home
-              },
-              error: (loginError: HttpErrorResponse) => {
-                console.error('Error al iniciar sesión automáticamente', loginError);
-              }
-            });
-          },
-          error: (createError: HttpErrorResponse) => {
-            this.status = createError;
-            console.error('Error al crear usuario', createError);
-            // Manejo de errores de creación de usuario, si es necesario
-          }
-        });
-      }
+    if (this.userForm.valid && this.operation === 'NEW') {
+      const formData = { ...this.userForm.value };
+      formData.password = this.cryptoService.getSHA256(formData.password); // Hashea la contraseña directamente
+  
+      this.userService.create(formData).pipe(
+        switchMap(() => this.sessionService.login(formData.username, formData.password)), // Encadena el inicio de sesión después de la creación
+        tap((data: string) => {
+          this.sessionService.setToken(data);
+          this.sessionService.emit({ type: 'login' });
+        }),
+        catchError((error: HttpErrorResponse) => {
+          this.status = error;
+          return throwError(() => new Error('Error during user creation or login')); // Maneja errores tanto de creación como de inicio de sesión
+        })
+      ).subscribe({
+        next: () => this.router.navigate(['/']),
+        error: (error) => console.error('Error:', error) // Manejo de errores
+      });
     }
   }
+  
 
   togglePasswordVisibility(field: string) {
     this.passwordVisible[field] = !this.passwordVisible[field];
@@ -120,17 +111,17 @@ export class SignupComponent implements OnInit {
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
 
-  getErrorClasses(controlName: string): {[key: string]: boolean} {
+  getErrorClasses(controlName: string): { [key: string]: boolean } {
     const control = this.userForm.get(controlName);
     const isInvalid = control?.invalid ?? false;
     const shouldShowError = (control?.dirty || control?.touched || this.submitted) && isInvalid;
-  
+
     return {
       'border-b-red-300 border-b-2': shouldShowError,
       '': !shouldShowError
     };
   }
-  
+
   uniqueUsernameValidator(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return userService.checkUsernameNotTaken(control.value).pipe(
@@ -139,7 +130,7 @@ export class SignupComponent implements OnInit {
       );
     };
   }
-  
+
   // Validador para el correo electrónico
   uniqueEmailValidator(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
