@@ -47,8 +47,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.resetAutoChangePage();  // Reiniciar el contador automático
+    }else {
+      // Si llega al principio, vuelve a la última página
+      this.currentPage = this.popularCars.length;
     }
+      this.resetAutoChangePage();  // Reiniciar el contador automático
   }
   
   nextPage() {
