@@ -13,3 +13,12 @@
     background: linear-gradient(90deg, rgba(36, 36, 36, 0.4) 0%, rgba(255, 255, 255, 0) 50%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#242424", endColorstr="#ffffff", GradientType=1);
 }
+
+.carousel-image {
+    transition: opacity 1s ease-in-out;
+    opacity: 0;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}

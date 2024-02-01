@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-import { GoogleMapsModule } from '@angular/google-maps';
 
 
 
@@ -16,7 +15,7 @@ import { MessageService } from './service/message.service';
 
 import { TrimPipe } from './pipes/trim.pipe';
 import { ThousandSeparatorPipe } from './pipes/thousandSeparator.pipe';
-import { RoundToThousandthPipe } from './pipes/roundToThousandth.pipe';
+import { RoundToThousandthPipe } from './pipes/roundToThousandth.pipe'
 
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
@@ -26,6 +25,7 @@ import { LoginComponent } from './components/shared/routed/login/login.component
 import { SignupComponent } from './components/shared/routed/signup/signup.component';
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
 import { FooterComponent } from './components/shared/unrouted/footer/footer.component';
+import { HomeComponent } from './components/shared/routed/home/home.component';
 import { CarFormComponent } from './components/car/admin/routed/car-form/car-form.component';
 import { CarDetailComponent } from './components/car/admin/routed/car-detail/car-detail.component';
 
@@ -43,6 +43,7 @@ import { CarDetailComponent } from './components/car/admin/routed/car-detail/car
     SignupComponent,
     NavbarComponent,
     FooterComponent,
+    HomeComponent,
     CarFormComponent,
     CarDetailComponent,
   ],
@@ -51,7 +52,6 @@ import { CarDetailComponent } from './components/car/admin/routed/car-detail/car
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    GoogleMapsModule 
   ],
   providers: [
     SessionService,
