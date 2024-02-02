@@ -1,34 +1,51 @@
-<div *ngFor="let car of cars" class="rounded-lg w-2/6 h-64 text-card-foreground shadow-sm flex bg-gray-100 m-5">
-  <div class="flex-none w-1/2 rounded-l-lg text-white">
-    <img class="object-cover rounded-l-lg w-full h-full" [src]="'http://localhost:8083' + car.images[0].imageUrl" alt="">
-  </div>
-  <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
-    <div>
-      <h5 class="text-lg font-bold">{{car.brand}} {{car.model}}</h5>
-      <p class="text-xl font-semibold">{{car.price}} {{car.currency}}</p>
-      <p class="text-gray-500">{{car.location}} {{car.year}}</p>
-      <p class="text-gray-500">{{car.owner.username}}</p>
-    </div>
+<div class="grid lg:grid-cols-3 gap-8 m-12">
+  <div *ngFor="let car of cars" class="group relative rounded-lg w-full h-60 text-card-foreground shadow-sm flex bg-gray-100 transition-transform duration-300 ease-in-out hover:shadow-md hover:-translate-y-1">
+    <button (click)="handleBookmarkClick(car)" class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+      <i class="fas fa-bookmark"></i>
+    </button>
+    <a [routerLink]="['/car', car.id]" class="flex w-full text-decoration-none">
+      <div class="flex-none w-1/2 rounded-l-lg text-white">
+        <img [src]="'http://localhost:8083' + car.images[0].imageUrl" class="object-cover rounded-l-lg w-full h-full">
+      </div>
+      <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <h5 class="text-2xl font-semibold text-gray-800">{{ car.brand }} {{ car.model }}</h5>
+            <p class="text-2xl text-gray-600">{{ car.price }} {{ car.currency }}</p>
+          </div>
+          <div class="space-y-2">
+            <div class="flex space-x-5">
+              <p class="text-gray-500">{{ car.location }}</p>
+              <p class="text-gray-500">{{ car.year }}</p>
+            </div>
+            <p class="text-gray-500">{{ car.owner.username }}</p>
+          </div>
+        </div>
+      </div>
+    </a>
   </div>
 </div>
 
 
 
+
+
+<!-- 
 <nav aria-label="Page navigation example">
   <ul class="flex items-center -space-x-px h-8 text-sm">
     <li>
-      <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+      <a (click)="prevPage()" [class.disabled]="currentPage === 1" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Previous</span>
         <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
         </svg>
       </a>
     </li>
-    <li *ngFor="let pageNumber of [].constructor(totalPageCount); let i = index">
-      <a (click)="changePage(i+1)" href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
+    <li *ngFor="let _ of [].constructor(totalPageCount); let i = index">
+      <a (click)="changePage(i+1)" [ngClass]="{'text-blue-600 border-blue-300 bg-blue-50': i+1 === currentPage, 'text-gray-500 bg-white': i+1 !== currentPage}" class="flex items-center justify-center px-3 h-8 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{i + 1}}</a>
     </li>
     <li>
-      <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+      <a (click)="nextPage()" [class.disabled]="currentPage === totalPageCount" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Next</span>
         <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
@@ -36,7 +53,4 @@
       </a>
     </li>
   </ul>
-</nav>
-
-
-
+</nav> -->

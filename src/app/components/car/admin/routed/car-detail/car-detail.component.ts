@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IImage } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
+import { SessionService } from 'src/app/service/session.service';
 
 @Component({
   selector: 'app-car-detail',
@@ -20,7 +21,10 @@ export class CarDetailComponent implements OnInit {
 
   constructor(
     private carService: CarService,
-    private route: ActivatedRoute
+    private sessionService: SessionService,
+    private route: ActivatedRoute,
+    private router: Router
+
   ) {}
 
   ngOnInit() {
@@ -62,5 +66,15 @@ export class CarDetailComponent implements OnInit {
 
   togglePhoneNumber(): void {
     this.showPhoneNumber = !this.showPhoneNumber;
+  }
+
+  handleBookmarkClick(car: ICar): void {
+    if (!this.sessionService.isSessionActive()) {
+      // Si el usuario no ha iniciado sesión, redirige a la página de inicio de sesión.
+      this.router.navigate(['/login']);
+    } else {
+      // Aquí puedes implementar la lógica para manejar la acción de favorito.
+      console.log('Añadir a favoritos:', car);
+    }
   }
 }

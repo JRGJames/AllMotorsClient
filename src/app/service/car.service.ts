@@ -7,53 +7,57 @@ import { API_URL } from 'src/environment/environment';
 @Injectable()
 export class CarService {
 
-    url: string = API_URL + '/car';
+  url: string = API_URL + '/car';
 
-    constructor(
-      private http: HttpClient
-    ) { }
-  
-    get(id: number): Observable<ICar> {
-      return this.http.get<ICar>(this.url + '/get/' + id);
-    }
-  
-    getPage(page: number | undefined, size: number | undefined, orderField: string, orderDirection: string, strFilter?: string): Observable<ICarPage> {
-      let url_filter: string;
-      if (!size) size = 15;
-      if (!page) page = 0;
-      if (strFilter && strFilter.trim().length > 0) {
-        url_filter = `&filter=${strFilter}`;
-      } else {
-        url_filter = '';
-      }
-      return this.http.get<ICarPage>(this.url + '?size=' + size + '&page=' + page + '&sort=' + orderField + ',' + orderDirection + url_filter);
-    }
-  
-    create(car: ICar): Observable<ICar> {
-      return this.http.post<ICar>(this.url + '/create', car);
-    }
-  
-    remove(id: number | undefined): Observable<number> {
-      if (id) {
-        return this.http.delete<number>(this.url + '/delete/' + id);
-      }
-      return new Observable<number>();
-    }
-  
-    update(car: ICar): Observable<ICar> {
-      return this.http.put<ICar>(this.url + '/update', car);
-    }
-  
-    generateRandom(amount: number): Observable<number> {
-      return this.http.post<number>(this.url + "/populate/" + amount, null);
-    }
-  
-    empty(): Observable<number> {
-      return this.http.delete<number>(this.url + "/empty");
-    }
+  constructor(
+    private http: HttpClient
+  ) { }
 
-    byViews(amount: number): Observable<ICar[]> {
-      return this.http.get<ICar[]>(this.url + "/get/byViews/" + amount);
+  get(id: number): Observable<ICar> {
+    return this.http.get<ICar>(this.url + '/get/' + id);
+  }
+
+  getPage(size: number | undefined, page: number | undefined, orderField: string, orderDirection: string, id_user: number, strFilter?: string): Observable<ICarPage> {
+    let url_filter: string;
+    if (!size) size = 10;
+    if (!page) page = 0;
+    let strUrlUser = "";
+    if (id_user > 0) {
+      strUrlUser = "&user=" + id_user;
     }
-  
+    if (strFilter && strFilter.trim().length > 0) {
+      url_filter = `&filter=${strFilter}`;
+    } else {
+      url_filter = "";
+    }
+    return this.http.get<ICarPage>(this.url + "/getPage/"+ "?size=" + size + "&page=" + page + "&sort=" + orderField + "," + orderDirection + strUrlUser + url_filter);
+  }
+
+  create(car: ICar): Observable<ICar> {
+    return this.http.post<ICar>(this.url + '/create', car);
+  }
+
+  remove(id: number | undefined): Observable<number> {
+    if (id) {
+      return this.http.delete<number>(this.url + '/delete/' + id);
+    }
+    return new Observable<number>();
+  }
+
+  update(car: ICar): Observable<ICar> {
+    return this.http.put<ICar>(this.url + '/update', car);
+  }
+
+  generateRandom(amount: number): Observable<number> {
+    return this.http.post<number>(this.url + "/populate/" + amount, null);
+  }
+
+  empty(): Observable<number> {
+    return this.http.delete<number>(this.url + "/empty");
+  }
+
+  byViews(amount: number): Observable<ICar[]> {
+    return this.http.get<ICar[]>(this.url + "/get/byViews/" + amount);
+  }
+
 }

@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ICar, ICarPage, IUser } from 'src/app/model/model';
+import { ICar, ICarPage } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
-import { Subject } from 'rxjs';
-import { UserService } from 'src/app/service/user.service';
+import { SessionService } from 'src/app/service/session.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-car-page',
@@ -11,143 +11,48 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./car-page.component.css']
 })
 export class CarPageComponent implements OnInit {
-  @Input() forceReload: Subject<boolean> = new Subject<boolean>();
-  @Input() id_user: number = 0; //filter by user
-
-  page: ICarPage | undefined;
-  owner: IUser | null = null; // data of user if id_user is set for filter
-  orderField: string = "id";
-  orderDirection: string = "asc";
+  cars: ICar[] = [];
+  currentPage: number = 0;
+  totalPageCount: number = 0;
+  pageSize: number = 15; // O el tamaño de página que prefieras
   status: HttpErrorResponse | null = null;
-  carToRemove: ICar | null = null;
 
   constructor(
-    private userService: UserService,
     private carService: CarService,
+    private sessionService: SessionService,
+    private router: Router // inyectar Router
   ) { }
 
   ngOnInit() {
-    this.getPage();
-    if (this.id_user > 0) {
-      this.getUser();
-    }
-    this.forceReload.subscribe({
-      next: (v) => {
-        if (v) {
-          this.getPage();
-        }
-      }
-    });
+    this.getPage(this.currentPage);
   }
 
-  getPage(): void {
-    this.oCarService.getPage(this.oPaginatorState.rows, this.oPaginatorState.page, this.orderField, this.orderDirection, this.id_user).subscribe({
+  getPage(pageNumber: number): void {
+    const orderField = 'id'; // O cualquier campo que quieras ordenar
+    const orderDirection = 'asc'; // 'asc' o 'desc'
+    const id_user = 0; // O el ID de usuario que desees filtrar
+    const filter = ''; // O el filtro que desees aplicar
+
+    this.carService.getPage(this.pageSize, pageNumber, orderField, orderDirection, id_user, filter).subscribe({
       next: (data: ICarPage) => {
-        this.oPage = data;
-        this.oPaginatorState.pageCount = data.totalPages;
+        this.cars = data.content;
+        this.totalPageCount = data.totalPages;
+        this.currentPage = pageNumber;
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
       }
-    })
-  }
-
-  onPageChang(event: PaginatorState) {
-    this.oPaginatorState.rows = event.rows;
-    this.oPaginatorState.page = event.page;
-    this.getPage();
-  }
-
-  doOrder(fieldorder: string) {
-    this.orderField = fieldorder;
-    if (this.orderDirection == "asc") {
-      this.orderDirection = "desc";
-    } else {
-      this.orderDirection = "asc";
-    }
-    this.getPage();
-  }
-  getValue(event: any): string {
-    return event.target.value;
-  }
-  search(filterValue: string): void {
-
-    if (filterValue.length >= 3) {
-      
-      this.oCarService.getPage(this.oPaginatorState.rows, this.oPaginatorState.first, 'id', 'asc', this.id_user,filterValue)
-        .pipe(
-          debounceTime(500),
-          switchMap((data: ICarPage) => {
-            return of(data);
-          })
-        )
-        .subscribe(
-          (data: ICarPage) => {
-            this.oPage = data;
-          },
-          (error: any) => {
-            // Handle error
-            console.error(error);
-          }
-        );
-    } else {
-      // If filterValue is null or less than 3 characters, load all users without debounce
-      this.oCarService.getPage(this.oPaginatorState.rows, this.oPaginatorState.first, 'id', 'asc', this.id_user)
-        .subscribe(
-          (data: ICarPage) => {
-            this.oPage = data;
-          },
-          (error: any) => {
-            // Handle error
-            console.error(error);
-          }
-        );
-    }
-  }
-  doView(u: IThread) {
-    this.ref = this.oDialogService.open(AdminThreadDetailUnroutedComponent, {
-      data: {
-        id: u.id
-      },
-      header: this.oTranslocoService.translate('global.view') + ' ' + this.oTranslocoService.translate('thread.lowercase.singular'),
-      width: '50%',
-      contentStyle: { overflow: 'auto' },
-      baseZIndex: 10000,
-      maximizable: false
     });
   }
 
-  doRemove(u: IThread) {
-    this.carToRemove = u;
-    this.oCconfirmationService.confirm({
-      accept: () => {
-        this.oMatSnackBar.open(this.oTranslocoService.translate('global.the.masc') + ' ' + this.oTranslocoService.translate('thread.lowercase.singular') + ' ' + this.oTranslocoService.translate('global.remove.has.masc'), '', { duration: 2000 });
-        this.oCarService.removeOne(this.carToRemove?.id).subscribe({
-          next: () => {
-            this.getPage();
-          },
-          error: (error: HttpErrorResponse) => {
-            this.status = error;
-            this.oMatSnackBar.open(this.oTranslocoService.translate('global.the.masc') + ' ' + this.oTranslocoService.translate('thread.lowercase.singular') + ' ' + this.oTranslocoService.translate('global.remove.hasnt.masc'), "", { duration: 2000 });
-          }
-        });
-      },
-      reject: (type: ConfirmEventType) => {
-        this.oMatSnackBar.open(this.oTranslocoService.translate('global.the.masc') + ' ' + this.oTranslocoService.translate('thread.lowercase.singular') + ' ' + this.oTranslocoService.translate('global.remove.hasnt.masc'), "", { duration: 2000 });
-      }
-    });
-  }
-
-  getUser(): void {
-    this.userService.getOne(this.id_user).subscribe({
-      next: (data: IUser) => {
-        this.owner = data;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.status = error;
-      }
-
-    })
+  handleBookmarkClick(car: ICar): void {
+    if (!this.sessionService.isSessionActive()) {
+      // Si el usuario no ha iniciado sesión, redirige a la página de inicio de sesión.
+      this.router.navigate(['/login']);
+    } else {
+      // Aquí puedes implementar la lógica para manejar la acción de favorito.
+      console.log('Añadir a favoritos:', car);
+    }
   }
 
 }
