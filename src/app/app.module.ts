@@ -28,6 +28,7 @@ import { FooterComponent } from './components/shared/unrouted/footer/footer.comp
 import { HomeComponent } from './components/shared/routed/home/home.component';
 import { CarFormComponent } from './components/car/admin/routed/car-form/car-form.component';
 import { CarDetailComponent } from './components/car/admin/routed/car-detail/car-detail.component';
+import { CarPageComponent } from './components/car/user/unrouted/car-page/car-page.component';
 
 
 
@@ -46,6 +47,7 @@ import { CarDetailComponent } from './components/car/admin/routed/car-detail/car
     HomeComponent,
     CarFormComponent,
     CarDetailComponent,
+    CarPageComponent
   ],
   imports: [
     HttpClientModule,

@@ -19,7 +19,7 @@ export class CarService {
   
     getPage(page: number | undefined, size: number | undefined, orderField: string, orderDirection: string, strFilter?: string): Observable<ICarPage> {
       let url_filter: string;
-      if (!size) size = 10;
+      if (!size) size = 15;
       if (!page) page = 0;
       if (strFilter && strFilter.trim().length > 0) {
         url_filter = `&filter=${strFilter}`;
