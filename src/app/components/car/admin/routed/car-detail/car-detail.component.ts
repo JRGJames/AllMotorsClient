@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IImage } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
+import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
 
 @Component({
@@ -15,6 +16,8 @@ export class CarDetailComponent implements OnInit {
   id!: number;
   imageIndex = 0; // Índice de la imagen actual en el carrusel
   images: IImage[] = [];
+  averageRating: number | null = null;
+  ratingCount: number | null = null;
 
   car: ICar = { owner: {} } as ICar;
   status: HttpErrorResponse | null = null;
@@ -23,22 +26,28 @@ export class CarDetailComponent implements OnInit {
     private carService: CarService,
     private sessionService: SessionService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private ratingService: RatingService // inyectar RatingService
 
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.id = +params['id'];
-      this.getOne();
+      this.id = +params['id']; // El signo + convierte la cadena a número
+      if (this.id) {
+        this.getOne();
+        this.getRatingCount(this.id);
+      } else {
+        console.error('ID is undefined');
+      }
     });
   }
 
   getOne(): void {
     this.carService.get(this.id).subscribe({
       next: (data: ICar) => {
-        console.log(this.car.lastITV);
         this.car = data;
+        this.getRatingCount(this.car.owner.id);
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
@@ -66,6 +75,15 @@ export class CarDetailComponent implements OnInit {
 
   togglePhoneNumber(): void {
     this.showPhoneNumber = !this.showPhoneNumber;
+  }
+
+  getRatingCount(ownerId: number): void {
+    this.ratingService.getUserRatingCount(ownerId).subscribe({
+      next: (info) => {
+        this.averageRating = info.averageRating;
+        this.ratingCount = info.ratingCount;
+      }
+    });
   }
 
   handleBookmarkClick(car: ICar): void {

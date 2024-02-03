@@ -65,12 +65,13 @@
             <div class="flex items-center gap-2">
               <i class="fas fa-star text-gray-500"></i>
               <p class="text-base text-gray-800">
-                {{car.owner.rating}}
+                {{averageRating}} <!-- Asegúrate de que estas variables sean las correctas -->
               </p>
               <p>
-                (123)
+                ({{ratingCount}})
               </p>
             </div>
+            
           </div>
         </div>
         <div class="flex items-center gap-10 mt-4">

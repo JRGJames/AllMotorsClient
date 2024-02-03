@@ -58,6 +58,19 @@ export interface IUser extends IEntity {
 export interface IUserPage extends IPage<IUser> {
 }
 
+export interface Rating {
+    id: number; // Identificador único de la valoración
+    ratedUserId: number; // ID del usuario que recibe la valoración
+    ratingUserId: number; // ID del usuario que da la valoración
+    score: number; // Puntuación otorgada
+}
+
+export interface RatingSummary {
+    averageRating: number; // La media de las valoraciones
+    ratingCount: number; // El total de valoraciones
+}
+
+
 export interface ICar extends IEntity {
     brand: string;
     model: string;
@@ -106,7 +119,6 @@ export interface IChat extends IEntity {
     memberOne: IUser;
     memberTwo: IUser;
     car: ICar;
-
 }
 
 export interface IChatPage extends IPage<IChat> {
