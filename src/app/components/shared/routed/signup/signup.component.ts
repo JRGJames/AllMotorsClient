@@ -52,12 +52,8 @@ export class SignupComponent implements OnInit {
     const images = [
       'image1.jpg',
       'image2.jpg',
-      'image4.jpg',
-      'image6.jpg',
-      'image7.jpg',
-      'image8.jpg',
-      'image9.jpg',
-      'image10.jpg'
+      'image3.jpg',
+      'image4.jpg'
     ];
 
     const randomImage = images[Math.floor(Math.random() * images.length)];

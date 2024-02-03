@@ -1,6 +1,8 @@
 <div class="grid lg:grid-cols-3 gap-8 m-12">
-  <div *ngFor="let car of cars" class="group relative rounded-lg w-full h-60 text-card-foreground shadow-sm flex bg-gray-100 transition-transform duration-300 ease-in-out hover:shadow-md hover:-translate-y-1">
-    <button (click)="handleBookmarkClick(car)" class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+  <div *ngFor="let car of cars"
+    class="group relative rounded-lg w-full h-60 text-card-foreground shadow-sm flex bg-gray-200 transition-transform duration-300 ease-in-out hover:shadow-md hover:-translate-y-1">
+    <button (click)="handleBookmarkClick(car)"
+      class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
       <i class="fas fa-bookmark"></i>
     </button>
     <a [routerLink]="['/car', car.id]" class="flex w-full text-decoration-none">
@@ -11,7 +13,7 @@
         <div class="space-y-6">
           <div class="space-y-2">
             <h5 class="text-2xl font-semibold text-gray-800">{{ car.brand }} {{ car.model }}</h5>
-            <p class="text-2xl text-gray-600">{{ car.price }} {{ car.currency }}</p>
+            <p class="text-xl text-gray-600">{{ car.price | thousandSeparator }} {{ car.currency }}</p>
           </div>
           <div class="space-y-2">
             <div class="flex space-x-5">
@@ -21,36 +23,49 @@
             <p class="text-gray-500">{{ car.owner.username }}</p>
           </div>
         </div>
+        <div class="absolute bottom-0 right-0 p-2">
+          <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
       </div>
     </a>
   </div>
 </div>
 
-
-
-
-
-<!-- 
-<nav aria-label="Page navigation example">
-  <ul class="flex items-center -space-x-px h-8 text-sm">
-    <li>
-      <a (click)="prevPage()" [class.disabled]="currentPage === 1" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        <span class="sr-only">Previous</span>
-        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-        </svg>
-      </a>
-    </li>
-    <li *ngFor="let _ of [].constructor(totalPageCount); let i = index">
-      <a (click)="changePage(i+1)" [ngClass]="{'text-blue-600 border-blue-300 bg-blue-50': i+1 === currentPage, 'text-gray-500 bg-white': i+1 !== currentPage}" class="flex items-center justify-center px-3 h-8 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">{{i + 1}}</a>
-    </li>
-    <li>
-      <a (click)="nextPage()" [class.disabled]="currentPage === totalPageCount" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-        <span class="sr-only">Next</span>
-        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-        </svg>
-      </a>
-    </li>
-  </ul>
-</nav> -->
+<div class="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
+  <div class="lg:w-3/5 w-full flex items-center justify-between border-t border-gray-200">
+    <button (click)="prevPage()" [class.disabled]="currentPage === 0" class="flex items-center pt-3 text-gray-600 hover:text-sky-700 cursor-pointer">
+      <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path d="M1.1665 4L4.49984 7.33333" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path d="M1.1665 4.00002L4.49984 0.666687" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <p class=" ml-3 font-medium leading-none ">Previous</p>
+    </button>
+    <button class="sm:flex hidden">
+      <button *ngFor="let pageNumber of [].constructor(totalPageCount); let i = index" (click)="changePage(i)"
+        [class]="currentPage === i ? 'text-sky-700 border-sky-400' : 'text-gray-600 hover:text-sky-700 border-transparent hover:border-sky-400'"
+        class="font-medium leading-none cursor-pointer pt-3 mr-4 px-2">
+        {{ i + 1 }}
+      </button>
+    </button>
+    <button (click)="nextPage()" [class.disabled]="currentPage >= totalPageCount - 1" class="flex items-center pt-3 text-gray-600 hover:text-sky-700 cursor-pointer">
+      <p class="font-medium leading-none mr-3">Next</p>
+      <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path d="M9.5 7.33333L12.8333 4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path d="M9.5 0.666687L12.8333 4.00002" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+</div>

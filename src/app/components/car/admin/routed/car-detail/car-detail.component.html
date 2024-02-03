@@ -15,7 +15,7 @@
           </button>
           <div class="flex justify-center w-full absolute bottom-0">
             <div class="space-x-2 bg-white bg-opacity-20 backdrop-blur-sm py-2 px-3 rounded-t-lg">
-              <button *ngFor="let image of car.images; let i = index" class="w-5 h-2 rounded-md hover:bg-gray-200 transition-colors cursor-pointer"
+              <button *ngFor="let image of car.images; let i = index" class="w-5 h-2 rounded-md hover:bg-gray-300 transition-colors cursor-pointer"
                       [ngClass]="{'bg-gray-700': imageIndex === i, 'bg-gray-100': imageIndex !== i}"
                       (click)="changePage(i)">
               </button>

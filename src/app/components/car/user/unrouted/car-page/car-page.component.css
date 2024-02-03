@@ -1,0 +1,5 @@
+.disabled {
+    pointer-events: none; /* Deshabilita el click */
+    color: #ccc; /* Cambia el color a gris claro o cualquier color que indique "deshabilitado" */
+  }
+  
