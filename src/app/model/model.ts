@@ -43,10 +43,10 @@ export interface IUser extends IEntity {
     postalCode: string;
     description: string;
     profilePicture: string;
-    rating: number;
     status: Boolean;
     phone: string;
     email: string;
+    rating: IRating,
     password: string;
     role: Boolean;
     memberSince: Date;
@@ -58,7 +58,7 @@ export interface IUser extends IEntity {
 export interface IUserPage extends IPage<IUser> {
 }
 
-export interface Rating {
+export interface IRating {
     id: number; // Identificador único de la valoración
     ratedUserId: number; // ID del usuario que recibe la valoración
     ratingUserId: number; // ID del usuario que da la valoración

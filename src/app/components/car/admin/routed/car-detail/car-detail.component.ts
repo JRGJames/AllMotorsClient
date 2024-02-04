@@ -71,7 +71,7 @@ export class CarDetailComponent implements OnInit {
 
   changePage(newPage: number) {
     this.imageIndex = newPage;
-  }
+  } 
 
   togglePhoneNumber(): void {
     this.showPhoneNumber = !this.showPhoneNumber;
@@ -79,12 +79,16 @@ export class CarDetailComponent implements OnInit {
 
   getRatingCount(ownerId: number): void {
     this.ratingService.getUserRatingCount(ownerId).subscribe({
-      next: (info) => {
-        this.averageRating = info.averageRating;
-        this.ratingCount = info.ratingCount;
-      }
+        next: (ratingCount) => {
+            this.ratingCount = ratingCount;
+            console.log('Total de valoraciones:', this.ratingCount);
+        },
+        error: (error) => {
+            console.error('Error al obtener la cantidad de valoraciones', error);
+        },
+        complete: () => console.log('Operación de obtención del conteo de rating completada.')
     });
-  }
+}
 
   handleBookmarkClick(car: ICar): void {
     if (!this.sessionService.isSessionActive()) {
