@@ -10,10 +10,11 @@ import { Router } from '@angular/router';
   templateUrl: './car-page.component.html',
   styleUrls: ['./car-page.component.css']
 })
-export class CarPageComponent implements OnInit, AfterViewInit {
+export class CarPageComponent implements OnInit {
   cars: ICar[] = [];
   currentPage: number = 0;
   totalPageCount: number = 0;
+  totalElements: number = 0;  // Total de elementos (coches)
   pageSize: number = 15; // O el tamaño de página que prefieras
   status: HttpErrorResponse | null = null;
 
@@ -31,10 +32,6 @@ export class CarPageComponent implements OnInit, AfterViewInit {
     this.getPage(this.currentPage);
   }
 
-  ngAfterViewInit() {
-    // La vista está ahora completamente inicializada, los elementos están disponibles
-  }
-
   getPage(pageNumber: number): void {
     const orderField = 'id'; // O cualquier campo que quieras ordenar
     const orderDirection = 'asc'; // 'asc' o 'desc'
@@ -45,6 +42,7 @@ export class CarPageComponent implements OnInit, AfterViewInit {
       next: (data: ICarPage) => {
         this.cars = data.content;
         this.totalPageCount = data.totalPages;
+        this.totalElements = data.totalElements; // Asegúrate de que esta propiedad está disponible
         this.currentPage = pageNumber;
       },
       error: (error: HttpErrorResponse) => {

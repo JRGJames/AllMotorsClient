@@ -1,242 +1,252 @@
-
-
-  <div class="items-start max-w-7xl mx-auto my-10">
-    <div class="flex gap-10">
-      <div class="items-start h-auto w-11/12 relative">
-        <div class="carousel-container relative h-full w-full">
-          <a routerLink="/" class="carousel-item h-full w-full focus:outline-none flex">
-            <img class="absolute object-cover w-full h-full hover:shadow-lg rounded-lg"
-              [src]="'http://localhost:8083' + car.images[imageIndex].imageUrl">
-          </a>
-          <button *ngIf="imageIndex > 0"
-            class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
-            (click)="prevImage()">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="flex justify-center w-full absolute bottom-0">
-            <div class="space-x-2 bg-white bg-opacity-20 backdrop-blur-sm py-2 px-3 rounded-t-lg">
-              <button *ngFor="let image of car.images; let i = index" class="w-5 h-2 rounded-md hover:bg-gray-300 transition-colors cursor-pointer"
-                      [ngClass]="{'bg-gray-700': imageIndex === i, 'bg-gray-100': imageIndex !== i}"
-                      (click)="changePage(i)">
-              </button>
-            </div>
+<div class="items-start max-w-7xl mx-auto my-10">
+  <div class="flex gap-10">
+    <div class="items-start h-auto w-11/12 relative">
+      <div class="carousel-container relative h-full w-full">
+        <a routerLink="/" class="carousel-item h-full w-full focus:outline-none flex">
+          <img class="absolute object-cover w-full h-full hover:shadow-lg rounded-lg"
+            [src]="'http://localhost:8083' + car.images[imageIndex].imageUrl">
+        </a>
+        <button *ngIf="imageIndex > 0"
+          class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
+          (click)="prevImage()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="flex justify-center w-full absolute bottom-0">
+          <div class="space-x-2 bg-white bg-opacity-20 backdrop-blur-sm py-2 px-3 rounded-t-lg">
+            <button *ngFor="let image of car.images; let i = index"
+              class="w-5 h-2 rounded-md hover:bg-gray-300 transition-colors cursor-pointer"
+              [ngClass]="{'bg-gray-700': imageIndex === i, 'bg-gray-100': imageIndex !== i}" (click)="changePage(i)">
+            </button>
           </div>
-          
-          <button *ngIf="imageIndex < car.images.length - 1"
-            class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 right-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
-            (click)="nextImage()">
-            <i class="fas fa-chevron-right"></i>
-          </button>
         </div>
-        <button (click)="handleBookmarkClick(car)" class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
-          <i class="fas fa-bookmark"></i>
+
+        <button *ngIf="imageIndex < car.images.length - 1"
+          class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 right-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
+          (click)="nextImage()">
+          <i class="fas fa-chevron-right"></i>
         </button>
       </div>
-      <div class="grid gap-4 md:gap-10 items-start w-full">
-        <div class="flex justify-between">
-          <div class="grid gap-4">
-            <h1 class="font-bold text-3xl lg:text-4xl text-gray-800">
-              {{car.brand}} {{car.model}}
-            </h1>
-            <div class="text-2xl lg:text-3xl font-bold text-gray-800">
-              {{ car.price | thousandSeparator }} {{ car.currency }}
-            </div>
+      <button (click)="handleBookmarkClick(car)"
+        class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+        <i class="fas fa-bookmark"></i>
+      </button>
+    </div>
+    <div class="grid gap-4 md:gap-10 items-start w-full">
+      <div class="flex justify-between">
+        <div class="grid gap-4">
+          <h1 class="font-bold text-3xl lg:text-4xl text-gray-800">
+            {{car.brand}} {{car.model}}
+          </h1>
+          <div class="text-2xl lg:text-3xl font-bold text-gray-800">
+            {{ car.price | thousandSeparator }} {{ car.currency }}
           </div>
-          <div class="flex flex-col gap-2 text-right">
-            <p class=" text-gray-600 rounded-2xl px-4 text-md py-1">{{car.views}} <i class="fas fa-eye pl-1 pr-1"></i></p>
-            <p class=" text-gray-600 rounded-2xl px-4 text-md py-1">{{car.saves}} <i
-                class="fas fa-bookmark pl-1 pr-2"></i></p>
+        </div>
+        <div class="flex flex-col gap-2 text-right">
+          <p class=" text-gray-600 rounded-2xl px-4 text-md py-1">{{car.views}} <i class="fas fa-eye pl-1 pr-1"></i></p>
+          <p class=" text-gray-600 rounded-2xl px-4 text-md py-1">{{car.saves}} <i
+              class="fas fa-bookmark pl-1 pr-2"></i></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="grid gap-3">
+          <label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold text-gray-700"
+            for="contact">
+            Contact Information
+          </label>
+          <p class="text-lg text-gray-600">
+            {{ car.owner.username }} -
+            <span *ngIf="!showPhoneNumber"></span>
+            <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
+            <a class="cursor-pointer text-gray-700" (click)="togglePhoneNumber()">
+              {{ showPhoneNumber ? '' : 'Show phone number'}}
+            </a>
+          </p>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-star text-gray-500"></i>
+            <p class="text-base text-gray-800">
+              {{averageRating}}
+            </p>
+            <p>
+              ({{ratingCount}})
+            </p>
           </div>
+
+        </div>
+      </div>
+      <div class="flex items-center gap-10 mt-4">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-map-marker-alt text-lg text-gray-600"></i>
+          <p class="text-lg text-gray-800">
+            {{car.location}}
+          </p>
         </div>
         <div class="flex items-center gap-2">
-          <div class="grid gap-3">
-            <label class="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base font-semibold text-gray-700"
-              for="contact">
-              Contact Information
-            </label>
-            <p class="text-lg text-gray-600">
-              {{ car.owner.username }} -
-              <span *ngIf="!showPhoneNumber"></span>
-              <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
-              <a class="cursor-pointer text-gray-700" (click)="togglePhoneNumber()">
-                {{ showPhoneNumber ? '' : 'Show phone number'}}
-              </a>
-            </p>
-            <div class="flex items-center gap-2">
-              <i class="fas fa-star text-gray-500"></i>
-              <p class="text-base text-gray-800">
-                {{averageRating}} <!-- Asegúrate de que estas variables sean las correctas -->
-              </p>
-              <p>
-                ({{ratingCount}})
-              </p>
-            </div>
-            
-          </div>
+          <i class="fas fa-calendar-alt text-lg text-gray-600"></i>
+          <p class="text-lg text-gray-800">
+            {{car.year}}
+          </p>
         </div>
-        <div class="flex items-center gap-10 mt-4">
-          <div class="flex items-center gap-2">
-            <i class="fas fa-map-marker-alt text-lg text-gray-600"></i>
-            <p class="text-lg text-gray-800">
-              {{car.location}}
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <i class="fas fa-calendar-alt text-lg text-gray-600"></i>
-            <p class="text-lg text-gray-800">
-              {{car.year}}
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-tag text-lg text-gray-600"></i>
-            <p class="text-lg text-gray-800">
-              {{car.color}}
-            </p>
-          </div>
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-tag text-lg text-gray-600"></i>
+          <p class="text-lg text-gray-800">
+            {{car.color}}
+          </p>
         </div>
+      </div>
+      <div class="flex space-x-2">
         <button
           class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors w-full">
           Contact Seller
         </button>
+        <button *ngIf="isCurrentUserOwner()"
+          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition-colors w-1/12">
+          <i class="fa fa-pencil px-2"></i>
+        </button>
+        <button *ngIf="isCurrentUserOwner()"
+          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-red-700 text-white hover:bg-red-800 transition-colors w-1/12">
+          <i class="fa fa-trash px-2"></i>
+        </button>
       </div>
     </div>
-    <div class="flex py-12">
-      <div class="aditional-information space-y-12 w-full">
-        <div class="flex w-full justify-between">
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-car text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.brand}}
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-tag text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.model}}
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-road text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{ car.distance | roundToThousandth }} km
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-car-side text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.type}}
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fa-solid fa-gauge-high text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{ car.horsepower | thousandSeparator }} hp
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-gas-pump text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.fuel}}
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-cogs text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.gearbox}}
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-chair text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.seats}} seats
-            </p>
-          </div>
-          <div class="flex flex-col items-center gap-3">
-            <i class="fas fa-door-open text-3xl text-gray-700"></i>
-            <p class="text-base text-gray-800">
-              {{car.doors}} doors
-            </p>
-          </div>
+  </div>
+  <div class="flex py-12">
+    <div class="aditional-information space-y-12 w-full">
+      <div class="flex w-full justify-between">
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-car text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.brand}}
+          </p>
         </div>
-        <hr
-          *ngIf="car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
-          class="border-2 rounded-lg border-gray-600">
-        <div
-          *ngIf="car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
-          class="flex">
-          <div class="flex justify-evenly w-full">
-            <div *ngIf="car.plate" class="flex flex-row bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg hover:shadow-sm">
-              <div class="bg-blue-600 p-5 rounded-l-lg text-white">
-                <p class="text-xl font-bold">E</p>
-              </div>
-              <div class="self-center w-full px-5 text-black">
-                <h1 class="text-3xl font-bold text-center">{{car.plate}}</h1>
-              </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-tag text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.model}}
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-road text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{ car.distance | roundToThousandth }} km
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-car-side text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.type}}
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fa-solid fa-gauge-high text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{ car.horsepower | thousandSeparator }} hp
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-gas-pump text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.fuel}}
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-cogs text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.gearbox}}
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-chair text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.seats}} seats
+          </p>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+          <i class="fas fa-door-open text-3xl text-gray-700"></i>
+          <p class="text-base text-gray-800">
+            {{car.doors}} doors
+          </p>
+        </div>
+      </div>
+      <hr
+        *ngIf="car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
+        class="border-2 rounded-lg border-gray-600">
+      <div
+        *ngIf="car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
+        class="flex">
+        <div class="flex justify-evenly w-full">
+          <div *ngIf="car.plate"
+            class="flex flex-row bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg hover:shadow-sm">
+            <div class="bg-blue-600 p-5 rounded-l-lg text-white">
+              <p class="text-xl font-bold">E</p>
             </div>
-            <div *ngIf="car.dgtSticker" class="flex flex-col items-center gap-2">
-              <p>DGT Sticker:</p>
-              <p class="text-gray-800 py-1 px-3 text-lg font-bold rounded-3xl hover:shadow-sm" [ngClass]="{
+            <div class="self-center w-full px-5 text-black">
+              <h1 class="text-3xl font-bold text-center">{{car.plate}}</h1>
+            </div>
+          </div>
+          <div *ngIf="car.dgtSticker" class="flex flex-col items-center gap-2">
+            <p>DGT Sticker:</p>
+            <p class="text-gray-800 py-1 px-3 text-lg font-bold rounded-3xl hover:shadow-sm" [ngClass]="{
                 'bg-green-500': car.dgtSticker === 'C',
                 'bg-yellow-300': car.dgtSticker === 'B',
                 'bg-blue-500': car.dgtSticker === '0',
                 'eco-gradient': car.dgtSticker === 'ECO'
               }">
-                {{car.dgtSticker}}
-              </p>
-  
-            </div>
-            <div *ngIf="car.consumption" class="flex flex-col items-center">
-              <p>Last ITV:</p>
-              <p class="text-gray-800 p-2 text-lg font-bold">
-                {{ car.lastITV | date: 'MM/yyyy' }}
-              </p>
-  
-            </div>
-            <div *ngIf="car.consumption" class="flex flex-col items-center">
-              <p>Consumption:</p>
-              <p class="text-gray-800 p-2 text-lg font-bold">
-                {{car.consumption}} l/100km
-              </p>
-            </div>
-            <div *ngIf="car.emissions" class="flex flex-col items-center">
-              <p>Emissions:</p>
-              <p class="text-gray-800 p-2 text-lg font-bold">
-                {{car.emissions}} g CO2/km
-              </p>
-            </div>
-            <div *ngIf="car.acceleration" class="flex flex-col items-center">
-              <p>0-100km/h:</p>
-              <p class="text-gray-800 p-2 text-lg font-bold">
-                {{car.acceleration}} s
-              </p>
-            </div>
-            <div *ngIf="car.drive" class="flex flex-col items-center">
-              <p>Drive:</p>
-              <p class="text-gray-800 p-2 text-lg font-bold">
-                {{car.drive}}
-              </p>
-            </div>
-            <div *ngIf="car.engine" class="flex flex-col items-center">
-              <p>Engine:</p>
-              <p class="text-gray-800 p-2 text-lg font-bold">
-                {{car.engine}}
-              </p>
-            </div>
+              {{car.dgtSticker}}
+            </p>
+
           </div>
-        </div>
-        <div class="flex h-96 gap-10">
-          <div *ngIf="car.description" class="w-1/2">
-            <p class="text-gray-700 h-full">
-              {{car.description}}
+          <div *ngIf="car.consumption" class="flex flex-col items-center">
+            <p>Last ITV:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{ car.lastITV | date: 'MM/yyyy' }}
+            </p>
+
+          </div>
+          <div *ngIf="car.consumption" class="flex flex-col items-center">
+            <p>Consumption:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.consumption}} l/100km
             </p>
           </div>
-          <div [ngClass]="{'w-full': !car.description, 'w-1/2': car.description}" class="bg-sky-500 rounded-lg">
+          <div *ngIf="car.emissions" class="flex flex-col items-center">
+            <p>Emissions:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.emissions}} g CO2/km
+            </p>
           </div>
-          <!-- <div style="height: 400px; width: 50%;">
-            <google-map [options]="options" (mapClick)="moveMap($event)" (mapMousemove)="move($event)" style="height: 100%; width: 100%;"></google-map>
-          </div> -->
+          <div *ngIf="car.acceleration" class="flex flex-col items-center">
+            <p>0-100km/h:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.acceleration}} s
+            </p>
+          </div>
+          <div *ngIf="car.drive" class="flex flex-col items-center">
+            <p>Drive:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.drive}}
+            </p>
+          </div>
+          <div *ngIf="car.engine" class="flex flex-col items-center">
+            <p>Engine:</p>
+            <p class="text-gray-800 p-2 text-lg font-bold">
+              {{car.engine}}
+            </p>
+          </div>
         </div>
       </div>
+      <div class="flex h-96 gap-10">
+        <div *ngIf="car.description" class="w-1/2">
+          <p class="text-gray-700 h-full">
+            {{car.description}}
+          </p>
+        </div>
+        <div [ngClass]="{'w-full': !car.description, 'w-1/2': car.description}" class="bg-sky-500 rounded-lg">
+        </div>
+        <!-- <div style="height: 400px; width: 50%;">
+            <google-map [options]="options" (mapClick)="moveMap($event)" (mapMousemove)="move($event)" style="height: 100%; width: 100%;"></google-map>
+          </div> -->
+      </div>
     </div>
-  
   </div>
+
+</div>

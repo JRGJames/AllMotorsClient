@@ -1,4 +1,4 @@
-<nav class="bg-gray-700 top-0 backdrop-blur-sm bg-opacity-90 flex justify-between items-center h-16 sticky z-10">
+<nav class="bg-gray-700 top-0 backdrop-blur-md bg-opacity-50 flex justify-between items-center h-16 z-50 sticky">
   <div class="logo-container flex items-center ml-10">
     <i class="fas fa-cog text-white text-2xl mr-2"></i>
     <a routerLink="/" class="text-white font-bold text-3xl focus:outline-none">
@@ -12,7 +12,8 @@
     <button *ngIf="strUserName" class="flex h-11 items-center text-white focus:outline-none">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
-    <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton class="flex items-center h-full text-white relative focus:outline-none">
+    <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton
+      class="flex items-center h-full text-white relative focus:outline-none">
       <span class="mr-2">{{ strUserName }}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
         <img src="" alt="" class="">
@@ -20,24 +21,30 @@
 
       <div *ngIf="showDropdown" #dropdownButton
         class="absolute right-0 top-full bg-gray-100 bg-opacity-70 backdrop-blur-lg rounded-b-lg shadow-sm">
-        <button class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg text-gray-600 w-full py-2 px-6">
+        <button
+          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg text-gray-600 w-full py-2 px-6">
           Configuration
         </button>
-        <button class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg w-full text-gray-600 py-2 px-6">
+        <button
+          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg w-full text-gray-600 py-2 px-6">
           Profile
         </button>
-        <button (click)="logout()" class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg w-full rounded-b-lg text-gray-600 py-2 px-6">
+        <button (click)="logout()"
+          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg w-full rounded-b-lg text-gray-600 py-2 px-6">
           Logout
         </button>
       </div>
     </button>
 
 
-    <button *ngIf="strUserName" class="h-11 flex items-center bg-sky-600 hover:bg-sky-700 transition-colors focus:outline-none focus:bg-sky-700 text-white px-6 py-2 rounded-lg" routerLink="/upload">
+    <button *ngIf="strUserName"
+      class="h-11 flex items-center bg-sky-600 hover:bg-sky-700 transition-colors focus:outline-none focus:bg-sky-700 text-white px-6 py-2 rounded-md"
+      routerLink="/upload">
       <span class="mr-2">Publish</span>
       <i class="fas fa-upload"></i>
     </button>
-    <button routerLink="/login" *ngIf="!strUserName" class="flex items-center hover:bg-sky-700 transition-colors focus:outline-none focus:bg-sky-700 bg-sky-600 text-white px-6 py-2 rounded-lg">
+    <button routerLink="/login" *ngIf="!strUserName"
+      class="flex items-center hover:bg-sky-700 transition-colors focus:outline-none focus:bg-sky-700 bg-sky-600 text-white px-6 py-2 rounded-md">
       <span class="mr-2">Login</span>
     </button>
   </div>

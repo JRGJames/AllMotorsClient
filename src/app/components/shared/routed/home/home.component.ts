@@ -1,18 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Renderer2, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { CarService } from 'src/app/service/car.service';
 import { ICar } from 'src/app/model/model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css']  
 })
+
 export class HomeComponent implements OnInit, OnDestroy {
   popularCars: ICar[] = [];
   currentPage: number = 1;
-  private autoChangePage: any;
+  autoChangePage: any;
 
-  constructor(private carService: CarService) {}
+  constructor(
+    private carService: CarService,
+  ) { }
 
   ngOnInit() {
     this.loadPopularCars();
@@ -20,29 +24,28 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Limpiar el intervalo cuando el componente se destruye para evitar fugas de memoria
     if (this.autoChangePage) {
       clearInterval(this.autoChangePage);
     }
   }
 
   loadPopularCars() {
-    const amount = 5; // Cantidad de coches más visitados que deseas mostrar
+    const amount = 5;
     this.carService.byViews(amount).subscribe({
       next: (data: ICar[]) => {
         this.popularCars = data;
-        console.log(this.popularCars);  // Verificar los datos recibidos
+        console.log(this.popularCars);
       },
       error: (error) => {
         console.error('Error al cargar coches populares:', error);
       }
     });
   }
-  
+
   startAutoChangePage() {
     this.autoChangePage = setInterval(() => {
       this.nextPage();
-    }, 15000); // Cambia la página cada 15 segundos
+    }, 15000);
   }
 
   prevPage() {
@@ -51,7 +54,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else {
       this.currentPage = this.popularCars.length;
     }
-    this.resetAutoChangePage(); // Reiniciar el contador automático
+    this.resetAutoChangePage();
   }
 
   nextPage() {
@@ -60,21 +63,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else {
       this.currentPage = 1;
     }
-    this.resetAutoChangePage(); // Reiniciar el contador automático
+    this.resetAutoChangePage();
   }
 
   resetAutoChangePage() {
-    // Limpiar el intervalo anterior
     if (this.autoChangePage) {
       clearInterval(this.autoChangePage);
     }
-    // Iniciar un nuevo intervalo
     this.startAutoChangePage();
   }
 
   changePage(newPage: number) {
     this.currentPage = newPage;
-    this.resetAutoChangePage(); // Reinicia el intervalo automático para que comience desde la nueva imagen seleccionada
+    this.resetAutoChangePage();
   }
-  
 }

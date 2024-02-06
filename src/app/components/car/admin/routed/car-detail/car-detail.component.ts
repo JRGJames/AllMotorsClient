@@ -1,7 +1,8 @@
+import { UserService } from './../../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ICar, IImage } from 'src/app/model/model';
+import { ICar, IImage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -14,33 +15,49 @@ import { SessionService } from 'src/app/service/session.service';
 export class CarDetailComponent implements OnInit {
   showPhoneNumber: boolean = false;
   id!: number;
-  imageIndex = 0; // Índice de la imagen actual en el carrusel
+  imageIndex = 0;
   images: IImage[] = [];
   averageRating: number | null = null;
   ratingCount: number | null = null;
-
   car: ICar = { owner: {} } as ICar;
   status: HttpErrorResponse | null = null;
-
+  currentUser!: IUser;
+  
   constructor(
     private carService: CarService,
     private sessionService: SessionService,
+    private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private ratingService: RatingService // inyectar RatingService
+    private ratingService: RatingService
 
   ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.id = +params['id']; // El signo + convierte la cadena a número
+      this.id = +params['id'];
       if (this.id) {
         this.getOne();
         this.getRatingCount(this.id);
+        this.getCurrentUser();
       } else {
         console.error('ID is undefined');
       }
     });
+  }
+
+  getCurrentUser(): void {
+    if (this.sessionService.isSessionActive()) {
+      const username = this.sessionService.getUsername();
+      this.userService.getByUsername(username).subscribe({
+        next: (user: IUser) => {
+          this.currentUser = user;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar los datos del usuario actual:', error);
+        }
+      });
+    }
   }
 
   getOne(): void {
@@ -55,14 +72,12 @@ export class CarDetailComponent implements OnInit {
     });
   }
 
-  // Navegar a la imagen anterior
   prevImage() {
     if (this.imageIndex > 0) {
       this.imageIndex--;
     }
   }
 
-  // Navegar a la imagen siguiente
   nextImage() {
     if (this.imageIndex < this.car.images.length - 1) {
       this.imageIndex++;
@@ -71,7 +86,7 @@ export class CarDetailComponent implements OnInit {
 
   changePage(newPage: number) {
     this.imageIndex = newPage;
-  } 
+  }
 
   togglePhoneNumber(): void {
     this.showPhoneNumber = !this.showPhoneNumber;
@@ -79,24 +94,28 @@ export class CarDetailComponent implements OnInit {
 
   getRatingCount(ownerId: number): void {
     this.ratingService.getUserRatingCount(ownerId).subscribe({
-        next: (ratingCount) => {
-            this.ratingCount = ratingCount;
-            console.log('Total de valoraciones:', this.ratingCount);
-        },
-        error: (error) => {
-            console.error('Error al obtener la cantidad de valoraciones', error);
-        },
-        complete: () => console.log('Operación de obtención del conteo de rating completada.')
+      next: (ratingCount) => {
+        this.ratingCount = ratingCount;
+        console.log('Total de valoraciones:', this.ratingCount);
+      },
+      error: (error) => {
+        console.error('Error al obtener la cantidad de valoraciones', error);
+      },
+      complete: () => console.log('Operación de obtención del conteo de rating completada.')
     });
-}
+  }
 
   handleBookmarkClick(car: ICar): void {
     if (!this.sessionService.isSessionActive()) {
-      // Si el usuario no ha iniciado sesión, redirige a la página de inicio de sesión.
       this.router.navigate(['/login']);
     } else {
-      // Aquí puedes implementar la lógica para manejar la acción de favorito.
       console.log('Añadir a favoritos:', car);
     }
   }
+
+  isCurrentUserOwner(): boolean {
+
+    return this.car.owner.id === this.currentUser.id || this.currentUser.role === true;
+
+}
 }

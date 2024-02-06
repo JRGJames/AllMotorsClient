@@ -1,92 +1,109 @@
-<div class="grid lg:grid-cols-3 gap-8 m-12">
-  <div *ngFor="let car of cars"
-    class="group relative rounded-lg w-full h-60 text-card-foreground shadow-sm flex bg-gray-200 transition-transform duration-300 ease-in-out hover:shadow-md hover:-translate-y-1">
-    <button (click)="handleBookmarkClick(car)"
-      class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
-      <i class="fas fa-bookmark"></i>
-    </button>
-    <a [routerLink]="['/car', car.id]" class="flex w-full text-decoration-none">
-      <div class="flex-none w-1/2 rounded-l-lg text-white">
-        <img [src]="'http://localhost:8083' + car.images[0].imageUrl" class="object-cover rounded-l-lg w-full h-full">
+<div class="m-12">
+  <div class="relative mb-8 flex">
+    <div class="space-x-4 flex w-full">
+      <div class="flex bg-gray-200 rounded-md w-3/6 h-8 align-middle justify-between self-center">
+        <input type="text" placeholder="Search" class="bg-transparent px-3 focus:outline-none w-full text-gray-500">
+        <button class="focus:outline-none"><i class="fa fa-search text-gray-500 p-2 rounded-r-md hover:text-sky-700"></i></button>
       </div>
-      <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
-        <div class="space-y-6">
-          <div class="space-y-2">
-            <h5 class="text-2xl font-semibold text-gray-800">{{ car.brand }} {{ car.model }}</h5>
-            <p class="text-xl text-gray-600">{{ car.price | thousandSeparator }} {{ car.currency }}</p>
-          </div>
-          <div class="space-y-2">
-            <div class="flex space-x-5">
-              <p class="text-gray-500">{{ car.location }}</p>
-              <p class="text-gray-500">{{ car.year }}</p>
-            </div>
-            <p class="text-gray-500">{{ car.owner.username }}</p>
-          </div>
-        </div>
-        <div class="absolute bottom-0 right-0 p-2">
-          <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
-            <i class="fas fa-chevron-down"></i>
-          </button>
-          <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
-            <i class="fas fa-eye"></i>
-          </button>
+      <div class="flex space-x-4 justify-between w-3/6">
+        <button class="rounded-md text-white px-2 focus:outline-none bg-sky-600 hover:bg-sky-700 transition-all">Filter
+          <i class="fa-solid fa-filter px-1"></i>
+        </button>
+        <p class="text-gray-500 self-center text-center">Showing {{cars.length}} of {{totalElements}} total cars</p>
+        <div class="flex space-x-4">
+          <button class="text-xl text-gray-300 focus:text-gray-500 hover:text-gray-400"><i class="fa fa-square "></i></button>
+          <button class="text-xl text-gray-300 focus:text-gray-500 hover:text-gray-400"><i class="fa fa-square "></i></button>
         </div>
       </div>
-    </a>
+    </div>
   </div>
-</div>
-
-<div class="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
-  <div class="lg:w-3/5 w-full flex items-center justify-between border-t border-gray-200">
-    <button (click)="prevPage()" [class.disabled]="currentPage === 0"
-      class="flex items-center pt-3 text-gray-600 hover:text-sky-700 cursor-pointer">
-      <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path d="M1.1665 4L4.49984 7.33333" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path d="M1.1665 4.00002L4.49984 0.666687" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </svg>
-      <p class=" ml-3 font-medium leading-none ">Previous</p>
-    </button>
-    <button class="sm:flex hidden">
-      <button *ngFor="let pageNumber of [].constructor(totalPageCount); let i = index" (click)="changePage(i)"
-        [class]="currentPage === i ? 'text-sky-700 border-sky-400' : 'text-gray-600 hover:text-sky-700 border-transparent hover:border-sky-400'"
-        class="font-medium leading-none cursor-pointer pt-3 mr-4 px-2">
-        {{ i + 1 }}
+  <div class="grid lg:grid-cols-3 gap-8 ">
+    <div *ngFor="let car of cars"
+      class="group relative rounded-md w-full h-60 text-card-foreground shadow-sm flex bg-gray-200 transition-transform duration-300 ease-in-out hover:shadow-md hover:-translate-y-1">
+      <button (click)="handleBookmarkClick(car)"
+        class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+        <i class="fas fa-bookmark"></i>
       </button>
-    </button>
-    <button (click)="nextPage()" [class.disabled]="currentPage >= totalPageCount - 1"
-      class="flex items-center pt-3 text-gray-600 hover:text-sky-700 cursor-pointer">
-      <p class="font-medium leading-none mr-3">Next</p>
-      <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path d="M9.5 7.33333L12.8333 4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path d="M9.5 0.666687L12.8333 4.00002" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </svg>
-    </button>
+      <a [routerLink]="['/car', car.id]" class="flex w-full text-decoration-none">
+        <div class="flex-none w-1/2 rounded-l-lg text-white">
+          <img [src]="'http://localhost:8083' + car.images[0].imageUrl" class="object-cover rounded-l-md w-full h-full">
+        </div>
+        <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
+          <div class="space-y-6">
+            <div class="space-y-2">
+              <h5 class="text-2xl font-semibold text-gray-800">{{ car.brand }} {{ car.model }}</h5>
+              <p class="text-xl text-gray-600">{{ car.price | thousandSeparator }} {{ car.currency }}</p>
+            </div>
+            <div class="space-y-2">
+              <div class="flex space-x-5">
+                <p class="text-gray-500">{{ car.location }}</p>
+                <p class="text-gray-500">{{ car.year }}</p>
+              </div>
+              <p class="text-gray-500">{{ car.owner.username }}</p>
+            </div>
+          </div>
+          <div class="absolute bottom-0 right-0 p-2">
+            <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+      </a>
+    </div>
   </div>
 
-  <div class="relative group ml-20 ">
-    <button id="dropdown-button" (click)="toggleDropdown()"
-      class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border-b border-b-gray-300 rounded-md shadow-sm focus:outline-none">
-      <span class="mr-2">{{pageSize}}</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 -mr-1" viewBox="0 0 20 20" fill="currentColor"
-        aria-hidden="true">
-        <path fill-rule="evenodd"
-          d="M6.293 9.293a1 1 0 011.414 0L10 11.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-          clip-rule="evenodd" />
-      </svg>
-    </button>
-    <div id="dropdown-menu" #dropdownMenu
-      class="flex hidden absolute left-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1">
-      <a (click)="togglePageSize(15)" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">15</a>
-      <a (click)="togglePageSize(30)" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">30</a>
-      <a (click)="togglePageSize(60)" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">60</a>
+  <div class="relative flex mt-10 border-t border-gray-200 lg:px-0 sm:px-6 px-4">
+    <div class="w-11/12 flex mr-20 justify-between">
+      <button (click)="prevPage()" [class.disabled]="currentPage === 0"
+        class="flex items-center pt-3 text-gray-600 hover:text-sky-700 cursor-pointer">
+        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M1.1665 4L4.49984 7.33333" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M1.1665 4.00002L4.49984 0.666687" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <p class=" ml-3 font-medium leading-none ">Previous</p>
+      </button>
+      <button class="sm:flex hidden">
+        <button *ngFor="let pageNumber of [].constructor(totalPageCount); let i = index" (click)="changePage(i)"
+          [class]="currentPage === i ? 'text-sky-700 border-sky-400' : 'text-gray-600 hover:text-sky-700 border-transparent hover:border-sky-400'"
+          class="font-medium leading-none cursor-pointer pt-3 mr-4 px-2">
+          {{ i + 1 }}
+        </button>
+      </button>
+      <button (click)="nextPage()" [class.disabled]="currentPage >= totalPageCount - 1"
+        class="flex items-center pt-3 text-gray-600 hover:text-sky-700 cursor-pointer">
+        <p class="font-medium leading-none mr-3">Next</p>
+        <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.1665 4H12.8332" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M9.5 7.33333L12.8333 4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M9.5 0.666687L12.8333 4.00002" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+    <div class="w-1/12">
+      <button id="dropdown-button" (click)="toggleDropdown()"
+        class="inline-flex justify-center w-full px-4 font-medium text-gray-600 bg-white focus:outline-none">
+        <span class="mr-2 pt-3">{{pageSize}}</span>
+        <i class="fa-solid fa-caret-down mt-4 text-gray-600"></i>
+      </button>
+      <div id="dropdown-menu" #dropdownMenu
+        class="hidden absolute right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1">
+        <a (click)="togglePageSize(15)"
+          class="block px-4 py-2 text-gray-600 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">15</a>
+        <a (click)="togglePageSize(30)"
+          class="block px-4 py-2 text-gray-600 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">30</a>
+        <a (click)="togglePageSize(60)"
+          class="block px-4 py-2 text-gray-600 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">60</a>
+      </div>
     </div>
   </div>
 </div>
