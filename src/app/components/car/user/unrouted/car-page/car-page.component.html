@@ -45,7 +45,7 @@
         class="absolute -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
-      <a [routerLink]="['/car', car.id]" class="flex w-full text-decoration-none">
+      <a (click)="navigateToCar(car.id)" class="flex w-full text-decoration-none cursor-pointer">
         <div class="flex-none w-1/2 rounded-l-lg text-white">
           <img [src]="'http://localhost:8083' + car.images[0].imageUrl" class="object-cover rounded-l-lg w-full h-full">
         </div>
@@ -67,7 +67,8 @@
             <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
               <i class="fas fa-chevron-down"></i>
             </button>
-            <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
+            <button (click)="openViewModal($event, car)"
+              class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
               <i class="fas fa-eye"></i>
             </button>
           </div>
@@ -125,64 +126,79 @@
     </div>
   </div>
 
-  <div class="fixed inset-0 bg-gray-400 backdrop-blur-lg bg-opacity-50 h-full w-full flex items-center justify-center"
+  <div *ngIf="isViewModalVisible" (click)="closeViewModal()"
+    class="fixed inset-0 bg-gray-400 backdrop-blur-lg bg-opacity-50 h-full w-full flex items-center justify-center"
     id="my-modal">
     <div (click)="$event.stopPropagation()"
-      class="p-5 border max-w-7xl shadow-lg rounded-xl space-y-6 bg-white bg-opacity-75 backdrop-blur-lg">
+      class="p-5 border w-7/12 shadow-lg rounded-xl space-y-6 bg-white bg-opacity-75 backdrop-blur-lg">
       <div class="flex space-x-8">
-        <div class="h-52 w-96 bg-sky-600 rounded-lg">
+        <div class="h-52 bg-sky-600 rounded-lg w-4/12">
           <img src="" alt="">
+          <button (click)="handleBookmarkClick(car)"
+            class="relative -top-1 left-10 text-4xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+            <i class="fas fa-bookmark"></i>
+          </button>
         </div>
-        <div class="flex flex-col justify-between">
+        <div class="flex flex-col justify-between  w-8/12">
+          <button (click)="closeViewModal()"
+            class="absolute -top-2 right-0 mt-4 mr-4 text-gray-500 hover:text-sky-700 transition-colors">
+            <i class="fas fa-times text-xl"></i>
+          </button>
           <div class="space-y-3">
-            <h1 class="font-semibold text-4xl text-gray-800">Brand model</h1>
-            <h2 class="font-normal text-2xl text-gray-600">Price €</h2>
+            <h1 class="font-semibold text-4xl text-gray-800">{{selectedCar?.brand}} {{selectedCar?.model}}</h1>
+            <h2 class="font-normal text-2xl text-gray-600">{{selectedCar?.price ?? 0 | thousandSeparator}}
+              {{selectedCar?.currency}}</h2>
           </div>
           <div class="flex items-center space-x-10">
             <div class="flex space-x-2 items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 h-7 w-7">
                 <img src="" alt="" class="">
               </div>
-              <p class="text-gray-800">Username</p>
+              <p class="text-gray-800">{{selectedCar?.owner?.username}}</p>
             </div>
             <div class="flex items-center">
               <i class="fa fa-location-dot text-2xl text-gray-500 px-2"></i>
-              <p class="text-gray-800 items-center">Location</p>
+              <p class="text-gray-800 items-center">{{selectedCar?.location}}</p>
             </div>
             <div class="flex items-center">
               <i class="fa fa-calendar text-2xl text-gray-500 px-2"></i>
-              <p class="text-gray-800 items-center">Year</p>
+              <p class="text-gray-800 items-center">{{selectedCar?.year}}</p>
             </div>
           </div>
         </div>
       </div>
-      <div class="flex justify-between space-x-4">
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
-        <p class="py-2 px-3 bg-gray-400 text-gray-700 rounded-3xl">Horsepower</p>
+      <div class="flex justify-start space-x-6">
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.horsepower ?? 0 | thousandSeparator }}
+          hp <i class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.fuel}} <i
+            class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.gearbox}} <i
+            class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.type}} <i
+            class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.distance ?? 0 | roundToThousandth}} km
+          <i class="fa fa-car px-1 text-gray-600"></i>
+        </p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.seats}} seats <i
+            class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl">{{selectedCar?.doors}} doors <i
+            class="fa fa-car px-1 text-gray-600"></i></p>
       </div>
-      <div class="description text-gray-700">
-        Under the hood, the Model S boasts remarkable acceleration and precise handling, providing a thrilling driving experience. Its electric drivetrain delivers power with efficiency, making it a standout option in the world of electric vehicles. The extended driving range ensures that you can confidently embark on longer journeys without the worry of frequent recharging.
-
-Inside the car, you'll find a minimalist interior that reflects Tesla's commitment to simplicity and innovation. The focal point is a large touchscreen, which serves as the central hub for controlling various aspects of the vehicle, from entertainment to navigation. This user-friendly interface enhances the overall driving experience, making it both intuitive and enjoyable.
-
-In summary, the 2022 Tesla Model S is not just a car; it's a symbol of forward-thinking technology and a sustainable approach to transportation. From its sleek exterior to its high-performance capabilities and innovative interior, this electric sedan represents the future of automotive engineering.
+      <div *ngIf="selectedCar?.description" class="description text-gray-700 text-xl">
+        {{selectedCar?.description}}
       </div>
       <div class="flex justify-between space-x-3 items-center">
         <div class="flex space-x-4">
           <div>
-            <p class="text-gray-500">views</p>
+            <p class="text-gray-500">{{selectedCar?.views}} views</p>
           </div>
           <div>
-            <p class="text-gray-500">saves</p>
+            <p class="text-gray-500">{{selectedCar?.saves}} saves</p>
           </div>
         </div>
-        <button class="rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-2 text-white">
+        <button [routerLink]="['/car', selectedCar?.id]" class="rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-2 text-white">
           More info
+          <i class="fa fa-circle-info text-white px-2"></i>
         </button>
       </div>
     </div>

@@ -19,8 +19,9 @@ export class CarPageComponent implements OnInit {
   pageSize: number = 15; // O el tamaño de página que prefieras
   status: HttpErrorResponse | null = null;
   currentUser: IUser = {} as IUser;
-
-  @ViewChild('dropdownMenu') dropdownMenu!: ElementRef;
+  car: ICar = { owner: {} } as ICar; // Objeto para almacenar la información del coche
+  isViewModalVisible: boolean = false;
+  selectedCar: ICar | null = null; // Car seleccionado para mostrar en el modal
 
   isOpen = false; // Controla el estado del dropdown
 
@@ -34,6 +35,22 @@ export class CarPageComponent implements OnInit {
   ngOnInit() {
     this.getPage(this.currentPage);
     this.getCurrentUser();
+  }
+
+  openViewModal(event: MouseEvent, car: ICar): void {
+    event.stopPropagation(); // Detiene la propagación del evento
+    this.selectedCar = car; // Establece el coche seleccionado
+    this.isViewModalVisible = true; // Muestra el modal
+    console.log('Modal opened for car:', this.selectedCar);
+  }  
+
+  closeViewModal(): void {
+    this.isViewModalVisible = false;
+    this.selectedCar = null; // Limpia el coche seleccionado
+  }
+
+  navigateToCar(carId: number): void {
+    this.router.navigate(['/car', carId]);
   }
 
   getCurrentUser(): void {
@@ -126,10 +143,5 @@ export class CarPageComponent implements OnInit {
   togglePageSize(pageSize: number) {
     this.pageSize = pageSize;
     this.getPage(0);
-  }
-
-  toggleDropdown() {
-    this.isOpen = !this.isOpen;
-    this.dropdownMenu.nativeElement.classList.toggle('hidden', !this.isOpen);
   }
 }
