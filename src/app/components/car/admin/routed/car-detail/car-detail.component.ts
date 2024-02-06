@@ -21,8 +21,10 @@ export class CarDetailComponent implements OnInit {
   ratingCount: number | null = null;
   car: ICar = { owner: {} } as ICar;
   status: HttpErrorResponse | null = null;
-  currentUser!: IUser;
-  
+  currentUser: IUser = {} as IUser;
+  isDeleteModalVisible: boolean = false;
+  idToDelete: number | null = null;
+
   constructor(
     private carService: CarService,
     private sessionService: SessionService,
@@ -37,9 +39,9 @@ export class CarDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
       if (this.id) {
-        this.getOne();
         this.getRatingCount(this.id);
         this.getCurrentUser();
+        this.getOne();
       } else {
         console.error('ID is undefined');
       }
@@ -114,8 +116,33 @@ export class CarDetailComponent implements OnInit {
   }
 
   isCurrentUserOwner(): boolean {
-
     return this.car.owner.id === this.currentUser.id || this.currentUser.role === true;
+  }
 
-}
+  openDeleteModal(id: number): void {
+    this.idToDelete = id;
+    this.isDeleteModalVisible = true;
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalVisible = false;
+    this.idToDelete = null;
+  }
+
+  // Función para manejar la eliminación
+  deleteCar(): void {
+    if (this.idToDelete) {
+      this.carService.remove(this.idToDelete).subscribe({
+        next: (result) => {
+          console.log(`Car with ID ${this.idToDelete} was deleted`);
+          this.closeDeleteModal();
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          console.error('Error deleting the car', error);
+          this.closeDeleteModal();
+        }
+      });
+    }
+  }
 }

@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ICar, ICarPage } from 'src/app/model/model';
+import { ICar, ICarPage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { SessionService } from 'src/app/service/session.service';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-car-page',
@@ -17,6 +18,7 @@ export class CarPageComponent implements OnInit {
   totalElements: number = 0;  // Total de elementos (coches)
   pageSize: number = 15; // O el tamaño de página que prefieras
   status: HttpErrorResponse | null = null;
+  currentUser: IUser = {} as IUser;
 
   @ViewChild('dropdownMenu') dropdownMenu!: ElementRef;
 
@@ -25,11 +27,31 @@ export class CarPageComponent implements OnInit {
   constructor(
     private carService: CarService,
     private sessionService: SessionService,
+    private userService: UserService,
     private router: Router // inyectar Router
   ) { }
 
   ngOnInit() {
     this.getPage(this.currentPage);
+    this.getCurrentUser();
+  }
+
+  getCurrentUser(): void {
+    if (this.sessionService.isSessionActive()) {
+      const username = this.sessionService.getUsername();
+      this.userService.getByUsername(username).subscribe({
+        next: (user: IUser) => {
+          this.currentUser = user;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar los datos del usuario actual:', error);
+        }
+      });
+    }
+  }
+
+  isCurrentUserAdmin(): boolean {
+    return this.currentUser.role === true;
   }
 
   getPage(pageNumber: number): void {
@@ -44,6 +66,30 @@ export class CarPageComponent implements OnInit {
         this.totalPageCount = data.totalPages;
         this.totalElements = data.totalElements; // Asegúrate de que esta propiedad está disponible
         this.currentPage = pageNumber;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.status = error;
+      }
+    });
+  }
+
+  pupulate(qty: number) {
+    this.carService.generateRandom(qty).subscribe({
+      next: (data: number) => {
+        console.log('Se han generado', data, 'coches');
+        this.getPage(this.currentPage);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.status = error;
+      }
+    });
+  }
+
+  empty() {
+    this.carService.empty().subscribe({
+      next: (data: number) => {
+        console.log('Se han eliminado', data, 'coches');
+        this.getPage(0);
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
