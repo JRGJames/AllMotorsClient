@@ -74,6 +74,7 @@ export interface RatingSummary {
 export interface ICar extends IEntity {
     brand: string;
     model: string;
+    title: string;
     dateUpload: Date;
     images: IImage[];
     status: string;

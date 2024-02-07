@@ -12,6 +12,8 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./car-page.component.css']
 })
 export class CarPageComponent implements OnInit {
+  searchFilter: string = '';
+  carsSearch: ICarPage | undefined;
   cars: ICar[] = [];
   currentPage: number = 0;
   totalPageCount: number = 0;
@@ -34,14 +36,30 @@ export class CarPageComponent implements OnInit {
 
   ngOnInit() {
     this.getPage(this.currentPage);
+    this.loadCars();
     this.getCurrentUser();
+  }
+
+  loadCars(): void {
+    // Asume valores predeterminados para size, page, orderField y orderDirection
+    this.carService.getPage(10, 0, 'id', 'asc', 0, this.searchFilter).subscribe({
+      next: (data) => {
+        this.carsSearch = data;
+      },
+      error: (error) => {
+        console.error('Error fetching cars:', error);
+      }
+    });
+  }
+
+  onSearch(): void {
+    this.loadCars();
   }
 
   openViewModal(event: MouseEvent, car: ICar): void {
     event.stopPropagation(); // Detiene la propagación del evento
     this.selectedCar = car; // Establece el coche seleccionado
     this.isViewModalVisible = true; // Muestra el modal
-    console.log('Modal opened for car:', this.selectedCar);
   }  
 
   closeViewModal(): void {
