@@ -2,9 +2,9 @@
   <div class="relative mb-8 flex">
     <div class="space-x-4 flex w-full">
       <div class="flex bg-gray-200 rounded-lg w-3/6 h-10 align-middle justify-between self-center">
-        <input type="text" placeholder="Search" [(ngModel)]="searchFilter" class="bg-transparent px-3 focus:outline-none w-full text-gray-500">
+        <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="onSearch()" class="bg-transparent px-3 focus:outline-none w-full text-gray-500">
         <button class="focus:outline-none" (click)="onSearch()"><i class="fa fa-search text-gray-500 px-3 hover:text-sky-700"></i></button>
-      </div>
+      </div>      
       <div class="flex space-x-4 justify-between w-3/6">
         <div class="flex h-10 space-x-3">
           <button

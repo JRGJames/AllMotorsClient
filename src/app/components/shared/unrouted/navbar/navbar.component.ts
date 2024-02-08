@@ -63,7 +63,7 @@ export class NavbarComponent implements OnInit {
       }
     });
   }
-
+  
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
   }
