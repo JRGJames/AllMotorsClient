@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ICar, ICarPage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
@@ -41,10 +41,13 @@ export class CarPageComponent implements OnInit {
   }
 
   loadCars(): void {
-    // Asume valores predeterminados para size, page, orderField y orderDirection
-    this.carService.getPage(10, 0, 'id', 'asc', 0, this.searchFilter).subscribe({
+    // Usa this.searchFilter como el último argumento para aplicar el filtro
+    this.carService.getPage(this.pageSize, this.currentPage, 'id', 'asc', this.currentUser.id || 0, this.searchFilter).subscribe({
       next: (data) => {
-        this.carsSearch = data;
+        this.cars = data.content; // Asume que ICarPage tiene una propiedad content con los coches
+        this.totalPageCount = data.totalPages;
+        this.totalElements = data.totalElements;
+        // Actualiza la UI según sea necesario aquí
       },
       error: (error) => {
         console.error('Error fetching cars:', error);

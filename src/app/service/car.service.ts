@@ -18,20 +18,12 @@ export class CarService {
   }
 
   getPage(size: number | undefined, page: number | undefined, orderField: string, orderDirection: string, id_user: number, strFilter?: string): Observable<ICarPage> {
-    let url_filter: string;
-    if (!size) size = 10;
-    if (!page) page = 0;
-    let strUrlUser = "";
-    if (id_user > 0) {
-      strUrlUser = "&user=" + id_user;
-    }
-    if (strFilter && strFilter.trim().length > 0) {
-      url_filter = `&filter=${strFilter}`;
-    } else {
-      url_filter = "";
-    }
-    return this.http.get<ICarPage>(this.url + "/getPage/"+ "?size=" + size + "&page=" + page + "&sort=" + orderField + "," + orderDirection + strUrlUser + url_filter);
-  }
+    let url_filter: string = strFilter ? `&filter=${encodeURIComponent(strFilter)}` : "";
+    let strUrlUser: string = id_user > 0 ? `&user=${id_user}` : "";
+
+    return this.http.get<ICarPage>(`${this.url}/getPage/?size=${size}&page=${page}&sort=${orderField},${orderDirection}${strUrlUser}${url_filter}`);
+}
+
 
   create(car: ICar): Observable<ICar> {
     return this.http.post<ICar>(this.url + '/create', car);
