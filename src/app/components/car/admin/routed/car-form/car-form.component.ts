@@ -110,6 +110,7 @@ export class CarFormComponent implements OnInit {
             console.log(data.id);
             this.car = { owner: this.user } as ICar;
             this.initializeForm(this.car);
+            this.mediaService.uploadMultipleFiles()
             this.router.navigate(['/car/', data.id]);
           },
           error: (error: HttpErrorResponse) => {
@@ -134,22 +135,22 @@ export class CarFormComponent implements OnInit {
   upload(event: any) {
     const MAX_FILES = 8;
     const files: FileList = event.target.files;
+    const formData = new FormData();
+    
     if (files && files.length > 0) {
+    
       if (files.length > MAX_FILES) {
         console.error('You can only upload a maximum of ' + MAX_FILES + ' files.');
         // Aquí puedes mostrar un mensaje al usuario si lo deseas
         return;
       }
-      const formData = new FormData();
+    
       for (let i = 0; i < files.length; i++) {
         formData.append('files', files[i]);
       }
 
-      this.mediaService.uploadMultipleFiles(formData)
-        .subscribe(response => {
-          console.log('Uploaded files:', response);
-        });
     }
+    return formData;
   }
 
 
