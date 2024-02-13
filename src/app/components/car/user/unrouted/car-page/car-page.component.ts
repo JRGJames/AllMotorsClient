@@ -41,7 +41,7 @@ export class CarPageComponent implements OnInit {
   }
 
   loadCars(): void {
-    this.carService.getPage(this.pageSize, this.currentPage, 'id', 'asc', this.currentUser.id || 0, this.searchFilter).subscribe({
+    this.carService.getPage(this.pageSize, this.currentPage, 'id', 'asc', 0, this.searchFilter).subscribe({
       next: (data) => {
         this.cars = data.content; // Asume que ICarPage tiene una propiedad content con los coches
         this.totalPageCount = data.totalPages;
