@@ -107,6 +107,20 @@
           <input type="text" id="location" formControlName="location" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="City">
         </div>
 
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+          <input type="text" id="title" formControlName="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Title">
+        </div>
+
+        <div>
+          <label for="boughtIn" class="block text-sm font-medium text-gray-700">Place bought</label>
+          <input type="text" id="boughtIn" formControlName="boughtIn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Country">
+        </div>
+        <div>
+          <label for="currency" class="block text-sm font-medium text-gray-700">Currency:</label>
+          <input type="text" id="currency" formControlName="currency" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Currency">
+        </div>
+
         <!-- Additional Fields -->
         <!-- Continue adding fields as needed -->
 
@@ -115,7 +129,7 @@
       <!-- Images Upload -->
       <div class="mt-4">
         <label for="images" class="block text-sm font-medium text-gray-700">Images</label>
-        <input type="file" id="images" multiple accept="image/*" (change)="upload($event)"
+        <input type="file" id="images" multiple accept="image/*"
                class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" 
                >
       </div>

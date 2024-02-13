@@ -19,6 +19,7 @@ export class CarFormComponent implements OnInit {
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
 
+  selectedFiles?: FileList;
   carForm!: FormGroup;
   car: ICar = { owner: { id: 0 } } as ICar;
   status: HttpErrorResponse | null = null;
@@ -40,6 +41,7 @@ export class CarFormComponent implements OnInit {
     this.carForm = this.formBuilder.group({
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
+      title: [car.title, Validators.required],
       images: [car.images],
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
@@ -52,8 +54,8 @@ export class CarFormComponent implements OnInit {
       price: [car.price, Validators.required],
       type: [car.type, Validators.required],
       location: [car.location, Validators.required],
-      boughtIn: [car.boughtIn, Validators.required],
-      currency: [car.currency, Validators.required],
+      boughtIn: [car.boughtIn],
+      currency: [car.currency],
       emissions: [car.emissions],
       consumption: [car.consumption],
       acceleration: [car.acceleration],
@@ -97,6 +99,9 @@ export class CarFormComponent implements OnInit {
     }
   }
 
+  handleFileInput(event: any) {
+    this.selectedFiles = event.target.files;
+  }
 
   public hasError = (controlName: string, errorName: string) => {
     return this.carForm.controls[controlName].hasError(errorName);
@@ -105,53 +110,26 @@ export class CarFormComponent implements OnInit {
   onSubmit() {
     if (this.carForm.valid) {
       if (this.operation === 'NEW') {
+        // Elimina la línea que intenta manipular las imágenes desde formData, ya que eso se manejará por separado
+        console.log(this.carForm.value);
         this.carService.create(this.carForm.value).subscribe({
-          next: (data: ICar) => {
-            console.log(data.id);
-            this.car = { owner: this.user } as ICar;
-            this.initializeForm(this.car);
-            // this.mediaService.uploadMultipleFiles()
-            this.router.navigate(['/car/', data.id]);
+          next: (car: ICar) => {
+            console.log(car);
+            
+              // Asume que tu servicio espera el ID del coche como parte del FormData o como un parámetro aparte
+              // Aquí simplemente lo pasamos como parte del FormData para el ejemplo
+
+              this.router.navigate(['/car/', car]);
+            
           },
           error: (error: HttpErrorResponse) => {
+            console.error(error);
             this.status = error;
           }
         });
       } else {
-        this.carService.update(this.carForm.value).subscribe({
-          next: (data: ICar) => {
-            this.car = data;
-            this.initializeForm(this.car);
-            this.router.navigate(['/car/', data.id]);
-          },
-          error: (error: HttpErrorResponse) => {
-            this.status = error;
-          }
-        });
+        // Manejo para la operación 'EDIT'
       }
     }
   }
-
-  upload(event: any) {
-    const MAX_FILES = 8;
-    const files: FileList = event.target.files;
-    const formData = new FormData();
-
-    if (files && files.length > 0) {
-
-      if (files.length > MAX_FILES) {
-        console.error('You can only upload a maximum of ' + MAX_FILES + ' files.');
-        // Aquí puedes mostrar un mensaje al usuario si lo deseas
-        return;
-      }
-
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
-
-    }
-    return formData;
-  }
-
-
 }
