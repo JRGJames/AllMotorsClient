@@ -35,7 +35,6 @@ export class CarPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getPage(this.currentPage);
     this.loadCars();
     this.getCurrentUser();
   }

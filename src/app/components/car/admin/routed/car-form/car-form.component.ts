@@ -42,7 +42,7 @@ export class CarFormComponent implements OnInit {
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       title: [car.title, Validators.required],
-      images: [car.images],
+      images: [car.images, Validators.required],
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
       seats: [car.seats, Validators.required],

@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "sync-li": "rsync -azP --delete -e 'ssh -A jaimerosello@pro.ausiasmarch.es -p 50525 ssh -A' /home/a026330562r/Descargas/AllMotorsClient/dist/ jaimerosello@172.16.1.36:/var/www/html",
+    "sync-win": "rsync -azP --delete -e 'ssh -A jaimerosello@pro.ausiasmarch.es -p 50525 ssh -A' (ruta) jaimerosello@172.16.1.36:/var/www/html"
   },
   "private": true,
   "dependencies": {
