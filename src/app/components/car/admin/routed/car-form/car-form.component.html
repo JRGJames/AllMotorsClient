@@ -129,14 +129,17 @@
       <!-- Images Upload -->
       <div class="mt-4">
         <label for="images" class="block text-sm font-medium text-gray-700">Images</label>
-        <input type="file" id="images" multiple accept="image/*"
+        <input type="file" id="images" (change)="handleFileInput($event)" multiple accept="image/*"
                class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" 
                >
       </div>
 
       <!-- Submit Button -->
-      <div class="mt-6">
-        <button  type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+      <div class="mt-6 flex justify-between">
+        <button type="button" (click)="fillFormWithDefaults()" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+          Fill Form With Defaults
+        </button>
+        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Publish
         </button>
       </div>
