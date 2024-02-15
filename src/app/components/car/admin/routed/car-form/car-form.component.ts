@@ -19,7 +19,7 @@ export class CarFormComponent implements OnInit {
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
 
-  selectedFiles: IImage[] | undefined;
+  selectedFiles: Array<{ file: File, imageUrl: string, car: ICar }> = [];
   carForm!: FormGroup;
   car: ICar = { owner: { id: 0 } } as ICar;
   status: HttpErrorResponse | null = null;
@@ -42,7 +42,7 @@ export class CarFormComponent implements OnInit {
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       title: [car.title, Validators.required],
-      images: [car.images],
+      images: [car.images, Validators.required],
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
       seats: [car.seats, Validators.required],
@@ -100,10 +100,15 @@ export class CarFormComponent implements OnInit {
   }
 
   handleFileInput(event: any) {
-    this.selectedFiles = event.target.files;
+    const files: FileList = event.target.files;
+    this.selectedFiles = Array.from(files).map(file => ({
+      file: file, // El objeto File real
+      imageUrl: URL.createObjectURL(file), // Para previsualización
+      car: this.car // El coche al que pertenece la imagen
+    }));
     console.log('Imagenes seleccionadas:', this.selectedFiles);
-    
   }
+  
 
   public hasError = (controlName: string, errorName: string) => {
     return this.carForm.controls[controlName].hasError(errorName);
@@ -142,56 +147,48 @@ export class CarFormComponent implements OnInit {
 
 
   onSubmit() {
-   
-    if (this.selectedFiles) {
-      console.log('Imagenes seleccionadas:', this.selectedFiles);
-
-      Array.from(this.selectedFiles).forEach((file) => {
-        console.log('Imagen:', file);
-        try {
-
-          this.carForm.setValue({images:file});
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      });
-    }
-
-    console.log('Formulario:', this.carForm.value);
-    
     if (this.carForm.valid) {
-      console.log('Formulario válido:', this.carForm.value);
+      // Convertir datos del formulario a JSON para incluirlos en FormData
       const formData = new FormData();
-
-      
-      formData.append('car', JSON.stringify(this.carForm.value));
-      // Primero, crea el coche y luego sube las imágenes
-      this.carService.create(this.carForm.value).subscribe({
-        next: (car: ICar) => {
-          if (this.selectedFiles && this.selectedFiles.length > 0) {
-            // Sube las imágenes solo si se seleccionaron
-            this.mediaService.uploadMultipleFiles(formData).subscribe({
-              next: (response) => {
-                console.log('Imagenes subidas:', response);
-                // Navega a la página del coche recién creado o actualiza la UI según sea necesario
-                this.router.navigate(['/car', car.id]);
-              },
-              error: (error: HttpErrorResponse) => {
-                console.error('Error subiendo imagenes:', error);
-                this.status = error;
-              }
-            });
-          } else {
-            // Si no se seleccionaron imágenes, navega directamente
-            this.router.navigate(['/car', car]);
+  
+      if (this.operation === 'NEW') {
+        // Crear el coche primero
+        this.carService.create(this.carForm.value).subscribe({
+          next: (car: ICar) => {
+            console.log('Coche creado:', car);
+  
+            // Preparar FormData con las imágenes solo después de crear el coche
+            if (this.selectedFiles && this.selectedFiles.length > 0) {
+              // Agregar cada archivo seleccionado a formData
+              Array.from(this.selectedFiles).forEach((selectedFile) => {
+                formData.append('images', selectedFile.file, selectedFile.file.name);
+                // Agrega adicionalmente el ID del coche creado si es necesario para la asociación en el backend
+                formData.append('carId', car.id.toString());
+              });
+  
+              // Luego subir las imágenes asociadas al coche
+              this.mediaService.uploadMultipleFiles(formData).subscribe({
+                next: (response) => {
+                  console.log('Imágenes subidas:', response);
+                  // Navegar a la vista del coche creado
+                  this.router.navigate(['/car', car.id]);
+                },
+                error: (uploadError) => {
+                  console.error('Error subiendo imágenes:', uploadError);
+                  this.status = uploadError;
+                }
+              });
+            } else {
+              // Si no hay imágenes para subir, simplemente navega a la vista del coche
+              this.router.navigate(['/car', car.id]);
+            }
+          },
+          error: (createError) => {
+            console.error('Error creando el coche:', createError);
+            this.status = createError;
           }
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error creando el coche:', error);
-          this.status = error;
-        }
-      });
+        });
+      }
     }
   }
-
 }

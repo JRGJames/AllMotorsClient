@@ -45,6 +45,7 @@ export class CarPageComponent implements OnInit {
         this.cars = data.content; // Asume que ICarPage tiene una propiedad content con los coches
         this.totalPageCount = data.totalPages;
         this.totalElements = data.totalElements;
+        this.currentPage = 0;
         // Actualiza la UI según sea necesario aquí
       },
       error: (error) => {
