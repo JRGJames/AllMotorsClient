@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ICar, IUser, formOperation } from 'src/app/model/model';
+import { ICar, IImage, IUser, formOperation } from 'src/app/model/model';
 import { CarService } from '../../../../../service/car.service';
 import { UserService } from '../../../../../service/user.service';
 import { SessionService } from '../../../../../service/session.service';
@@ -19,7 +19,7 @@ export class CarFormComponent implements OnInit {
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
 
-  selectedFiles: FileList | null = null;
+  selectedFiles: IImage[] | undefined;
   carForm!: FormGroup;
   car: ICar = { owner: { id: 0 } } as ICar;
   status: HttpErrorResponse | null = null;
@@ -42,7 +42,7 @@ export class CarFormComponent implements OnInit {
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       title: [car.title, Validators.required],
-      images: [car.images, Validators.required],
+      images: [car.images],
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
       seats: [car.seats, Validators.required],
@@ -102,6 +102,7 @@ export class CarFormComponent implements OnInit {
   handleFileInput(event: any) {
     this.selectedFiles = event.target.files;
     console.log('Imagenes seleccionadas:', this.selectedFiles);
+    
   }
 
   public hasError = (controlName: string, errorName: string) => {
@@ -133,7 +134,7 @@ export class CarFormComponent implements OnInit {
       drive: 'RWD',
       plate: 'ABC123',
       dgtSticker: 'C',
-      lastITV: '2021-06-01',
+      lastITV: new Date(),
       description: 'Detailed description of the car.',
       owner: { id: this.user.id }
     });
@@ -141,15 +142,28 @@ export class CarFormComponent implements OnInit {
 
 
   onSubmit() {
-    if (this.carForm.valid && this.selectedFiles) {
-      console.log('Formulario:', this.carForm.value);
-
-      const formData = new FormData();
+   
+    if (this.selectedFiles) {
+      console.log('Imagenes seleccionadas:', this.selectedFiles);
 
       Array.from(this.selectedFiles).forEach((file) => {
-        this.carForm.setValue({ images: file });
-      });
+        console.log('Imagen:', file);
+        try {
 
+          this.carForm.setValue({images:file});
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+
+    console.log('Formulario:', this.carForm.value);
+    
+    if (this.carForm.valid) {
+      console.log('Formulario válido:', this.carForm.value);
+      const formData = new FormData();
+
+      
       formData.append('car', JSON.stringify(this.carForm.value));
       // Primero, crea el coche y luego sube las imágenes
       this.carService.create(this.carForm.value).subscribe({
@@ -169,7 +183,7 @@ export class CarFormComponent implements OnInit {
             });
           } else {
             // Si no se seleccionaron imágenes, navega directamente
-            this.router.navigate(['/car', car.id]);
+            this.router.navigate(['/car', car]);
           }
         },
         error: (error: HttpErrorResponse) => {

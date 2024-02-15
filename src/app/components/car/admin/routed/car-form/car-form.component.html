@@ -127,9 +127,9 @@
       </div>
 
       <!-- Images Upload -->
-      <div class="mt-4">
+      <div class="mt-4"> 
         <label for="images" class="block text-sm font-medium text-gray-700">Images</label>
-        <input type="file" id="images" (change)="handleFileInput($event)" multiple accept="image/*"
+        <input type="file" formControlName="images" id="images" (change)="handleFileInput($event)" multiple accept="image/*"
                class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" 
                >
       </div>
