@@ -1,145 +1,212 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-  <div class="max-w-4xl w-full bg-white shadow-xl rounded-lg overflow-hidden">
-    <div class="bg-gradient-to-r from-sky-500 to-indigo-500 p-6">
-      <h2 class="text-2xl font-bold text-white">Car Details</h2>
-    </div>
+<div class="flex items-center justify-center min-h-screen bg-sky-300 px-20 py-10">
+  <div class=" w-full px-5 bg-gray-50 bg-opacity-95 backdrop-blur-lg shadow-xl rounded-3xl overflow-hidden">
     <form [formGroup]="carForm" (ngSubmit)="onSubmit()" class="p-6 grid gap-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Brand -->
-        <div>
-          <label for="brand" class="block text-sm font-medium text-gray-700">Brand</label>
-          <select id="brand" formControlName="brand" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="Mercedes">Mercedes</option>
-            <option value="BMW">BMW</option>
-            <option value="Tesla">Tesla</option>
-            <option value="Audi">Audi</option>
-            <option value="Peugeot">Peugeot</option>
-            <option value="Skoda">Skoda</option>
-            <option value="Fiat">Fiat</option>
-          </select>
+      <!-- Brand -->
+      <div>
+        <h2 class="font-semibold text-2xl">Basic information</h2>
+      </div>
+
+      <div class="flex space-x-10">
+        <div class="flex w-1/2 bg-sky-300 rounded-xl justify-center">
+          <div class="bg-sky-300 rounded-xl flex items-center h-full self-center justify-center">
+              <input type="file" formControlName="images" id="images" (change)="handleFileInput($event)" multiple accept="image/*"
+              class="file:rounded-lg file:text-sm file:border-0 file:px-4 file:py-2 file:font-medium file:bg-sky-500 file:text-white hover:file:bg-sky-600 file:transition-all">
+          </div>
         </div>
 
-        <!-- Model -->
-        <div>
-          <label for="model" class="block text-sm font-medium text-gray-700">Model</label>
-          <select id="model" formControlName="model" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="e39">e39</option>
-          </select>
+        <div class="flex flex-col space-y-10 w-1/2">
+          <div>
+            <label for="title" class="font-medium">Title</label>
+            <input type="text" id="title" formControlName="title"
+              class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:border-none px-3 py-2"
+              placeholder="Perfect car">
+          </div>
+          <div class="flex flex-col ">
+            <div class="flex w-full space-x-10">
+              <div class="flex flex-col w-1/2">
+                <label for="brand" class=" font-medium text-gray-700">Brand</label>
+                <select id="brand" formControlName="brand"
+                  class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:border-none px-3 py-2">
+                  <option class="font-medium h-20" value="Mercedes">Mercedes</option>
+                  <option value="BMW">BMW</option>
+                  <option value="Tesla">Tesla</option>
+                  <option value="Audi">Audi</option>
+                  <option value="Peugeot">Peugeot</option>
+                  <option value="Skoda">Skoda</option>
+                  <option value="Fiat">Fiat</option>
+                </select>
+              </div>
+
+              <!-- Model -->
+              <div class="flex flex-col w-1/2">
+                <label for="model" class=" font-medium text-gray-700">Model</label>
+                <select id="model" formControlName="model"
+                  class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:border-none px-3 py-2">
+                  <option value="e39">e39</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex w-full">
+        <div class="flex  w-3/5">
+
+          <!-- Gearbox -->
+          <div class="flex flex-col w-1/3">
+            <label for="gearbox" class="font-medium text-gray-700">Gearbox</label>
+            <input type="hidden" id="gearboxValue" name="gearbox" value="">
+  
+            <div class="mt-2 space-x-5">
+              <button type="button" id="manual"
+                class="justify-center py-2 px-4 w-32 shadow-sm text-sm font-medium rounded-xl text-white bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 focus:outline-none"
+                onclick="setGearbox('Manual')">
+                <div class="flex flex-col space-y-2 p-3">
+                  <i class="fa text-4xl text-gray-500 fa-circle"></i>
+                  <p class="text-sm text-gray-500">Manual</p>
+                </div>
+              </button>
+              <button type="button" id="automatic"
+                class="justify-center py-2 px-4 w-32 shadow-sm text-sm font-medium rounded-xl text-white bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 focus:outline-none"
+                onclick="setGearbox('Automatic')">
+                <div class="flex flex-col space-y-2 p-3">
+                  <i class="fa text-4xl text-gray-500 fa-circle"></i>
+                  <p class="text-sm text-gray-500">Automatic</p>
+                </div>
+              </button>
+            </div>
+          </div>
+  
+          <!-- Fuel -->
+          <div class="flex flex-col w-2/3">
+            <label for="fuel" class="font-medium text-gray-700">Fuel type</label>
+            <input type="hidden" id="fuelValue" name="fuel" value="">
+  
+            <div class="mt-2 space-x-5">
+              <button type="button" id="gasoline"
+                class="justify-center py-2 px-4 w-32 shadow-sm text-sm font-medium rounded-xl text-white bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 transition-all focus:outline-none"
+                onclick="setFuel('Gasoline')">
+                <div class="flex flex-col space-y-2 p-3">
+                  <i class="fa text-4xl text-gray-500 fa-circle"></i>
+                  <p class="text-sm text-gray-500">Gasoline</p>
+                </div>
+              </button>
+              <button type="button" id="petrol"
+                class="justify-center py-2 px-4 w-32 shadow-sm text-sm font-medium rounded-xl text-white bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 transition-all focus:outline-none"
+                onclick="setFuel('Petrol')">
+                <div class="flex flex-col space-y-2 p-3">
+                  <i class="fa text-4xl text-gray-500 fa-circle"></i>
+                  <p class="text-sm text-gray-500">Petrol</p>
+                </div>
+              </button>
+              <button type="button" id="electric"
+                class="justify-center py-2 px-4 w-32 shadow-sm text-sm font-medium rounded-xl text-white bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 transition-all focus:outline-none"
+                onclick="setFuel('Electric')">
+                <div class="flex flex-col space-y-2 p-3">
+                  <i class="fa text-4xl text-gray-500 fa-circle"></i>
+                  <p class="text-sm text-gray-500">Electric</p>
+                </div>
+              </button>
+  
+              <button type="button" id="hybrid"
+                class="justify-center py-2 px-4 w-32 shadow-sm text-sm font-medium rounded-xl text-white bg-gray-200 hover:bg-gray-300 focus:bg-gray-300 transition-all focus:outline-none"
+                onclick="setFuel('Hybrid')">
+                <div class="flex flex-col space-y-2 p-3">
+                  <i class="fa text-4xl text-gray-500 fa-circle"></i>
+                  <p class="text-sm text-gray-500">Hybrid</p>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Year -->
-        <div>
-          <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-          <input type="number" id="year" formControlName="year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="2002">
+        <div class="flex flex-col w-2/5">
+          <label for="year" class=" font-medium text-gray-700">Year</label>
+          <select id="year" formControlName="year"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:border-none px-3 py-2">
+            <option value="1930">1930</option>
+          </select>
         </div>
+      </div>
 
-        <!-- Gearbox -->
-        <div>
-          <label for="gearbox" class="block text-sm font-medium text-gray-700">Gearbox</label>
-          <select id="gearbox" formControlName="gearbox" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="Manual">Manual</option>
-            <option value="Automatic">Automatic</option>
+      <div class="flex w-full justify-between space-x-10">
+        <!-- Color -->
+        <div class="flex flex-col w-full md:w-1/3">
+          <label for="color" class="font-medium text-gray-700">Color</label>
+          <select id="color" formControlName="color"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:bg-gray-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2">
+            <option class="bg-red-500" value="red"></option>
+            <option class="bg-blue-500" value="blue"></option>
+            <option class="bg-green-500" value="green"></option>
+            <option class="bg-yellow-500" value="yellow"></option>
+            <option class="bg-black" value="black"></option>
+            <option class="bg-white-500" value="white"></option>
+            <option class="bg-gray-500" value="gray"></option>
+            <option class="bg-orange-500" value="orange"></option>
+            <option class="bg-purple-500" value="purple"></option>
+            <option class="bg-pink-500" value="pink"></option>
           </select>
         </div>
 
-        <!-- Color -->
-        <div>
-          <label for="color" class="block text-sm font-medium text-gray-700">Color</label>
-          <input type="text" id="color" formControlName="color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Red">
-        </div>
 
         <!-- Seats -->
-        <div>
-          <label for="seats" class="block text-sm font-medium text-gray-700">Seats</label>
-          <input type="number" id="seats" formControlName="seats" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="5">
+        <div class="md:w-1/3">
+          <label for="seats" class="font-medium text-gray-700">Seats</label>
+          <input type="number" id="seats" formControlName="seats"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2">
         </div>
 
         <!-- Doors -->
-        <div>
-          <label for="doors" class="block text-sm font-medium text-gray-700">Doors</label>
-          <input type="number" id="doors" formControlName="doors" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="4">
+        <div class="md:w-1/3">
+          <label for="doors" class="font-medium text-gray-700">Doors</label>
+          <input type="number" id="doors" formControlName="doors"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2">
         </div>
-
-        <!-- Horsepower -->
-        <div>
-          <label for="horsepower" class="block text-sm font-medium text-gray-700">Horsepower</label>
-          <input type="number" id="horsepower" formControlName="horsepower" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="200">
-        </div>
-
+      </div>
+      <div class="flex space-x-10">
         <!-- Distance -->
-        <div>
-          <label for="distance" class="block text-sm font-medium text-gray-700">Distance (km)</label>
-          <input type="number" id="distance" formControlName="distance" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="50000">
-        </div>
-
-        <!-- Fuel -->
-        <div>
-          <label for="fuel" class="block text-sm font-medium text-gray-700">Fuel</label>
-          <select id="fuel" formControlName="fuel" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="Petrol">Petrol</option>
-            <option value="Diesel">Diesel</option>
-            <option value="Electric">Electric</option>
-            <option value="Hybrid">Hybrid</option>
-          </select>
-        </div>
-
-        <!-- Price -->
-        <div>
-          <label for="price" class="block text-sm font-medium text-gray-700">Price (€)</label>
-          <input type="number" id="price" formControlName="price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="30000">
-        </div>
-
-        <!-- Type -->
-        <div>
-          <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
-          <select id="type" formControlName="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="Sedan">Sedan</option>
-            <option value="SUV">SUV</option>
-            <option value="Hatchback">Hatchback</option>
-            <option value="Coupe">Coupe</option>
-            <option value="Convertible">Convertible</option>
-          </select>
+        <div class="w-full">
+          <label for="distance" class="font-medium text-gray-700">Distance (km)</label>
+          <input type="number" id="distance" formControlName="distance"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2"
+            placeholder="50000">
         </div>
 
         <!-- Location -->
-        <div>
-          <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-          <input type="text" id="location" formControlName="location" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="City">
+        <div class="w-full">
+          <label for="location" class="font-medium text-gray-700">Location</label>
+          <input type="text" id="location" formControlName="location"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2"
+            placeholder="City">
         </div>
 
-        <div>
-          <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-          <input type="text" id="title" formControlName="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Title">
+        <!-- Price -->
+        <div class="w-full">
+          <label for="price" class="font-medium text-gray-700">Price (€)</label>
+          <input type="number" id="price" formControlName="price"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2"
+            placeholder="30000">
         </div>
 
-        <div>
-          <label for="boughtIn" class="block text-sm font-medium text-gray-700">Place bought</label>
-          <input type="text" id="boughtIn" formControlName="boughtIn" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Country">
+        <!-- Currency -->
+        <div class="w-full">
+          <label for="currency" class="font-medium text-gray-700">Currency:</label>
+          <input type="text" id="currency" formControlName="currency"
+            class="mt-1 w-full rounded-lg shadow-sm bg-gray-200 focus:border-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 px-3 py-2"
+            placeholder="Currency">
         </div>
-        <div>
-          <label for="currency" class="block text-sm font-medium text-gray-700">Currency:</label>
-          <input type="text" id="currency" formControlName="currency" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Currency">
-        </div>
-
-        <!-- Additional Fields -->
-        <!-- Continue adding fields as needed -->
-
-      </div>
-
-      <!-- Images Upload -->
-      <div class="mt-4"> 
-        <label for="images" class="block text-sm font-medium text-gray-700">Images</label>
-        <input type="file" formControlName="images" id="images" (change)="handleFileInput($event)" multiple accept="image/*"
-               class="mt-1 block w-full file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" 
-               >
       </div>
 
       <!-- Submit Button -->
       <div class="mt-6 flex justify-between">
-        <button type="button" (click)="fillFormWithDefaults()" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+        <button type="button" (click)="fillFormWithDefaults()"
+          class="inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
           Fill Form With Defaults
         </button>
-        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <button type="submit"
+          class="justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-500 hover:bg-sky-600 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
           Publish
         </button>
       </div>

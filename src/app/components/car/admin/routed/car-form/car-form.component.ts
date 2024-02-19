@@ -19,7 +19,8 @@ export class CarFormComponent implements OnInit {
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
 
-  selectedFiles: Array<{ file: File, imageUrl: string, car: ICar }> = [];
+  selectedFiles: File[] = []; // Este array solo contendrá objetos File
+  images: IImage[] = [];
   carForm!: FormGroup;
   car: ICar = { owner: { id: 0 } } as ICar;
   status: HttpErrorResponse | null = null;
@@ -42,7 +43,12 @@ export class CarFormComponent implements OnInit {
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       title: [car.title, Validators.required],
-      images: [car.images, Validators.required],
+      images: this.formBuilder.array([
+        this.formBuilder.group({
+          imageUrl: [''],
+          car: [car.id]
+        })
+      ]),
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
       seats: [car.seats, Validators.required],
@@ -69,8 +75,7 @@ export class CarFormComponent implements OnInit {
         id: [car.owner.id, Validators.required]
       })
     });
-
-
+    
   }
 
   ngOnInit() {
@@ -99,16 +104,34 @@ export class CarFormComponent implements OnInit {
     }
   }
 
+  setGearbox(gearboxType: string) {
+    this.carForm.patchValue({
+      gearbox: gearboxType
+    });
+  }
+
+  setFuel(fuelType: string) {
+    this.carForm.patchValue({
+      fuel: fuelType
+    });
+  }
+
   handleFileInput(event: any) {
     const files: FileList = event.target.files;
-    this.selectedFiles = Array.from(files).map(file => ({
-      file: file, // El objeto File real
-      imageUrl: URL.createObjectURL(file), // Para previsualización
-      car: this.car // El coche al que pertenece la imagen
+
+    // Llenamos selectedFiles con objetos File
+    this.selectedFiles = Array.from(files);
+
+    // Creamos el array de IImage basado en los archivos seleccionados
+    this.images = this.selectedFiles.map(file => ({
+      imageUrl: file.name, // Usamos el nombre del archivo para imageUrl
+      car: this.car // Ponemos el valor de car como null
     }));
+
     console.log('Imagenes seleccionadas:', this.selectedFiles);
+    console.log('Imagenes para IImage:', this.images);
   }
-  
+
 
   public hasError = (controlName: string, errorName: string) => {
     return this.carForm.controls[controlName].hasError(errorName);
@@ -120,7 +143,7 @@ export class CarFormComponent implements OnInit {
       model: 'e39',
       year: 2002,
       gearbox: 'Manual',
-      color: 'Red',
+      color: 'red',
       seats: 5,
       doors: 4,
       horsepower: 200,
@@ -150,27 +173,20 @@ export class CarFormComponent implements OnInit {
     if (this.carForm.valid) {
       // Convertir datos del formulario a JSON para incluirlos en FormData
       const formData = new FormData();
-  
+
       if (this.operation === 'NEW') {
-        // Crear el coche primero
         this.carService.create(this.carForm.value).subscribe({
           next: (car: ICar) => {
             console.log('Coche creado:', car);
-  
-            // Preparar FormData con las imágenes solo después de crear el coche
-            if (this.selectedFiles && this.selectedFiles.length > 0) {
-              // Agregar cada archivo seleccionado a formData
-              Array.from(this.selectedFiles).forEach((selectedFile) => {
-                formData.append('images', selectedFile.file, selectedFile.file.name);
-                // Agrega adicionalmente el ID del coche creado si es necesario para la asociación en el backend
-                formData.append('carId', car.id.toString());
+
+            if (this.images && this.images.length > 2) {
+              Array.from(this.images).forEach((image) => {
+                formData.append('images', image.imageUrl, car.id.toString());
               });
-  
-              // Luego subir las imágenes asociadas al coche
+
               this.mediaService.uploadMultipleFiles(formData).subscribe({
                 next: (response) => {
                   console.log('Imágenes subidas:', response);
-                  // Navegar a la vista del coche creado
                   this.router.navigate(['/car', car.id]);
                 },
                 error: (uploadError) => {
@@ -179,7 +195,6 @@ export class CarFormComponent implements OnInit {
                 }
               });
             } else {
-              // Si no hay imágenes para subir, simplemente navega a la vista del coche
               this.router.navigate(['/car', car.id]);
             }
           },
