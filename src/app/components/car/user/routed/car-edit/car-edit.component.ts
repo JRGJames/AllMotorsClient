@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ICar, IImage } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 
+
 @Component({
   selector: 'app-car-edit',
   templateUrl: './car-edit.component.html',
@@ -16,7 +17,8 @@ export class CarEditComponent implements OnInit {
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
   images: IImage[] = [];
   car: ICar = { owner: { id: 0 } } as ICar;
-
+  backgroundImage: string = `url(assets/images/image1.jpg)`;
+  years: number[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -67,6 +69,13 @@ export class CarEditComponent implements OnInit {
     }
   }
   
+  loadYears() {
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= 1900; year--) {
+      this.years.push(year);
+    }
+  }
+
   findCarById(id: number) {
     this.carService.get(id).subscribe(
       car => {

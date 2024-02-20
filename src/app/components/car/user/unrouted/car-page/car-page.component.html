@@ -135,7 +135,7 @@
         <div class="h-52 bg-sky-600 rounded-lg w-4/12">
           <img src="" alt="">
           <button (click)="handleBookmarkClick(car)"
-            class="relative -top-1 left-10 text-4xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+            class="relative -top-1 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
             <i class="fas fa-bookmark"></i>
           </button>
         </div>
@@ -170,9 +170,9 @@
       <div class="flex justify-start space-x-6">
         <p *ngIf="selectedCar?.horsepower" class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.horsepower ?? 0 | thousandSeparator }}
           hp <i class="fa fa-car px-1 text-gray-600"></i></p>
-        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.fuel}} <i
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.fuel ?? '' | capitalizeFirst}} <i
             class="fa fa-car px-1 text-gray-600"></i></p>
-        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.gearbox}} <i
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.gearbox ?? '' | capitalizeFirst}} <i
             class="fa fa-car px-1 text-gray-600"></i></p>
         <p *ngIf="selectedCar?.type" class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.type}} <i
             class="fa fa-car px-1 text-gray-600"></i></p>
@@ -196,7 +196,7 @@
             <p class="text-gray-500">{{selectedCar?.saves}} saves</p>
           </div>
         </div>
-        <button [routerLink]="['/car', selectedCar?.id]" class="rounded-md bg-sky-600 hover:bg-sky-700 px-3 py-2 text-white">
+        <button [routerLink]="['/car', selectedCar?.id]" class="rounded-md bg-sky-600 hover:bg-sky-700 transition-all px-3 py-2 text-white">
           More info
           <i class="fa fa-circle-info text-white px-2"></i>
         </button>

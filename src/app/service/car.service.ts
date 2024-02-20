@@ -8,10 +8,16 @@ import { API_URL } from 'src/environment/environment';
 export class CarService {
 
   url: string = API_URL + '/car';
+  private apiUrl = 'http://api.edmunds.com/api/vehicle/v2/makes';
+  private apiKey = 'YOUR_API_KEY_HERE';
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
+
+  getBrands(): Observable<any> {
+    return this.http.get(`${this.apiUrl}?fmt=json&api_key=${this.apiKey}`);
+  }
 
   get(id: number): Observable<ICar> {
     return this.http.get<ICar>(this.url + '/get/' + id);
@@ -22,7 +28,7 @@ export class CarService {
     let strUrlUser: string = id_user > 0 ? `&user=${id_user}` : "";
 
     return this.http.get<ICarPage>(`${this.url}/getPage/?size=${size}&page=${page}&sort=${orderField},${orderDirection}${strUrlUser}${url_filter}`);
-}
+  }
 
 
   create(car: ICar): Observable<ICar> {

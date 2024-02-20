@@ -20,18 +20,19 @@
       </div>
 
       <div *ngIf="showDropdown" #dropdownButton
-        class="absolute right-0 top-full bg-gray-100 bg-opacity-70 backdrop-blur-lg rounded-b-lg shadow-sm">
+        class="absolute right-0 top-full bg-gray-100 bg-opacity-70 rounded-b-lg shadow-sm">
         <button
-          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg text-gray-600 w-full py-2 px-6">
+          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg transition-all text-gray-600 hover:text-gray-700 focus:text-gray-700 w-full py-2 px-6"
+          >
           Configuration
         </button>
         <button
-          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg w-full text-gray-600 py-2 px-6">
-          Profile
+        class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg transition-all text-gray-600 hover:text-gray-700 focus:text-gray-700 w-full py-2 px-6">
+        Profile
         </button>
         <button (click)="logout()"
-          class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-lg focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg w-full rounded-b-lg text-gray-600 py-2 px-6">
-          Logout
+        class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg transition-all text-gray-600 hover:text-gray-700 focus:text-gray-700 w-full py-2 px-6 rounded-b-lg">
+        Logout
         </button>
       </div>
     </button>

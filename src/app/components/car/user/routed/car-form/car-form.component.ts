@@ -26,6 +26,10 @@ export class CarFormComponent implements OnInit {
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
   title: string = '';
+  years: number[] = [];
+  brands: string[] = [];
+  models: string[] = [];
+  backgroundImage: string = `url(assets/images/image1.jpg)`;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,33 +38,32 @@ export class CarFormComponent implements OnInit {
     private sessionService: SessionService,
     private mediaService: MediaService,
     private router: Router
-
   ) {
     this.initializeForm(this.car);
   }
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
-      brand: [car.brand, Validators.required],
-      model: [car.model, Validators.required],
-      title: [car.title, Validators.required],
-      images: [car.images],
-      color: [car.color, Validators.required],
-      year: [car.year, Validators.required],
-      seats: [car.seats, Validators.required],
-      doors: [car.doors, Validators.required],
-      horsepower: [car.horsepower],
-      gearbox: [car.gearbox, Validators.required],
-      distance: [car.distance, Validators.required],
-      fuel: [car.fuel, Validators.required],
-      price: [car.price, Validators.required],
-      type: [car.type],
-      location: [car.location, Validators.required],
+      brand: [car.brand, [Validators.required, Validators.minLength(2)]],
+      model: [car.model, [Validators.required, Validators.minLength(2)]],
+      title: [car.title, [Validators.required, Validators.minLength(3)]],
+      images: [car.images], // La validación de archivos puede requerir un enfoque personalizado
+      color: [car.color, [Validators.required]],
+      year: [car.year, [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
+      seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(9)]],
+      doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(20)]],
+      horsepower: [car.horsepower, [Validators.min(10)]],
+      gearbox: [car.gearbox, [Validators.required]],
+      distance: [car.distance, [Validators.required, Validators.min(0)]],
+      fuel: [car.fuel, [Validators.required]],
+      price: [car.price, [Validators.required, Validators.min(1)]],
+      type: [car.type, [Validators.required]],
+      location: [car.location, [Validators.required]],
       boughtIn: [car.boughtIn],
-      currency: [car.currency, Validators.required],
-      emissions: [car.emissions],
-      consumption: [car.consumption],
-      acceleration: [car.acceleration],
+      currency: [car.currency, [Validators.required]],
+      emissions: [car.emissions, [Validators.min(0)]],
+      consumption: [car.consumption, [Validators.min(0)]],
+      acceleration: [car.acceleration, [Validators.min(0)]],
       engine: [car.engine],
       drive: [car.drive],
       plate: [car.plate],
@@ -68,36 +71,23 @@ export class CarFormComponent implements OnInit {
       lastITV: [car.lastITV],
       description: [car.description],
       owner: this.formBuilder.group({
-        id: [car.owner.id, Validators.required]
+        id: [car.owner.id, [Validators.required]]
       })
     });
-    
   }
 
   ngOnInit() {
-    if (this.operation === 'EDIT' && this.id) {
-      this.carService.get(this.id).subscribe({
-        next: (data: ICar) => {
-          this.car = data;
-          this.initializeForm(this.car); // Incluye el campo 'id' para la operación 'EDIT'
-        },
-        error: (error: HttpErrorResponse) => {
-          this.status = error;
-        }
-      });
-    } else {
-      // En el caso de la creación de un nuevo coche ('NEW'), inicializa el formulario sin 'id'
-      this.initializeForm(this.car); // No incluye el campo 'id'
-      this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
-        next: (data: IUser) => {
-          this.user = data;
-          this.carForm.get('owner')?.setValue({ id: this.user.id });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.status = error;
-        }
-      });
-    }
+    this.initializeForm(this.car); // No incluye el campo 'id'
+    this.loadYears();
+    this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
+      next: (data: IUser) => {
+        this.user = data;
+        this.carForm.get('owner')?.setValue({ id: this.user.id });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.status = error;
+      }
+    });
   }
 
   changeTitleBrand(event: any) {
@@ -136,25 +126,47 @@ export class CarFormComponent implements OnInit {
     console.log('Imagenes para IImage:', this.images);
   }
 
+  loadYears() {
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= 1900; year--) {
+      this.years.push(year);
+    }
+  }
 
   public hasError = (controlName: string, errorName: string) => {
     return this.carForm.controls[controlName].hasError(errorName);
   }
+
+  loadBrands() {
+    this.carService.getBrands().subscribe(response => {
+      this.brands = response.makes;
+      // Inicializar modelos basado en la primera marca, si es necesario
+      // this.models = this.brands[0].models;
+    });
+  }
+
+  // onBrandChange(event: any) {
+  //   const brandName = event.target.value;
+  //   const selectedBrand = this.brands.find(brand => brand.name === brandName);
+  //   this.models = selectedBrand ? selectedBrand.models : [];
+  //   // Restablece el valor del modelo en el formulario si deseas
+  //   // this.carForm.get('model').setValue('');
+  // }
 
   fillFormWithDefaults() {
     this.carForm.patchValue({
       brand: 'Mercedes',
       model: 'e39',
       year: '1930',
-      gearbox: 'Manual',
+      gearbox: 'manual',
       color: 'red',
       seats: 5,
       doors: 4,
       horsepower: 200,
       distance: 50000,
-      fuel: 'Petrol',
+      fuel: 'petrol',
       price: 30000,
-      type: 'Sedan',
+      type: 'sedan',
       location: 'City',
       title: 'Excellent Condition',
       boughtIn: 'Germany',
@@ -163,7 +175,7 @@ export class CarFormComponent implements OnInit {
       consumption: 5.5,
       acceleration: 7.2,
       engine: '3.0L V6',
-      drive: 'RWD',
+      drive: 'rwd',
       plate: 'ABC123',
       dgtSticker: 'C',
       lastITV: new Date(),

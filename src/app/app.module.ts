@@ -14,7 +14,8 @@ import { MessageService } from './service/message.service';
 
 import { TrimPipe } from './pipes/trim.pipe';
 import { ThousandSeparatorPipe } from './pipes/thousandSeparator.pipe';
-import { RoundToThousandthPipe } from './pipes/roundToThousandth.pipe'
+import { RoundToThousandthPipe } from './pipes/roundToThousandth.pipe';
+import { CapitalizeFirstPipe } from './pipes/capitalizeFirst.pipe';
 
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
@@ -40,6 +41,7 @@ import { CarPageComponent } from './components/car/user/unrouted/car-page/car-pa
     TrimPipe,
     ThousandSeparatorPipe,
     RoundToThousandthPipe,
+    CapitalizeFirstPipe,
     LoginComponent,
     SignupComponent,
     NavbarComponent,
