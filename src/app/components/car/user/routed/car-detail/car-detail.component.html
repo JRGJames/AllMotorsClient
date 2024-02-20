@@ -98,7 +98,7 @@
           class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-xl bg-black text-white hover:bg-gray-800 transition-colors w-full">
           Contact Seller
         </button>
-        <button *ngIf="isCurrentUserOwner()"
+        <button [routerLink]="['/car/edit', car.id]" *ngIf="isCurrentUserOwner()"
           class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-xl bg-yellow-400 text-white hover:bg-yellow-500 transition-colors w-1/12">
           <i class="fa fa-pencil px-2"></i>
         </button>

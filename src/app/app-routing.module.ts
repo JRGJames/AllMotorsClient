@@ -4,8 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/shared/routed/home/home.component';
 import { LoginComponent } from './components/shared/routed/login/login.component'; 
 import { SignupComponent } from './components/shared/routed/signup/signup.component';
-import { CarFormComponent } from './components/car/admin/routed/car-form/car-form.component';
-import { CarDetailComponent } from './components/car/admin/routed/car-detail/car-detail.component';
+import { CarFormComponent } from './components/car/user/routed/car-form/car-form.component';
+import { CarDetailComponent } from './components/car/user/routed/car-detail/car-detail.component';
+import { CarEditComponent } from './components/car/user/routed/car-edit/car-edit.component';
 
 const routes: Routes = [
 
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'upload', component: CarFormComponent },
   { path: 'car/:id' , component: CarDetailComponent },
+  { path: 'car/edit/:id', component: CarEditComponent }
 ];
 
 @NgModule({

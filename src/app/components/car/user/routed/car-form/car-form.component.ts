@@ -184,9 +184,9 @@ export class CarFormComponent implements OnInit {
             console.log('Coche creado:', car);
 
             if (this.images && this.images.length > 2) {
-              Array.from(this.images).forEach((image) => {
-                formData.append('images', image.imageUrl, car.id.toString());
-              });
+              // Array.from(this.images).forEach((image) => {
+              //   formData.append('images', image.imageUrl, car.id.toString());
+              // });
 
               this.mediaService.uploadMultipleFiles(formData).subscribe({
                 next: (response) => {
