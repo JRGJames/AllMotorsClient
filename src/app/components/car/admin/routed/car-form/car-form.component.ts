@@ -25,6 +25,7 @@ export class CarFormComponent implements OnInit {
   car: ICar = { owner: { id: 0 } } as ICar;
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
+  title: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,24 +44,19 @@ export class CarFormComponent implements OnInit {
       brand: [car.brand, Validators.required],
       model: [car.model, Validators.required],
       title: [car.title, Validators.required],
-      images: this.formBuilder.array([
-        this.formBuilder.group({
-          imageUrl: [''],
-          car: [car.id]
-        })
-      ]),
+      images: [car.images],
       color: [car.color, Validators.required],
       year: [car.year, Validators.required],
       seats: [car.seats, Validators.required],
       doors: [car.doors, Validators.required],
-      horsepower: [car.horsepower, Validators.required],
+      horsepower: [car.horsepower],
       gearbox: [car.gearbox, Validators.required],
       distance: [car.distance, Validators.required],
       fuel: [car.fuel, Validators.required],
       price: [car.price, Validators.required],
-      type: [car.type, Validators.required],
+      type: [car.type],
       location: [car.location, Validators.required],
-      boughtIn: [car.boughtIn, Validators.required],
+      boughtIn: [car.boughtIn],
       currency: [car.currency, Validators.required],
       emissions: [car.emissions],
       consumption: [car.consumption],
@@ -104,6 +100,14 @@ export class CarFormComponent implements OnInit {
     }
   }
 
+  changeTitleBrand(event: any) {
+    this.title = event.target.value;
+  }
+
+  changeTitleModel(event: any) {
+    this.title += ' ' + event.target.value;
+  }
+
   setGearbox(gearboxType: string) {
     this.carForm.patchValue({
       gearbox: gearboxType
@@ -141,7 +145,7 @@ export class CarFormComponent implements OnInit {
     this.carForm.patchValue({
       brand: 'Mercedes',
       model: 'e39',
-      year: 2002,
+      year: '1930',
       gearbox: 'Manual',
       color: 'red',
       seats: 5,
@@ -195,7 +199,7 @@ export class CarFormComponent implements OnInit {
                 }
               });
             } else {
-              this.router.navigate(['/car', car.id]);
+              this.router.navigate(['/car', car]);
             }
           },
           error: (createError) => {

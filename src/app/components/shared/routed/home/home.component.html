@@ -19,7 +19,7 @@
               <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].distance
                 |
                 roundToThousandth }} km</p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage -
+              <p *ngIf="popularCars[currentPage - 1].horsepower" class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage -
                 1].horsepower
                 | thousandSeparator }} hp</p>
             </div>
