@@ -109,6 +109,16 @@ export interface ICar extends IEntity {
 export interface ICarPage extends IPage<ICar> {
 }
 
+export interface IModel {
+    name: string;
+    // Agrega otras propiedades relevantes para los modelos
+}
+
+export interface IBrand {
+    name: string;
+    models: IModel[];
+}
+
 export interface IImage {
     imageUrl: string;
     car: ICar;

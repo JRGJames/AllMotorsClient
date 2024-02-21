@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ICar, ICarPage } from '../model/model';
@@ -8,15 +8,24 @@ import { API_URL } from 'src/environment/environment';
 export class CarService {
 
   url: string = API_URL + '/car';
-  private apiUrl = 'http://api.edmunds.com/api/vehicle/v2/makes';
-  private apiKey = 'YOUR_API_KEY_HERE';
+  private baseUrl = 'https://car-api2.p.rapidapi.com';
+  private headers = new HttpHeaders({
+    'X-RapidAPI-Key': '84591146damshe9091088f8005a7p1fe920jsn4ecf56b8ec6e',
+    'X-RapidAPI-Host': 'car-api2.p.rapidapi.com'
+  });
 
   constructor(
     private http: HttpClient,
   ) { }
 
   getBrands(): Observable<any> {
-    return this.http.get(`${this.apiUrl}?fmt=json&api_key=${this.apiKey}`);
+    const url = 'https://car-api2.p.rapidapi.com/api/makes?direction=asc&sort=id';
+    return this.http.get(url, { headers: this.headers });
+  }
+
+  getModelsByBrand(brand: string): Observable<any> {
+    const url = `https://car-api2.p.rapidapi.com/api/models?brand=${brand}`;
+    return this.http.get(url, { headers: this.headers });
   }
 
   get(id: number): Observable<ICar> {

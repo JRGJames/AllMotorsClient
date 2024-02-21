@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ICar, IImage, IUser, formOperation } from 'src/app/model/model';
+import { IBrand, ICar, IImage, IModel, IUser, formOperation } from 'src/app/model/model';
 import { CarService } from '../../../../../service/car.service';
 import { UserService } from '../../../../../service/user.service';
 import { SessionService } from '../../../../../service/session.service';
@@ -79,6 +79,7 @@ export class CarFormComponent implements OnInit {
   ngOnInit() {
     this.initializeForm(this.car); // No incluye el campo 'id'
     this.loadYears();
+    this.loadBrands();
     this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
       next: (data: IUser) => {
         this.user = data;
@@ -138,24 +139,37 @@ export class CarFormComponent implements OnInit {
   }
 
   loadBrands() {
-    this.carService.getBrands().subscribe(response => {
-      this.brands = response.makes;
-      // Inicializar modelos basado en la primera marca, si es necesario
-      // this.models = this.brands[0].models;
+    this.carService.getBrands().subscribe({
+      next: (response) => {
+        console.log('Marcas:', response);
+        for (let i = 0; i < response.data.length; i++) {
+          this.brands.push(response.data[i].name);
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+    console.log('Marcas:', this.brands);
+  }
+
+  onBrandChange(event: any) {
+    const selectedBrand = event.target.value;
+    this.carService.getModelsByBrand(selectedBrand).subscribe({
+      next: (response) => {
+        // Ajusta esto según la estructura de tu respuesta
+        this.models.push(response.data); // o simplemente response si la API devuelve directamente un array
+        console.log('Modelos:', this.models);
+      },
+      error: (error) => {
+        console.error('Error al cargar modelos:', error);
+      }
     });
   }
 
-  // onBrandChange(event: any) {
-  //   const brandName = event.target.value;
-  //   const selectedBrand = this.brands.find(brand => brand.name === brandName);
-  //   this.models = selectedBrand ? selectedBrand.models : [];
-  //   // Restablece el valor del modelo en el formulario si deseas
-  //   // this.carForm.get('model').setValue('');
-  // }
-
   fillFormWithDefaults() {
     this.carForm.patchValue({
-      brand: 'Mercedes',
+      brand: 'BMW',
       model: 'e39',
       year: '1930',
       gearbox: 'manual',
