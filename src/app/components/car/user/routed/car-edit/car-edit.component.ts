@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IImage, IUser, IUserPage } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { UserService } from 'src/app/service/user.service';
@@ -29,6 +29,7 @@ export class CarEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private carService: CarService,
     private userService: UserService,
+    private router: Router, // Inyectar Router
     private route: ActivatedRoute // Inyectar ActivatedRoute
 
   ) { }
@@ -99,9 +100,31 @@ export class CarEditComponent implements OnInit {
   );
 }
 
-  onSubmit() {
-    
+onSubmit() {
+  console.log('Formulario:', this.carForm.value);
+  // Comprobar si el formulario es válido antes de hacer algo
+  if (this.carForm.valid) {
+
+    // Llama al servicio CarService y usa el método para actualizar el coche
+    this.carService.update(this.car).subscribe({
+      next: (response) => {
+        // La respuesta es el coche actualizado, puedes redirigir al usuario o mostrar un mensaje
+        console.log('Coche actualizado:', response);
+        // Redirigir al usuario a la página del coche o a la lista de coches, por ejemplo
+        // this.router.navigate(['/car', carId]);
+        this.router.navigate(['/car', response.id]);
+      },
+      error: (error) => {
+        console.error('Error al actualizar el coche:', error);
+        // Manejar el error, mostrar un mensaje al usuario, etc.
+      }
+    });
+  } else {
+    // Si el formulario no es válido, puedes mostrar un mensaje o marcar los campos inválidos
+    console.error('El formulario no es válido');
   }
+}
+
 
   loadUsers() {
     const pageSize = 1000; // Ajusta según el máximo esperado de usuarios o el límite de tu backend
