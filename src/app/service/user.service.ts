@@ -48,7 +48,7 @@ export class UserService {
     } else {
       url_filter = '';
     }
-    return this.http.get<IUserPage>(this.url + '?size=' + size + '&page=' + page + '&sort=' + orderField + ',' + orderDirection + url_filter);
+    return this.http.get<IUserPage>(this.url + '/getPage?size=' + size + '&page=' + page + '&sort=' + orderField + ',' + orderDirection + url_filter);
   }
 
   create(user: IUser): Observable<IUser> {
@@ -73,5 +73,6 @@ export class UserService {
   empty(): Observable<number> {
     return this.http.delete<number>(this.url + "/empty");
   }
+
 
 }

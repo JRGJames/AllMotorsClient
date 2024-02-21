@@ -95,15 +95,15 @@
       </div>
       <div class="flex space-x-2">
         <button
-          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-xl bg-black text-white hover:bg-gray-800 transition-colors w-full">
+          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors w-full">
           Contact Seller
         </button>
         <button [routerLink]="['/car/edit', car.id]" *ngIf="isCurrentUserOwner()"
-          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-xl bg-yellow-400 text-white hover:bg-yellow-500 transition-colors w-1/12">
+          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-yellow-400 text-white hover:bg-yellow-500 transition-colors w-1/12">
           <i class="fa fa-pencil px-2"></i>
         </button>
         <button *ngIf="isCurrentUserOwner()"
-          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors w-1/12"
+          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors w-1/12"
           (click)="openDeleteModal(car.id)">
           <i class="fa fa-trash px-2"></i>
         </button>
@@ -134,7 +134,7 @@
         <div *ngIf="car.type" class="flex flex-col items-center gap-3">
           <i class="fas fa-car-side text-3xl text-gray-700"></i>
           <p class="text-base text-gray-800">
-            {{car.type}}
+            {{car.type | capitalizeFirst}}
           </p>
         </div>
         <div *ngIf="car.horsepower" class="flex flex-col items-center gap-3">

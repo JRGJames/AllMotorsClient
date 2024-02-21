@@ -26,7 +26,7 @@ export class CarFormComponent implements OnInit {
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
   title: string = '';
-  years: number[] = [];
+  years: string[] = [];
   brands: string[] = [];
   models: string[] = [];
   backgroundImage: string = `url(assets/images/image1.jpg)`;
@@ -44,20 +44,20 @@ export class CarFormComponent implements OnInit {
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
-      brand: [car.brand, [Validators.required, Validators.minLength(2)]],
-      model: [car.model, [Validators.required, Validators.minLength(2)]],
-      title: [car.title, [Validators.required, Validators.minLength(3)]],
+      brand: [car.brand, [Validators.required]],
+      model: [car.model, [Validators.required]],
+      title: [car.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       images: [car.images], // La validación de archivos puede requerir un enfoque personalizado
       color: [car.color, [Validators.required]],
       year: [car.year, [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
-      seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(9)]],
-      doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(20)]],
+      seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(8)]],
+      doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
       horsepower: [car.horsepower, [Validators.min(10)]],
       gearbox: [car.gearbox, [Validators.required]],
-      distance: [car.distance, [Validators.required, Validators.min(0)]],
+      distance: [car.distance, [Validators.required]],
       fuel: [car.fuel, [Validators.required]],
       price: [car.price, [Validators.required, Validators.min(1)]],
-      type: [car.type, [Validators.required]],
+      type: [car.type],
       location: [car.location, [Validators.required]],
       boughtIn: [car.boughtIn],
       currency: [car.currency, [Validators.required]],
@@ -93,10 +93,16 @@ export class CarFormComponent implements OnInit {
 
   changeTitleBrand(event: any) {
     this.title = event.target.value;
+    this.carForm.patchValue({
+      title: this.title
+    });
   }
 
   changeTitleModel(event: any) {
     this.title += ' ' + event.target.value;
+    this.carForm.patchValue({
+      title: this.title
+    });
   }
 
   setGearbox(gearboxType: string) {
@@ -130,7 +136,7 @@ export class CarFormComponent implements OnInit {
   loadYears() {
     const currentYear = new Date().getFullYear();
     for (let year = currentYear; year >= 1900; year--) {
-      this.years.push(year);
+      this.years.push(year.toString());
     }
   }
 
@@ -141,7 +147,6 @@ export class CarFormComponent implements OnInit {
   loadBrands() {
     this.carService.getBrands().subscribe({
       next: (response) => {
-        console.log('Marcas:', response);
         for (let i = 0; i < response.data.length; i++) {
           this.brands.push(response.data[i].name);
         }
@@ -150,16 +155,17 @@ export class CarFormComponent implements OnInit {
         console.error(error);
       }
     });
-    console.log('Marcas:', this.brands);
   }
 
   onBrandChange(event: any) {
     const selectedBrand = event.target.value;
+    this.models = [];
+
     this.carService.getModelsByBrand(selectedBrand).subscribe({
       next: (response) => {
-        // Ajusta esto según la estructura de tu respuesta
-        this.models.push(response.data); // o simplemente response si la API devuelve directamente un array
-        console.log('Modelos:', this.models);
+        for (let i = 0; i < response.data.length; i++) {
+          this.models.push(response.data[i].name);
+        }
       },
       error: (error) => {
         console.error('Error al cargar modelos:', error);
@@ -169,21 +175,19 @@ export class CarFormComponent implements OnInit {
 
   fillFormWithDefaults() {
     this.carForm.patchValue({
-      brand: 'BMW',
-      model: 'e39',
-      year: '1930',
+      year: '2001',
       gearbox: 'manual',
-      color: 'red',
+      color: 'blue',
       seats: 5,
-      doors: 4,
-      horsepower: 200,
-      distance: 50000,
-      fuel: 'petrol',
-      price: 30000,
+      doors: 2,
+      horsepower: 185,
+      distance: 100000,
+      fuel: 'gasoline',
+      price: 33000,
       type: 'sedan',
-      location: 'City',
-      title: 'Excellent Condition',
-      boughtIn: 'Germany',
+      location: 'Valencia',
+      title: 'BMW 320ci E46 2001',
+      boughtIn: 'Spain',
       currency: '€',
       emissions: 120,
       consumption: 5.5,
@@ -193,13 +197,14 @@ export class CarFormComponent implements OnInit {
       plate: 'ABC123',
       dgtSticker: 'C',
       lastITV: new Date(),
-      description: 'Detailed description of the car.',
+      description: 'El BMW Serie 3 E46 no es solo un coche, es una pieza de la historia automovilística que combina a la perfección rendimiento, lujo y fiabilidad. Diseñado para aquellos que aprecian la conducción pura, este modelo se ha convertido en un favorito tanto para entusiastas como para aquellos que buscan un vehículo premium versátil.',
       owner: { id: this.user.id }
     });
   }
 
 
   onSubmit() {
+    console.log('Formulario:', this.carForm.value);
     if (this.carForm.valid) {
       // Convertir datos del formulario a JSON para incluirlos en FormData
       const formData = new FormData();

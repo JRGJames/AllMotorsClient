@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ICar, IImage } from 'src/app/model/model';
+import { ICar, IImage, IUser, IUserPage } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
+import { UserService } from 'src/app/service/user.service';
+
 
 
 @Component({
@@ -19,36 +21,40 @@ export class CarEditComponent implements OnInit {
   car: ICar = { owner: { id: 0 } } as ICar;
   backgroundImage: string = `url(assets/images/image1.jpg)`;
   years: number[] = [];
+  brands: string[] = [];
+  models: string[] = [];
+  users: IUser[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private carService: CarService,
+    private userService: UserService,
     private route: ActivatedRoute // Inyectar ActivatedRoute
 
   ) { }
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
-      brand: [car.brand, Validators.required],
-      model: [car.model, Validators.required],
-      title: [car.title, Validators.required],
-      images: [car.images],
-      color: [car.color, Validators.required],
-      year: [car.year, Validators.required],
-      seats: [car.seats, Validators.required],
-      doors: [car.doors, Validators.required],
-      horsepower: [car.horsepower],
-      gearbox: [car.gearbox, Validators.required],
-      distance: [car.distance, Validators.required],
-      fuel: [car.fuel, Validators.required],
-      price: [car.price, Validators.required],
+      brand: [car.brand, [Validators.required]],
+      model: [car.model, [Validators.required]],
+      title: [car.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      images: [car.images], // La validación de archivos puede requerir un enfoque personalizado
+      color: [car.color, [Validators.required]],
+      year: [car.year, [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
+      seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(8)]],
+      doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
+      horsepower: [car.horsepower, [Validators.min(10)]],
+      gearbox: [car.gearbox, [Validators.required]],
+      distance: [car.distance, [Validators.required]],
+      fuel: [car.fuel, [Validators.required]],
+      price: [car.price, [Validators.required, Validators.min(1)]],
       type: [car.type],
-      location: [car.location, Validators.required],
+      location: [car.location, [Validators.required]],
       boughtIn: [car.boughtIn],
-      currency: [car.currency, Validators.required],
-      emissions: [car.emissions],
-      consumption: [car.consumption],
-      acceleration: [car.acceleration],
+      currency: [car.currency, [Validators.required]],
+      emissions: [car.emissions, [Validators.min(0)]],
+      consumption: [car.consumption, [Validators.min(0)]],
+      acceleration: [car.acceleration, [Validators.min(0)]],
       engine: [car.engine],
       drive: [car.drive],
       plate: [car.plate],
@@ -56,7 +62,7 @@ export class CarEditComponent implements OnInit {
       lastITV: [car.lastITV],
       description: [car.description],
       owner: this.formBuilder.group({
-        id: [car.owner.id, Validators.required]
+        id: [car.owner.id, [Validators.required]]
       })
     });
   }
@@ -64,6 +70,9 @@ export class CarEditComponent implements OnInit {
   
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    this.loadYears();
+    this.loadBrands();
+    this.loadUsers();
     if (id) {
       this.findCarById(parseInt(id));
     }
@@ -77,17 +86,35 @@ export class CarEditComponent implements OnInit {
   }
 
   findCarById(id: number) {
-    this.carService.get(id).subscribe(
-      car => {
-        this.car = car;
-        this.initializeForm(this.car);
-      }
-    );
-  }
+  this.carService.get(id).subscribe(
+    car => {
+      this.car = car;
+      this.initializeForm(this.car);
+
+      console.log('Detalles del coche:', this.car);
+    },
+    error => {
+      console.error('Error al obtener los detalles del coche:', error);
+    }
+  );
+}
 
   onSubmit() {
     
   }
+
+  loadUsers() {
+    const pageSize = 1000; // Ajusta según el máximo esperado de usuarios o el límite de tu backend
+    this.userService.getPage(0, pageSize, 'id', 'asc').subscribe({
+      next: (response: IUserPage) => {
+        this.users = response.content; // Asumiendo que la respuesta tiene una propiedad 'content' con los usuarios
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios:', error);
+      }
+    });
+  }
+  
 
   changeTitleBrand(event: any) {
     this.title = event.target.value;
@@ -106,6 +133,35 @@ export class CarEditComponent implements OnInit {
   setFuel(fuelType: string) {
     this.carForm.patchValue({
       fuel: fuelType
+    });
+  }
+
+  loadBrands() {
+    this.carService.getBrands().subscribe({
+      next: (response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          this.brands.push(response.data[i].name);
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  onBrandChange(event: any) {
+    const selectedBrand = event.target.value;
+    this.models = [];
+
+    this.carService.getModelsByBrand(selectedBrand).subscribe({
+      next: (response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          this.models.push(response.data[i].name);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar modelos:', error);
+      }
     });
   }
 

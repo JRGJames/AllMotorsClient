@@ -19,12 +19,12 @@ export class CarService {
   ) { }
 
   getBrands(): Observable<any> {
-    const url = 'https://car-api2.p.rapidapi.com/api/makes?direction=asc&sort=id';
+    const url = this.baseUrl+'/api/makes?direction=asc&sort=id';
     return this.http.get(url, { headers: this.headers });
   }
 
   getModelsByBrand(brand: string): Observable<any> {
-    const url = `https://car-api2.p.rapidapi.com/api/models?brand=${brand}`;
+    const url = this.baseUrl+`/api/models?sort=id&make=${brand}&direction=asc`;
     return this.http.get(url, { headers: this.headers });
   }
 
