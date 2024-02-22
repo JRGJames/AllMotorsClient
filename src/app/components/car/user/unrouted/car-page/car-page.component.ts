@@ -5,6 +5,7 @@ import { CarService } from 'src/app/service/car.service';
 import { SessionService } from 'src/app/service/session.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
+import { API_URL } from 'src/environment/environment';
 
 @Component({
   selector: 'app-car-page',
@@ -12,6 +13,7 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./car-page.component.css']
 })
 export class CarPageComponent implements OnInit {
+  url = API_URL;
   searchFilter: string = '';
   carsSearch: ICarPage | undefined;
   cars: ICar[] = [];

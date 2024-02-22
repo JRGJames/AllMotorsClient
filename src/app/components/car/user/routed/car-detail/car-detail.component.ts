@@ -6,6 +6,7 @@ import { ICar, IImage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
+import { API_URL } from 'src/environment/environment';
 
 @Component({
   selector: 'app-car-detail',
@@ -13,6 +14,7 @@ import { SessionService } from 'src/app/service/session.service';
   styleUrls: ['./car-detail.component.css'],
 })
 export class CarDetailComponent implements OnInit {
+  url = API_URL;
   showPhoneNumber: boolean = false;
   id!: number;
   imageIndex = 0;

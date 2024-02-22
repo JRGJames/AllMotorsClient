@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, Renderer2, ElementRef, ViewChildren, QueryList } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { CarService } from 'src/app/service/car.service';
 import { ICar } from 'src/app/model/model';
+import { API_URL } from 'src/environment/environment';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +10,7 @@ import { ICar } from 'src/app/model/model';
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
+  url = API_URL;
   popularCars: ICar[] = [];
   currentPage: number = 1;
   autoChangePage: any;

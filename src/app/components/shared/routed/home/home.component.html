@@ -3,7 +3,7 @@
     <div class="flex relative w-full">
       <a [routerLink]="['/car', popularCars[currentPage-1].id]" class="w-full relative focus:outline-none">
         <img class="object-cover w-full h-full"
-          [src]="'http://localhost:8083' + popularCars[currentPage-1].images[0].imageUrl">
+          [src]="url + popularCars[currentPage-1].images[0].imageUrl">
         <div class="gradient object-cover absolute top-0 w-full h-full"></div>
         <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
         <div class="absolute top-0 left-0 w-full">

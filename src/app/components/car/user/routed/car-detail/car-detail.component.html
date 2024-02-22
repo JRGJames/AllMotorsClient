@@ -4,7 +4,7 @@
       <div class="carousel-container relative h-full w-full">
         <a routerLink="/" class="carousel-item h-full w-full focus:outline-none flex">
           <img class="absolute object-cover w-full h-full hover:shadow-lg rounded-xl"
-            [src]="'http://localhost:8083' + car.images[imageIndex]?.imageUrl">
+            [src]="url + car.images[imageIndex]?.imageUrl">
         </a>
         <button *ngIf="imageIndex > 0"
           class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"

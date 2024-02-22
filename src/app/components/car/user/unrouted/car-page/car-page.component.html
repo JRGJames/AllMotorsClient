@@ -47,7 +47,7 @@
       </button>
       <a (click)="navigateToCar(car.id)" class="flex w-full text-decoration-none cursor-pointer">
         <div class="flex-none w-1/2 rounded-l-lg text-white p-4">
-          <img [src]="'http://localhost:8083' + car.images[0]?.imageUrl" class="object-cover rounded-lg w-full h-full">
+          <img [src]="url + car.images[0]?.imageUrl" class="object-cover rounded-lg w-full h-full">
         </div>
         <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
           <div class="space-y-6">
