@@ -70,9 +70,7 @@ export class CarFormComponent implements OnInit {
       dgtSticker: [car.dgtSticker],
       lastITV: [car.lastITV],
       description: [car.description],
-      owner: this.formBuilder.group({
-        id: [car.owner.id, [Validators.required]]
-      })
+      owner: [car.owner.id, [Validators.required]],
     });
   }
 

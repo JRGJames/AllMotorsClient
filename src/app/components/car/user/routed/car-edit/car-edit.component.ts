@@ -1,3 +1,5 @@
+import { SessionService } from './../../../../../service/session.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +21,10 @@ export class CarEditComponent implements OnInit {
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
   images: IImage[] = [];
   car: ICar = { owner: { id: 0 } } as ICar;
+  status: HttpErrorResponse | null = null;
+  currentUser: IUser = {} as IUser;
+  selectedUser: IUser = {} as IUser;
+  selectedBrand: string = '';
   backgroundImage: string = `url(assets/images/image1.jpg)`;
   years: number[] = [];
   brands: string[] = [];
@@ -29,6 +35,7 @@ export class CarEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private carService: CarService,
     private userService: UserService,
+    private sessionService: SessionService,
     private router: Router, // Inyectar Router
     private route: ActivatedRoute // Inyectar ActivatedRoute
 
@@ -36,6 +43,7 @@ export class CarEditComponent implements OnInit {
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
+      id: [car.id, [Validators.required]],
       brand: [car.brand, [Validators.required]],
       model: [car.model, [Validators.required]],
       title: [car.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
@@ -52,7 +60,7 @@ export class CarEditComponent implements OnInit {
       type: [car.type],
       location: [car.location, [Validators.required]],
       boughtIn: [car.boughtIn],
-      currency: [car.currency, [Validators.required]],
+      currency: [car.currency, [Validators.required, Validators.pattern(/^[\u0024\u20AC\u00A3\u00A5]+$/)]],
       emissions: [car.emissions, [Validators.min(0)]],
       consumption: [car.consumption, [Validators.min(0)]],
       acceleration: [car.acceleration, [Validators.min(0)]],
@@ -68,9 +76,9 @@ export class CarEditComponent implements OnInit {
     });
   }
 
-  
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    this.getCurrentUser();
     this.loadYears();
     this.loadBrands();
     this.loadUsers();
@@ -78,7 +86,21 @@ export class CarEditComponent implements OnInit {
       this.findCarById(parseInt(id));
     }
   }
-  
+
+  getCurrentUser(): void {
+    if (this.sessionService.isSessionActive()) {
+      const username = this.sessionService.getUsername();
+      this.userService.getByUsername(username).subscribe({
+        next: (user: IUser) => {
+          this.currentUser = user;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar los datos del usuario actual:', error);
+        }
+      });
+    }
+  }
+
   loadYears() {
     const currentYear = new Date().getFullYear();
     for (let year = currentYear; year >= 1900; year--) {
@@ -87,44 +109,75 @@ export class CarEditComponent implements OnInit {
   }
 
   findCarById(id: number) {
-  this.carService.get(id).subscribe(
-    car => {
-      this.car = car;
-      this.initializeForm(this.car);
+    this.carService.get(id).subscribe({
+      next: (data: ICar) => {
+        this.car = data;
+        this.car.id = id; // Añadir el id al objeto car
+        this.title = this.car.title;
+        this.initializeForm(this.car);
+        this.selectedBrand = this.car.brand;
+        this.carService.getBrands().subscribe({
+          next: (response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              this.brands.push(response.data[i].name);
+            }
+          },
+          error: (error) => {
+            console.error(error);
+          }
+        });
+        this.models = [this.car.model];
+        this.carService.getModelsByBrand(this.car.brand).subscribe({
+          next: (response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              this.models.push(response.data[i].name);
+            }
+          },
+          error: (error) => {
+            console.error('Error al cargar modelos:', error);
+          }
+        });
 
-      console.log('Detalles del coche:', this.car);
-    },
-    error => {
-      console.error('Error al obtener los detalles del coche:', error);
-    }
-  );
-}
-
-onSubmit() {
-  console.log('Formulario:', this.carForm.value);
-  // Comprobar si el formulario es válido antes de hacer algo
-  if (this.carForm.valid) {
-
-    // Llama al servicio CarService y usa el método para actualizar el coche
-    this.carService.update(this.car).subscribe({
-      next: (response) => {
-        // La respuesta es el coche actualizado, puedes redirigir al usuario o mostrar un mensaje
-        console.log('Coche actualizado:', response);
-        // Redirigir al usuario a la página del coche o a la lista de coches, por ejemplo
-        // this.router.navigate(['/car', carId]);
-        this.router.navigate(['/car', response.id]);
       },
-      error: (error) => {
-        console.error('Error al actualizar el coche:', error);
-        // Manejar el error, mostrar un mensaje al usuario, etc.
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar el coche:', error);
       }
     });
-  } else {
-    // Si el formulario no es válido, puedes mostrar un mensaje o marcar los campos inválidos
-    console.error('El formulario no es válido');
   }
-}
 
+  resetTitle(event: any) {
+    this.title = event.target.value;
+    this.carForm.patchValue({ title: this.title });
+  }
+
+  getUserId(event: any) {
+    const selectedUserId = event.target.value;
+    this.selectedUser = this.users.find(user => user.id === parseInt(selectedUserId)) || {} as IUser;
+    this.carForm.patchValue({ owner: { id: this.selectedUser.id } });
+    console.log('Usuario seleccionado:', this.selectedUser);
+  }
+
+  onSubmit() {
+    console.log('Formulario:', this.carForm.value);
+    // Comprobar si el formulario es válido antes de hacer algo
+    if (this.carForm.valid) {
+      // Llama al servicio CarService y usa el método para actualizar el coche
+      console.log('Formulario válido:', this.carForm.value);
+      this.carService.update(this.carForm.value).subscribe({
+        next: (data: ICar) => {
+          this.car = data;
+          this.initializeForm(this.car);
+          this.router.navigate(['/car', this.car.id]);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al actualizar el coche:', error);
+        }
+      });
+    } else {
+      // Si el formulario no es válido, puedes mostrar un mensaje o marcar los campos inválidos
+      console.error('El formulario no es válido');
+    }
+  }
 
   loadUsers() {
     const pageSize = 1000; // Ajusta según el máximo esperado de usuarios o el límite de tu backend
@@ -137,7 +190,6 @@ onSubmit() {
       }
     });
   }
-  
 
   changeTitleBrand(event: any) {
     this.title = event.target.value;
@@ -145,6 +197,7 @@ onSubmit() {
 
   changeTitleModel(event: any) {
     this.title += ' ' + event.target.value;
+    this.carForm.patchValue({ title: this.title });
   }
 
   setGearbox(gearboxType: string) {
