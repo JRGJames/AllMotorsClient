@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ICar, ICarPage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
@@ -26,7 +26,7 @@ export class CarPageComponent implements OnInit {
   car: ICar = { owner: {} } as ICar; // Objeto para almacenar la información del coche
   isViewModalVisible: boolean = false;
   selectedCar: ICar | null = null; // Car seleccionado para mostrar en el modal
-
+  isExpanded: { [key: number]: boolean } = {};
   isOpen = false; // Controla el estado del dropdown
 
   constructor(
@@ -55,7 +55,7 @@ export class CarPageComponent implements OnInit {
       }
     });
   }
-  
+
 
   onSearch(): void {
     this.loadCars();
@@ -65,7 +65,7 @@ export class CarPageComponent implements OnInit {
     event.stopPropagation(); // Detiene la propagación del evento
     this.selectedCar = car; // Establece el coche seleccionado
     this.isViewModalVisible = true; // Muestra el modal
-  }  
+  }
 
   closeViewModal(): void {
     this.isViewModalVisible = false;
@@ -167,4 +167,9 @@ export class CarPageComponent implements OnInit {
     this.pageSize = pageSize;
     this.getPage(0);
   }
+
+  toggleExpansion(carId: number): void {
+    this.isExpanded[carId] = !this.isExpanded[carId];
+  }
+  
 }

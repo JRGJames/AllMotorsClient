@@ -1,10 +1,12 @@
 <div class="mx-12 my-10">
   <div class="relative mb-8 flex">
     <div class="space-x-4 flex w-full">
-      <div class="flex bg-gray-200 rounded-lg w-3/6 h-10 align-middle justify-between self-center">
+      <div class="flex bg-gray-200 rounded-lg w-3/6 h-10 justify-between hover:shadow-sm">
         <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="onSearch()" class="bg-transparent px-3 focus:outline-none w-full text-gray-500">
-        <button class="focus:outline-none" (click)="onSearch()"><i class="fa fa-search text-gray-500 px-3 hover:text-sky-700"></i></button>
-      </div>      
+        <div class="flex items-center">
+          <i class="fa fa-search text-gray-500 px-3 hover:text-sky-700"></i>
+        </div>
+      </div>
       <div class="flex space-x-4 justify-between w-3/6">
         <div class="flex h-10 space-x-3">
           <button
@@ -39,38 +41,67 @@
     </div>
   </div>
   <div class="grid lg:grid-cols-3 gap-8 ">
-    <div *ngFor="let car of cars"
-      class="group relative rounded-lg w-full h-60 text-card-foreground shadow-sm flex bg-gray-100 hover:bg-gray-200 transition-all duration-300 ease-in-out hover:shadow-md hover:-translate-y-1">
+    <div *ngFor="let car of cars; let i = index" [ngClass]="{'row-span-2 min-h-fit ': isExpanded[car.id]}"
+      class="group relative rounded-lg h-auto w-full text-card-foreground shadow-sm flex bg-gray-100 hover:bg-gray-200 transition-all ease-linear hover:shadow-md hover:-translate-y-1 transform">
       <button (click)="handleBookmarkClick(car)"
         class="absolute top-2 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
-      <a (click)="navigateToCar(car.id)" class="flex w-full text-decoration-none cursor-pointer">
-        <div class="flex-none w-1/2 rounded-l-lg text-white p-4">
-          <img [src]="url + car.images[0]?.imageUrl" class="object-cover rounded-lg w-full h-full">
-        </div>
-        <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
-          <div class="space-y-6">
-            <div class="space-y-2">
-              <h5 class="text-2xl font-semibold text-gray-800">{{car.title}}</h5>
-              <p class="text-xl text-gray-600">{{ car.price | thousandSeparator }} {{ car.currency }}</p>
-            </div>
-            <div class="space-y-2">
-              <div class="flex space-x-5">
-                <p class="text-gray-500">{{ car.location }}</p>
-                <p class="text-gray-500">{{ car.year }}</p>
+      <a class="flex-col w-full text-decoration-none cursor-pointer">
+        <div class="flex">
+          <div class="flex w-1/2 rounded-l-lg text-white p-4 h-60">
+            <img [src]="url + car.images[0]?.imageUrl" class="object-cover rounded-lg w-full h-full">
+          </div>
+
+          <div class="flex flex-col w-1/2 justify-between rounded-r-lg p-4">
+            <div class="space-y-6">
+              <div class="space-y-2">
+                <h5 class="text-2xl font-semibold text-gray-800">{{car.title}}</h5>
+                <p class="text-xl text-gray-600">{{ car.price | thousandSeparator }} {{ car.currency }}</p>
               </div>
-              <p class="text-gray-500">{{ car.owner.username }}</p>
+              <div class="space-y-2">
+                <div class="flex space-x-5">
+                  <p class="text-gray-500">{{ car.location }}</p>
+                  <p class="text-gray-500">{{ car.year }}</p>
+                </div>
+                <p class="text-gray-500">{{ car.owner.username }}</p>
+              </div>
+            </div>
+
+            <div class="absolute bottom-0 right-0 p-2">
+              <button (click)="toggleExpansion(car.id)" [ngClass]="{'rotate-180': isExpanded[car.id]}"
+                class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-all duration-500 rounded-lg">
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <button (click)="openViewModal($event, car)"
+                class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
+                <i class="fas fa-eye"></i>
+              </button>
             </div>
           </div>
-          <div class="absolute bottom-0 right-0 p-2">
-            <button class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-            <button (click)="openViewModal($event, car)"
-              class="py-2 px-4 text-gray-500 hover:text-sky-700 transition-colors rounded-lg">
-              <i class="fas fa-eye"></i>
-            </button>
+        </div>
+
+        <!-- Sección adicional que se muestra solo cuando el coche está desplegado -->
+        <div *ngIf="isExpanded[car.id]"
+          class="px-7 py-3 flex-col space-y-5 transition-all duration-500">
+          <div class="flex justify-between space-x-5">
+            <p class="text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.gearbox | capitalizeFirst}}</p>
+            <p class="text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.fuel | capitalizeFirst}}</p>
+            <p class="text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.distance | roundToThousandth}} km</p>
+            <p *ngIf="car.horsepower"
+              class="text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.horsepower | thousandSeparator}} hp</p>
+            <p class="text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.seats}} seats</p>
+          </div>
+          <div class="h-auto text-base text-gray-600 pb-10">
+            {{car.description}}
+          </div>
+          <div class="absolute flex space-x-4 bottom-4">
+            <div>
+              <p class="text-gray-500">{{car.views}} views</p>
+            </div>
+            <div>
+              <p class="text-gray-500">{{car.saves}} saves</p>
+            </div>
           </div>
         </div>
       </a>
@@ -168,15 +199,17 @@
         </div>
       </div>
       <div class="flex justify-start space-x-6">
-        <p *ngIf="selectedCar?.horsepower" class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.horsepower ?? 0 | thousandSeparator }}
+        <p *ngIf="selectedCar?.horsepower" class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">
+          {{selectedCar?.horsepower ?? 0 | thousandSeparator }}
           hp <i class="fa fa-car px-1 text-gray-600"></i></p>
-        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.fuel ?? '' | capitalizeFirst}} <i
-            class="fa fa-car px-1 text-gray-600"></i></p>
-        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.gearbox ?? '' | capitalizeFirst}} <i
-            class="fa fa-car px-1 text-gray-600"></i></p>
-        <p *ngIf="selectedCar?.type" class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.type}} <i
-            class="fa fa-car px-1 text-gray-600"></i></p>
-        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.distance ?? 0 | roundToThousandth}} km
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.fuel ?? '' |
+          capitalizeFirst}} <i class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.gearbox ?? '' |
+          capitalizeFirst}} <i class="fa fa-car px-1 text-gray-600"></i></p>
+        <p *ngIf="selectedCar?.type" class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">
+          {{selectedCar?.type}} <i class="fa fa-car px-1 text-gray-600"></i></p>
+        <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.distance ?? 0 |
+          roundToThousandth}} km
           <i class="fa fa-car px-1 text-gray-600"></i>
         </p>
         <p class="py-2 px-3 bg-gray-300 text-gray-700 rounded-3xl flex items-center">{{selectedCar?.seats}} seats <i
@@ -196,7 +229,8 @@
             <p class="text-gray-500">{{selectedCar?.saves}} saves</p>
           </div>
         </div>
-        <button [routerLink]="['/car', selectedCar?.id]" class="rounded-md bg-sky-600 hover:bg-sky-700 transition-all px-3 py-2 text-white">
+        <button [routerLink]="['/car', selectedCar?.id]"
+          class="rounded-md bg-sky-600 hover:bg-sky-700 transition-all px-3 py-2 text-white">
           More info
           <i class="fa fa-circle-info text-white px-2"></i>
         </button>
