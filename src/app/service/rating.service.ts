@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { API_URL } from 'src/environment/environment';
+import { IRating } from '../model/model';
 
 @Injectable({
   providedIn: 'root'

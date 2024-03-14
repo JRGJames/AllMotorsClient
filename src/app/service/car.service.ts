@@ -1,6 +1,6 @@
+import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ICar, ICarPage } from '../model/model';
 import { API_URL } from 'src/environment/environment';
 
@@ -67,4 +67,8 @@ export class CarService {
     return this.http.get<ICar[]>(this.url + "/get/byViews/" + amount);
   }
 
+  increaseViews(carId: number): Observable<number> {
+    // Pasar un cuerpo de solicitud vacío, representado por `null` o un objeto vacío `{}`
+    return this.http.post<number>(`${this.url}/updateViews/${carId}`, null);
+  }
 }

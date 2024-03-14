@@ -53,9 +53,15 @@ export interface IUser extends IEntity {
     lastLogin: Date;
     banned: Boolean;
     actived: Boolean;
+    favorites: IFavorite[];
 }
 
 export interface IUserPage extends IPage<IUser> {
+}
+
+export interface IFavorite {
+    user: IUser;
+    car: ICar;
 }
 
 export interface IRating {

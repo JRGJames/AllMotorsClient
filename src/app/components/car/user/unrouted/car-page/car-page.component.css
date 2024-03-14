@@ -4,3 +4,34 @@
   color: #ccc;
   /* Cambia el color a gris claro o cualquier color que indique "deshabilitado" */
 }
+
+.h-68 {
+  height: 17rem;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+.rounded-scrollbar::-webkit-scrollbar {
+  height: 7px; /* Hace el scrollbar más fino */
+}
+
+.rounded-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px; /* Bordes redondeados para el track */
+}
+   
+.rounded-scrollbar::-webkit-scrollbar-thumb {
+  background: #0EA5E9;
+  border-radius: 10px; /* Bordes redondeados para el thumb */
+}
+
+.rounded-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0284C7;
+}

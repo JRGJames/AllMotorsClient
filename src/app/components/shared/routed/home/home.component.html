@@ -1,38 +1,36 @@
-<div class="relative top-0 inset-0">
-  <div class="text-white shadow-lg flex object-cover" style="height: 39em;">
-    <div class="flex relative w-full">
-      <a [routerLink]="['/car', popularCars[currentPage-1].id]" class="w-full relative focus:outline-none">
-        <img class="object-cover w-full h-full"
-          [src]="url + popularCars[currentPage-1].images[0].imageUrl">
-        <div class="gradient object-cover absolute top-0 w-full h-full"></div>
-        <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
+<div class="relative top-0 inset-0 mt-28 rounded-lg">
+  <div class="text-white shadow-lg flex object-cover mx-64 rounded-xl" style="height: 39em;">
+    <div class="relative w-full flex overflow-hidden rounded-xl">
+      <a *ngFor="let car of popularCars; let i = index" [routerLink]="['/car', car.id]"
+        class="w-full absolute inset-0 h-full focus:outline-none slide rounded-xl">
+        <img class="object-cover w-full h-full rounded-xl" [src]="url + car.images[0].imageUrl">
+        <div class="gradient object-cover absolute top-0 w-full h-full rounded-xl"></div>
+        <div class="gradient-lateral object-cover absolute top-0 w-full h-full rounded-xl"></div>
         <div class="absolute top-0 left-0 w-full">
-          <div class="ml-8 mt-20">
-            <h1 class="text-5xl font-bold">{{popularCars[currentPage - 1].brand}} {{popularCars[currentPage - 1].model}}
+          <div class="m-8">
+            <h1 class="text-5xl font-bold">{{car.brand}} {{car.model}}
             </h1>
             <div class="flex mt-5 space-x-4">
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage -
-                1].gearbox | capitalizeFirst}}
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.gearbox | capitalizeFirst}}
               </p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].fuel | capitalizeFirst}}
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.fuel |
+                capitalizeFirst}}
               </p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage - 1].distance
+              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.distance
                 |
                 roundToThousandth }} km</p>
-              <p *ngIf="popularCars[currentPage - 1].horsepower" class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{popularCars[currentPage -
-                1].horsepower
+              <p *ngIf="car.horsepower" class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.horsepower
                 | thousandSeparator }} hp</p>
             </div>
-            <h3 class="mt-5 text-4xl">{{popularCars[currentPage - 1].price | thousandSeparator}}
-              {{popularCars[currentPage
-              - 1].currency}}
+            <h3 class="mt-5 text-4xl">{{car.price | thousandSeparator}}
+              {{car.currency}}
             </h3>
           </div>
         </div>
       </a>
       <div
-        class="absolute left-0 right-0 bottom-0 flex items-center backdrop-blur-sm bg-black bg-opacity-5 justify-between w-full">
-        <button class="text-white font-bold py-2 px-6 focus:outline-none" (click)="prevPage()">
+        class="absolute left-0 right-0 bottom-0 flex items-center backdrop-blur-sm rounded-b-xl bg-black bg-opacity-5 justify-between w-full">
+        <button class="text-white font-bold py-2 px-6 focus:outline-none" id="prev" (click)="prevPage()">
           <i class="fas fa-chevron-left"></i>
         </button>
         <div class="mt-auto mb-4 flex justify-center space-x-2">
@@ -43,7 +41,7 @@
           </button>
         </div>
 
-        <button class="text-white font-bold py-2 px-6 focus:outline-none" (click)="nextPage()">
+        <button class="text-white font-bold py-2 px-6 focus:outline-none" id="next" (click)="nextPage()">
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>

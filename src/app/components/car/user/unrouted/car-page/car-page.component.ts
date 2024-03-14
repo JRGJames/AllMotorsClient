@@ -6,6 +6,8 @@ import { SessionService } from 'src/app/service/session.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { API_URL } from 'src/environment/environment';
+import { RatingService } from 'src/app/service/rating.service';
+import { FavoriteService } from 'src/app/service/favorite.service';
 
 @Component({
   selector: 'app-car-page',
@@ -28,15 +30,23 @@ export class CarPageComponent implements OnInit {
   selectedCar: ICar | null = null; // Car seleccionado para mostrar en el modal
   isExpanded: { [key: number]: boolean } = {};
   isOpen = false; // Controla el estado del dropdown
+  imageIndex = 0;
+  averageRating: number = 0;
+  ratingCount: number = 0;
+  fullStars: number[] = [];
+  halfStar: boolean = false;
 
   constructor(
     private carService: CarService,
     private sessionService: SessionService,
     private userService: UserService,
-    private router: Router // inyectar Router
+    private ratingService: RatingService,
+    private favoriteService: FavoriteService,
+    private router: Router, // inyectar Router
   ) { }
 
   ngOnInit() {
+    this.currentPage = 0;
     this.loadCars();
     this.getCurrentUser();
   }
@@ -56,24 +66,30 @@ export class CarPageComponent implements OnInit {
     });
   }
 
-
   onSearch(): void {
     this.loadCars();
+    this.isExpanded = {};
   }
 
   openViewModal(event: MouseEvent, car: ICar): void {
     event.stopPropagation(); // Detiene la propagación del evento
+    this.imageIndex = 0; // Reinicia el índice de la imagen
     this.selectedCar = car; // Establece el coche seleccionado
     this.isViewModalVisible = true; // Muestra el modal
+    this.getRatingCount(this.selectedCar.owner.id);
+    this.getRatingAverage(this.selectedCar.owner.id);
+    document.body.classList.add('overflow-hidden');
   }
 
   closeViewModal(): void {
     this.isViewModalVisible = false;
     this.selectedCar = null; // Limpia el coche seleccionado
+    document.body.classList.remove('overflow-hidden');
   }
 
-  navigateToCar(carId: number): void {
-    this.router.navigate(['/car', carId]);
+  resetBehavior(): void {
+    document.body.classList.remove('overflow-hidden');
+    document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' });
   }
 
   getCurrentUser(): void {
@@ -139,28 +155,22 @@ export class CarPageComponent implements OnInit {
 
   prevPage() {
     if (this.currentPage > 0) {
+      document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
       this.getPage(this.currentPage - 1);
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPageCount) {
+      document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
       this.getPage(this.currentPage + 1);
     }
   }
 
   changePage(pageNumber: number) {
+    document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
+    this.isExpanded = {};
     this.getPage(pageNumber);
-  }
-
-  handleBookmarkClick(car: ICar): void {
-    if (!this.sessionService.isSessionActive()) {
-      // Si el usuario no ha iniciado sesión, redirige a la página de inicio de sesión.
-      this.router.navigate(['/login']);
-    } else {
-      // Aquí puedes implementar la lógica para manejar la acción de favorito.
-      console.log('Añadir a favoritos:', car);
-    }
   }
 
   togglePageSize(pageSize: number) {
@@ -171,5 +181,87 @@ export class CarPageComponent implements OnInit {
   toggleExpansion(carId: number): void {
     this.isExpanded[carId] = !this.isExpanded[carId];
   }
-  
+
+  prevImage() {
+    this.imageIndex--;
+  }
+
+  nextImage() {
+    this.imageIndex++;
+  }
+
+  changePageCarousel(newPage: number) {
+    this.imageIndex = newPage;
+  }
+
+  getRatingCount(ownerId: number): void {
+    this.ratingService.getUserRatingCount(ownerId).subscribe({
+      next: (ratingCount) => {
+        this.ratingCount = ratingCount;
+      },
+      error: (error) => {
+        console.error('Error al obtener la cantidad de valoraciones', error);
+      },
+    });
+  }
+
+  getRatingAverage(ownerId: number): void {
+    this.ratingService.getUserAverageRating(ownerId).subscribe({
+      next: (averageRating) => {
+        this.averageRating = averageRating;
+        this.updateStars(); // Intenta actualizar las estrellas
+      },
+      error: (error) => {
+        console.error('Error al obtener la valoración media', error);
+      },
+    });
+  }
+
+  updateStars(): void {
+    if (this.averageRating !== undefined && this.ratingCount !== undefined) {
+      this.fullStars = Array(Math.floor(this.averageRating)).fill(0);
+      this.halfStar = this.averageRating % 1 >= 0.5;
+    }
+  }
+
+  addToFavorites(carId: number): void {
+    this.favoriteService.addToFavorites(this.currentUser.id, carId).subscribe({
+      next: (favoriteId) => {
+        console.log('Coche añadido a favoritos:', favoriteId);
+      },
+      error: (error) => {
+        console.error('Error al añadir coche a favoritos:', error);
+      },
+    });
+
+  }
+
+  removeFromFavorites(carId: number): void {
+    this.favoriteService.removeFromFavorites(this.currentUser.id, carId).subscribe({
+      next: (favoriteId) => {
+        console.log('Coche eliminado de favoritos:', favoriteId);
+      },
+      error: (error) => {
+        console.error('Error al eliminar coche de favoritos:', error);
+      },
+    });
+  }  
+
+  handleFavorites(car: ICar): void {
+    if (this.sessionService.isSessionActive()) {
+      this.favoriteService.isFavorite(this.currentUser.id, car.id).subscribe({
+        next: (isFavorite) => {
+          if (isFavorite) {
+            this.removeFromFavorites(car.id);
+          } else {
+            this.addToFavorites(car.id);
+          }
+        }
+
+      });
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
 }
