@@ -18,6 +18,16 @@
   -webkit-box-orient: vertical;
 }
 
+.description-row {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+
+}
+
 .rounded-scrollbar::-webkit-scrollbar {
   height: 7px; /* Hace el scrollbar más fino */
 }

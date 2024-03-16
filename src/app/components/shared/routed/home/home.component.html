@@ -1,12 +1,12 @@
-<div class="relative top-0 inset-0 mt-28 rounded-lg">
-  <div class="text-white shadow-lg flex object-cover mx-64 rounded-xl" style="height: 39em;">
-    <div class="relative w-full flex overflow-hidden rounded-xl">
+<div class="relative top-0 inset-0 flex">
+  <div class="text-white flex object-cover w-full justify-center" style="height: 39em;">
+    <div class="relative flex overflow-hidden slider w-full">
       <a *ngFor="let car of popularCars; let i = index" [routerLink]="['/car', car.id]"
-        class="w-full absolute inset-0 h-full focus:outline-none slide rounded-xl">
-        <img class="object-cover w-full h-full rounded-xl" [src]="url + car.images[0].imageUrl">
-        <div class="gradient object-cover absolute top-0 w-full h-full rounded-xl"></div>
-        <div class="gradient-lateral object-cover absolute top-0 w-full h-full rounded-xl"></div>
-        <div class="absolute top-0 left-0 w-full">
+        class="w-full absolute inset-0 h-full focus:outline-none slide">
+        <img class="object-cover w-full h-full" [src]="url + car.images[0].imageUrl">
+        <div class="gradient object-cover absolute top-0 w-full h-full"></div>
+        <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
+        <div class="absolute mt-12 top-0 left-0 w-full">
           <div class="m-8">
             <h1 class="text-5xl font-bold">{{car.brand}} {{car.model}}
             </h1>
@@ -28,24 +28,26 @@
           </div>
         </div>
       </a>
-      <div
-        class="absolute left-0 right-0 bottom-0 flex items-center backdrop-blur-sm rounded-b-xl bg-black bg-opacity-5 justify-between w-full">
-        <button class="text-white font-bold py-2 px-6 focus:outline-none" id="prev" (click)="prevPage()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <div class="mt-auto mb-4 flex justify-center space-x-2">
-          <button *ngFor="let car of popularCars; let i = index"
-            class="w-16 h-1 rounded-lg hover:bg-gray-400 transition-colors cursor-pointer focus:outline-none"
-            [ngClass]="{'bg-gray-500': currentPage - 1 === i, 'bg-gray-300': currentPage - 1 !== i}"
-            (click)="changePage(i + 1)">
+      <div class="absolute left-0 right-0 bottom-0 items-center rounded-b-xl justify-between w-full">
+        <div class="m-4 mx-10 flex justify-between">
+          <button class="text-gray-200 hover:text-gray-400 font-bold transition-all left-2 focus:outline-none" id="prev" (click)="prevPage()">
+            <i class="fas fa-chevron-left text-2xl"></i>
+          </button>
+          <div class="space-x-5 flex">
+            <button *ngFor="let car of popularCars; let i = index"
+              class="w-3 h-3 rounded-lg hover:bg-gray-400 hover:w-5 transition-all cursor-pointer focus:outline-none self-center"
+              [ngClass]="{'bg-gray-500': currentPage - 1 === i, 'bg-gray-300': currentPage - 1 !== i}"
+              (click)="changePage(i + 1)">
+            </button>
+          </div>
+          <button class="text-gray-200 hover:text-gray-400 rounded-3xl font-bold transition-all focus:outline-none" id="next" (click)="nextPage()">
+            <i class="fas fa-chevron-right text-2xl"></i>
           </button>
         </div>
-
-        <button class="text-white font-bold py-2 px-6 focus:outline-none" id="next" (click)="nextPage()">
-          <i class="fas fa-chevron-right"></i>
-        </button>
       </div>
     </div>
+    
+
   </div>
 </div>
 <app-car-page></app-car-page>

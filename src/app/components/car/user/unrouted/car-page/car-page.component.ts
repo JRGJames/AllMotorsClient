@@ -29,12 +29,12 @@ export class CarPageComponent implements OnInit {
   isViewModalVisible: boolean = false;
   selectedCar: ICar | null = null; // Car seleccionado para mostrar en el modal
   isExpanded: { [key: number]: boolean } = {};
-  isOpen = false; // Controla el estado del dropdown
   imageIndex = 0;
   averageRating: number = 0;
   ratingCount: number = 0;
   fullStars: number[] = [];
   halfStar: boolean = false;
+  selectedButtonIndex: number = 0;
 
   constructor(
     private carService: CarService,
@@ -262,6 +262,11 @@ export class CarPageComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  selectButton(index: number): void {
+    this.selectedButtonIndex = index;
+    this.isExpanded = {};
   }
 
 }
