@@ -50,7 +50,8 @@
     <div *ngFor="let car of cars; let i = index" [ngClass]="{'row-span-2 ': isExpanded[car.id]}"
       class="group relative rounded-lg h-auto w-full text-card-foreground shadow-sm flex bg-gray-100 hover:bg-gray-200 transition-all ease-linear hover:shadow-md hover:-translate-y-1 transform">
       <button (click)="handleFavorites(car)"
-        class="absolute top-2 left-10 text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+      [ngClass]="{'text-sky-600 hover:text-sky-800': car.isSaved, 'text-gray-800 hover:text-sky-600': !car.isSaved}"
+        class="absolute top-2 left-10 text-5xl transition-colors rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
       <a [routerLink]="['/car', car.id]" (click)="resetBehavior()"

@@ -110,6 +110,7 @@ export interface ICar extends IEntity {
     lastITV: Date;
     lastUpdate: Date;
     owner: IUser;
+    isSaved: boolean;
 }
 
 export interface ICarPage extends IPage<ICar> {

@@ -227,25 +227,31 @@ export class CarPageComponent implements OnInit {
   addToFavorites(carId: number): void {
     this.favoriteService.addToFavorites(this.currentUser.id, carId).subscribe({
       next: (favoriteId) => {
+        // Encuentra el coche en la lista y actualiza su estado isFavorite
+        const car = this.cars.find(c => c.id === carId);
+        if (car) car.isSaved = true;
         console.log('Coche añadido a favoritos:', favoriteId);
       },
       error: (error) => {
         console.error('Error al añadir coche a favoritos:', error);
       },
     });
-
   }
 
   removeFromFavorites(carId: number): void {
     this.favoriteService.removeFromFavorites(this.currentUser.id, carId).subscribe({
       next: (favoriteId) => {
+        // Encuentra el coche en la lista y actualiza su estado isFavorite
+        const car = this.cars.find(c => c.id === carId);
+        if (car) car.isSaved = false;
         console.log('Coche eliminado de favoritos:', favoriteId);
       },
       error: (error) => {
         console.error('Error al eliminar coche de favoritos:', error);
       },
     });
-  }  
+  }
+
 
   handleFavorites(car: ICar): void {
     if (this.sessionService.isSessionActive()) {
