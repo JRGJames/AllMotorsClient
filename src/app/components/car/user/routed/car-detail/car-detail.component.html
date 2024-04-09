@@ -244,6 +244,21 @@
         <div [ngClass]="{'w-full': !car.description, 'w-1/2': car.description}" class="bg-sky-500 rounded-xl">
         </div>
       </div>
+      <div>
+        <apx-chart
+          [chart]="chart.chart"
+          [series]="chart.series"
+          [markers]="chart.markers"
+          [xaxis]="chart.xaxis"
+          [yaxis]="chart.yaxis"
+          [title]="chart.title"
+          [stroke]="chart.stroke"
+          [tooltip]="chart.tooltip"
+          [dataLabels]="chart.dataLabels"
+          [fill]="chart.fill"
+        ></apx-chart>
+      </div>
+
     </div>
   </div>
 

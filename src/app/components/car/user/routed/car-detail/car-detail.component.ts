@@ -1,12 +1,26 @@
 import { UserService } from '../../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IImage, IRating, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
 import { API_URL } from 'src/environment/environment';
+import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexYAxis, ApexStroke, ApexMarkers, ApexFill, ApexTooltip, ApexDataLabels } from "ng-apexcharts";
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  stroke: ApexStroke;
+  fill: ApexFill;
+  dataLabels: ApexDataLabels
+  markers: ApexMarkers;
+  yaxis: ApexYAxis;
+  xaxis: ApexXAxis;
+  tooltip: ApexTooltip;
+  title: ApexTitleSubtitle;
+};
 
 @Component({
   selector: 'app-car-detail',
@@ -19,12 +33,105 @@ export class CarDetailComponent implements OnInit {
   id!: number;
   imageIndex: number = 0;
   averageRating: number = 0;
-  ratingCount: number =  0;
+  ratingCount: number = 0;
   car: ICar = { owner: {} } as ICar;
   status: HttpErrorResponse | null = null;
   currentUser: IUser = {} as IUser;
   isDeleteModalVisible: boolean = false;
   idToDelete: number | null = null;
+  chartOptions: Partial<ChartOptions> = {
+    series: [
+      {
+        name: "Price",
+        data: [20, 15, 5, 16],
+        color: "#0284C7"
+      }
+    ],
+    chart: {
+      height: 400,
+      type: "area",
+      zoom: {
+        enabled: false
+      },
+      toolbar: {
+        show: false
+      }
+    },
+    title: {
+      text: "Price history",
+      align: "left",
+      style: {
+        fontSize:  '20px',
+        fontWeight:  'bold',
+        fontFamily:  'sans-serif',
+        color:  '#1F2937'
+      },
+      
+    },
+    stroke: {
+      curve: "smooth"
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 1,
+        opacityTo: 0.8,
+      }
+    },
+    markers: {
+      size: 6
+    },
+    yaxis: {
+      min: 0,
+      title: {
+        text: "€",
+        rotate: 360,
+        offsetY: 0,
+        style: {
+          fontSize:  '16px',
+          fontWeight:  'bold',
+          fontFamily:  'sans-serif',
+          color:  '#1F2937'
+        }
+      },
+      stepSize: 10,
+      tooltip: {
+        enabled: false
+      }
+    },
+    xaxis: {
+      categories: ["1", "2", "3", "4"],
+      tooltip: {
+        enabled: false
+      },
+      title: {
+        text: "Months", 
+        style: {
+          fontSize:  '16px',
+          fontWeight:  'bold',
+          fontFamily:  'sans-serif',
+          color:  '#1F2937'
+        }
+      }
+    },
+    tooltip: {
+      enabled: true,
+      x: {
+        show: false
+      },
+
+      y: {
+        formatter: function (value: number) {
+          return value + "€";
+        }
+      }
+    },
+    dataLabels: {
+      enabled: false
+    }
+  };
+  chart: ChartComponent = Object.create(this.chartOptions);
 
   constructor(
     private carService: CarService,

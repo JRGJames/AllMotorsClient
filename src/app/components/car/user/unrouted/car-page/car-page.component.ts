@@ -9,6 +9,7 @@ import { API_URL } from 'src/environment/environment';
 import { RatingService } from 'src/app/service/rating.service';
 import { FavoriteService } from 'src/app/service/favorite.service';
 
+
 @Component({
   selector: 'app-car-page',
   templateUrl: './car-page.component.html',

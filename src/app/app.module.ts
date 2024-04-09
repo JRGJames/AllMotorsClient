@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NgApexchartsModule } from "ng-apexcharts";
+
 
 import { CryptoService } from './service/crypto.service';
 import { SessionService } from './service/session.service';
@@ -58,7 +60,8 @@ import { CarPageComponent } from './components/car/user/unrouted/car-page/car-pa
     BrowserAnimationsModule, // Añadir BrowserAnimationsModule aquí
     AppRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgApexchartsModule
   ],
   providers: [
     SessionService,
