@@ -36,6 +36,7 @@ export class CarPageComponent implements OnInit {
   fullStars: number[] = [];
   halfStar: boolean = false;
   selectedButtonIndex: number = 0;
+  isScreenSmall: boolean = window.innerWidth < 640;
 
   constructor(
     private carService: CarService,
@@ -156,22 +157,42 @@ export class CarPageComponent implements OnInit {
 
   prevPage() {
     if (this.currentPage > 0) {
-      document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
+      if (this.isScreenSmall) {
+        this.scrollToTopSm();
+      } else {
+        this.scrollToTop();
+      }
       this.getPage(this.currentPage - 1);
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPageCount) {
-      document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
+      if (this.isScreenSmall) {
+        this.scrollToTopSm();
+      } else {
+        this.scrollToTop();
+      }
       this.getPage(this.currentPage + 1);
     }
   }
 
   changePage(pageNumber: number) {
-    document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
+    if (this.isScreenSmall) {
+      this.scrollToTopSm();
+    } else {
+      this.scrollToTop();
+    }
     this.isExpanded = {};
     this.getPage(pageNumber);
+  }
+
+  scrollToTop() {
+    document.scrollingElement?.scrollTo({ top: 560, behavior: 'smooth' });
+  }
+
+  scrollToTopSm() {
+    document.scrollingElement?.scrollTo({ top: 255, behavior: 'smooth' });
   }
 
   togglePageSize(pageSize: number) {

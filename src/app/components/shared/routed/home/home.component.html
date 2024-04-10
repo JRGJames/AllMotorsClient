@@ -1,5 +1,5 @@
 <div class="relative top-0 inset-0 flex">
-  <div class="text-white flex object-cover w-full justify-center" style="height: 39em;">
+  <div class="text-white flex object-cover w-full h-[20em] sm:h-[39em] justify-center">
     <div class="relative flex overflow-hidden slider w-full">
       <a *ngFor="let car of popularCars; let i = index" [routerLink]="['/car', car.id]"
         class="w-full absolute inset-0 h-full focus:outline-none slide">
@@ -7,22 +7,22 @@
         <div class="gradient object-cover absolute top-0 w-full h-full"></div>
         <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
         <div class="absolute mt-12 top-0 left-0 w-full">
-          <div class="m-8">
-            <h1 class="text-5xl font-bold">{{car.brand}} {{car.model}}
+          <div class="mx-5 sm:mx-8 my-8">
+            <h1 class="text-3xl sm:text-5xl font-bold opacity-80">{{car.brand}} {{car.model}}
             </h1>
-            <div class="flex mt-5 space-x-4">
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.gearbox | capitalizeFirst}}
+            <div class="flex mt-3 sm:mt-5 space-x-4">
+              <p class="bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.gearbox | capitalizeFirst}}
               </p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.fuel |
+              <p class="bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.fuel |
                 capitalizeFirst}}
               </p>
-              <p class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.distance
+              <p class="hidden sm:block bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.distance
                 |
                 roundToThousandth }} km</p>
-              <p *ngIf="car.horsepower" class="bg-gray-300 text-gray-600 rounded-2xl px-4 text-md py-1">{{car.horsepower
+              <p *ngIf="car.horsepower" class="hidden sm:block bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.horsepower
                 | thousandSeparator }} hp</p>
             </div>
-            <h3 class="mt-5 text-4xl">{{car.price | thousandSeparator}}
+            <h3 class="mt-3 sm:mt-5 text-2xl sm:text-4xl opacity-80">{{car.price | thousandSeparator}}
               {{car.currency}}
             </h3>
           </div>

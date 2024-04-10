@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit {
   sessionUser: IUser | null = null;
   strUrl: string = "";
   showDropdown: boolean = false;
+  showMenu: boolean = false;
 
   constructor(
     private sessionService: SessionService,
@@ -62,6 +63,10 @@ export class NavbarComponent implements OnInit {
         }
       }
     });
+  }
+
+  toggleMenu() {
+    this.showMenu = !this.showMenu;
   }
 
   toggleDropdown() {
