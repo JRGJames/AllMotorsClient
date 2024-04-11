@@ -144,7 +144,6 @@ export class CarDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    
     this.route.params.subscribe(params => {
       this.id = +params['id'];
       if (this.id) {
@@ -176,6 +175,7 @@ export class CarDetailComponent implements OnInit {
         this.car = data;
         this.increaseViews(this.car.id);
         this.getRatingCount(this.car.owner.id);
+        console.log(this.currentUser.id);
         this.getRatingAverage(this.car.owner.id);
       },
       error: (error: HttpErrorResponse) => {

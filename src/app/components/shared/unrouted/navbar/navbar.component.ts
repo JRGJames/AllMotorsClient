@@ -14,6 +14,8 @@ export class NavbarComponent implements OnInit {
 
   @ViewChild('dropdownButton') dropdownButton!: ElementRef;
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
+  @ViewChild('menuButton') menuButton!: ElementRef;
+  @ViewChild('menuContainer') menuContainer!: ElementRef;
 
   strUserName: string = "";
   sessionUser: IUser | null = null;
@@ -81,11 +83,13 @@ export class NavbarComponent implements OnInit {
       return;
     }
 
-    if (clickedElement && this.dropdownContainer && this.dropdownContainer.nativeElement.contains(clickedElement)) {
+    if (clickedElement && this.menuButton && this.menuButton.nativeElement.contains(clickedElement)) {
       return;
     }
 
     this.showDropdown = false;
+
+    this.showMenu = false;
   }
 
   logout() {

@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ICar, ICarPage, IUser } from 'src/app/model/model';
+import { ICar, ICarPage, IRating, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { SessionService } from 'src/app/service/session.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { API_URL } from 'src/environment/environment';
 import { RatingService } from 'src/app/service/rating.service';
-import { FavoriteService } from 'src/app/service/favorite.service';
+import { SavedService } from 'src/app/service/saved.service';
+import { query } from '@angular/animations';
 
 
 @Component({
@@ -25,12 +26,12 @@ export class CarPageComponent implements OnInit {
   totalElements: number = 0;  // Total de elementos (coches)
   pageSize: number = 15; // O el tamaño de página que prefieras
   status: HttpErrorResponse | null = null;
-  currentUser: IUser = {} as IUser;
+  currentUser: IUser = {} as IUser; // Objeto para almacenar la información del usuario actual;
   car: ICar = { owner: {} } as ICar; // Objeto para almacenar la información del coche
   isViewModalVisible: boolean = false;
   selectedCar: ICar | null = null; // Car seleccionado para mostrar en el modal
   isExpanded: { [key: number]: boolean } = {};
-  imageIndex = 0;
+  imageIndex: number = 0;
   averageRating: number = 0;
   ratingCount: number = 0;
   fullStars: number[] = [];
@@ -43,14 +44,14 @@ export class CarPageComponent implements OnInit {
     private sessionService: SessionService,
     private userService: UserService,
     private ratingService: RatingService,
-    private favoriteService: FavoriteService,
+    private savedService: SavedService,
     private router: Router, // inyectar Router
   ) { }
 
   ngOnInit() {
     this.currentPage = 0;
     this.loadCars();
-    this.getCurrentUser();
+    this.getCurrentUser(); 
   }
 
   loadCars(): void {
@@ -100,6 +101,7 @@ export class CarPageComponent implements OnInit {
       this.userService.getByUsername(username).subscribe({
         next: (user: IUser) => {
           this.currentUser = user;
+          this.fillSavedCars();
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los datos del usuario actual:', error);
@@ -246,49 +248,88 @@ export class CarPageComponent implements OnInit {
     }
   }
 
-  addToFavorites(carId: number): void {
-    this.favoriteService.addToFavorites(this.currentUser.id, carId).subscribe({
-      next: (favoriteId) => {
+  addToSaved(carId: number): void {
+    this.savedService.addToSaved(this.currentUser.id, carId).subscribe({
+      next: (savedId: number) => {
         // Encuentra el coche en la lista y actualiza su estado isFavorite
         const car = this.cars.find(c => c.id === carId);
-        if (car) car.isSaved = true;
-        console.log('Coche añadido a favoritos:', favoriteId);
+        console.log('Coche añadido a favoritos:', savedId);
       },
-      error: (error) => {
+      error: (error: string) => {
         console.error('Error al añadir coche a favoritos:', error);
       },
     });
   }
 
-  removeFromFavorites(carId: number): void {
-    this.favoriteService.removeFromFavorites(this.currentUser.id, carId).subscribe({
-      next: (favoriteId) => {
+  removeFromSaved(carId: number): void {
+    this.savedService.removeFromSaved(this.currentUser.id, carId).subscribe({
+      next: (savedId: number) => {
         // Encuentra el coche en la lista y actualiza su estado isFavorite
         const car = this.cars.find(c => c.id === carId);
-        if (car) car.isSaved = false;
-        console.log('Coche eliminado de favoritos:', favoriteId);
+        console.log('Coche eliminado de favoritos:', savedId);
       },
-      error: (error) => {
+      error: (error: string) => {
         console.error('Error al eliminar coche de favoritos:', error);
       },
     });
   }
 
 
+  checkSavedStatus(car: ICar): boolean {
+    this.savedService.isSaved(this.currentUser.id, car.id).subscribe({
+      next: (response: boolean) => {
+        return response;
+      }
+    });
+    return false;
+  }
+
   handleFavorites(car: ICar): void {
     if (this.sessionService.isSessionActive()) {
-      this.favoriteService.isFavorite(this.currentUser.id, car.id).subscribe({
-        next: (isFavorite) => {
-          if (isFavorite) {
-            this.removeFromFavorites(car.id);
+      this.savedService.isSaved(this.currentUser.id, car.id).subscribe({
+        next: (response: boolean) => {
+          if (response) {
+            this.removeFromSaved(car.id);
           } else {
-            this.addToFavorites(car.id);
+            this.addToSaved(car.id);
           }
         }
-
       });
     } else {
       this.router.navigate(['/login']);
+    }
+  }
+
+  fillSavedCars(): void {
+    const saveButtons = document.querySelectorAll('.save-button');
+    saveButtons.forEach((button) => {
+      button.classList.remove('saved');
+    });
+    // Verifica si this.currentUser está definido y es un número antes de continuar
+    if (this.currentUser && typeof this.currentUser.id === 'number') {
+      const userId: number = this.currentUser.id as number;
+
+      // Obtén los coches favoritos del usuario actual
+      this.savedService.getSavedCars(userId).subscribe({
+        next: (savedCars: number[]) => {
+          savedCars.forEach((carId) => {
+            const car = this.cars.find(c => c.id === carId);
+            if (car) {
+              // Encuentra el botón asociado al coche y añade la clase 'saved' para pintarlo de azul
+              const saveButton = document.querySelector(`.save-button[data-car-id="${car.id}"]`);
+              if (saveButton) {
+                saveButton.classList.add('saved');
+              }
+            }
+          });
+        },
+        error: (error: string) => {
+          console.error('Error al obtener coches favoritos:', error);
+        },
+      });
+    } else {
+      console.error('Usuario no autenticado');
+      console.log(this.currentUser.id);
     }
   }
 
@@ -296,5 +337,5 @@ export class CarPageComponent implements OnInit {
     this.selectedButtonIndex = index;
     this.isExpanded = {};
   }
-
 }
+

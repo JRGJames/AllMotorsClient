@@ -53,13 +53,13 @@ export interface IUser extends IEntity {
     lastLogin: Date;
     banned: Boolean;
     actived: Boolean;
-    favorites: IFavorite[];
+    saves: ISaved[];
 }
 
 export interface IUserPage extends IPage<IUser> {
 }
 
-export interface IFavorite {
+export interface ISaved {
     user: IUser;
     car: ICar;
 }
@@ -110,7 +110,6 @@ export interface ICar extends IEntity {
     lastITV: Date;
     lastUpdate: Date;
     owner: IUser;
-    isSaved: boolean;
 }
 
 export interface ICarPage extends IPage<ICar> {

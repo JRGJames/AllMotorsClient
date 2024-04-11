@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 
-export class FavoriteService {
+export class SavedService {
 
   url: string = API_URL + '/favorites';
 
@@ -15,18 +15,21 @@ export class FavoriteService {
     private http: HttpClient
   ) { }
 
-  addToFavorites(userId: number, carId: number): Observable<number> {
+  addToSaved(userId: number, carId: number): Observable<number> {
     let params = new HttpParams().set('userId', userId.toString()).set('carId', carId.toString());
     return this.http.post<number>(this.url + '/add', {}, {params: params});
   }
 
-  removeFromFavorites(userId: number, carId: number): Observable<number> {
+  removeFromSaved(userId: number, carId: number): Observable<number> {
     let params = new HttpParams().set('userId', userId.toString()).set('carId', carId.toString());
     return this.http.delete<number>(this.url + '/remove', {params: params});
   }
 
-  isFavorite(userId: number, carId: number): Observable<boolean> {
-    let params = new HttpParams().set('userId', userId.toString()).set('carId', carId.toString());
-    return this.http.get<boolean>(this.url + `/isFavorite`, { params: params });
+  isSaved(userId: number, carId: number): Observable<boolean> {
+    return this.http.get<boolean>(this.url + `/status?userId=${userId}&carId=${carId}`);
+  }
+
+  getSavedCars(userId: number): Observable<number[]> {
+    return this.http.get<number[]>(this.url + `/get/${userId}`);
   }
 }
