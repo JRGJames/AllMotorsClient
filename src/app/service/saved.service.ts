@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { API_URL } from '../../environment/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ICar } from '../model/model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class SavedService {
     return this.http.get<boolean>(this.url + `/status?userId=${userId}&carId=${carId}`);
   }
 
-  getSavedCars(userId: number): Observable<number[]> {
-    return this.http.get<number[]>(this.url + `/get/${userId}`);
+  getSavedCars(userId: number): Observable<ICar[]> {
+    return this.http.get<ICar[]>(this.url + `/get/${userId}`);
   }
 }

@@ -36,3 +36,11 @@
 .rounded-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #0284C7;
 }
+
+.saved {
+  color: #0284C7;
+}
+
+.saved:hover {
+  color: #0369A1;
+}

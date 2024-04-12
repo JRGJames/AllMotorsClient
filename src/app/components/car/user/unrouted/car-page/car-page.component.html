@@ -56,8 +56,8 @@
     [ngClass]="{'sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3': selectedButtonIndex !== 1, 'grid-cols-1': selectedButtonIndex === 1}">
     <div *ngFor="let car of cars; let i = index" [ngClass]="{'row-span-2 ': isExpanded[car.id]}"
       class="group relative rounded-lg h-auto w-full text-card-foreground shadow-sm flex bg-gray-100 hover:bg-gray-200 transition-all ease-linear hover:shadow-md hover:-translate-y-1 transform">
-      <button (click)="handleFavorites(car)" data-car-id=car.id
-        class="absolute save-button top-2 text-gray-800 hover:text-sky-600 left-8 text-4xl sm:text-4xl md:text-5xl transition-colors rounded-lg">
+      <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
+        class="save-btn absolute text-gray-800 hover:text-yellow-500 top-2 left-8 text-4xl sm:text-4xl md:text-5xl transition-colors rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
       <a [routerLink]="['/car', car.id]" (click)="resetBehavior()"
@@ -250,7 +250,7 @@
       <div class="flex lg:h-40 2xl:h-52 space-x-8">
         <div class="relative h-full rounded-lg lg:w-5/12 2xl:w-4/12">
           <img class="absolute object-cover h-full w-full hover:shadow-lg rounded-xl"
-            [src]="url + selectedCar?.images?.[imageIndex]?.imageUrl">
+            [src]="url + selectedCar.images?.[imageIndex]?.imageUrl">
 
           <button *ngIf="imageIndex > 0"
             class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-2 left-2 rounded-lg lg:text-xl 2xl:text-2xl text-white transition-colors hover:text-gray-800"
@@ -275,8 +275,9 @@
             <i class="fas fa-chevron-right"></i>
           </button>
 
-          <button (click)="handleFavorites(car)"
-            class="relative lg:-top-2 2xl:-top-1 left-8 lg:text-4xl 2xl:text-5xl hover:text-sky-600 text-gray-800 transition-colors rounded-lg">
+          <button (click)="handleFavorites(selectedCar)" attr.data-car-id="{{selectedCar.id}}"
+            class="relative save-btn lg:-top-2 2xl:-top-1 left-8 lg:text-4xl 2xl:text-5xl hover:text-yellow-500 text-gray-800 transition-colors rounded-lg">
+            
             <i class="fas fa-bookmark"></i>
           </button>
         </div>
@@ -286,17 +287,16 @@
             <i class="fas fa-times text-xl"></i>
           </button>
           <div class="lg:space-y-1 2xl:space-y-3">
-            <h1 class="font-semibold lg:text-3xl 2xl:text-4xl text-gray-800">{{selectedCar?.title}}</h1>
-            <h2 class="font-normal lg:text-xl 2xl:text-2xl text-gray-600">{{selectedCar?.price ?? 0 |
-              thousandSeparator}}
-              {{selectedCar?.currency}}</h2>
+            <h1 class="font-semibold lg:text-3xl 2xl:text-4xl text-gray-800">{{selectedCar.title}}</h1>
+            <h2 class="font-normal lg:text-xl 2xl:text-2xl text-gray-600">{{selectedCar.price | thousandSeparator}}
+              {{selectedCar.currency}}</h2>
           </div>
           <div class="block 2xl:flex space-y-3 2xl:space-y-0 items-center 2xl:space-x-10 lg:text-base 2xl:text-lg">
             <div class="flex space-x-2 items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 lg:h-5 2xl:w-7 lg:w-5 2xl:h-7">
                 <img src="" alt="" class="">
               </div>
-              <span class="text-gray-800">{{selectedCar?.owner?.username}}</span>
+              <span class="text-gray-800">{{selectedCar.owner.username}}</span>
               <i *ngFor="let star of fullStars" class="fa fa-star text-gray-500"></i>
               <i *ngIf="halfStar" class="fa fa-star-half text-gray-500"></i>
               <span class="text-gray-800 self-center">({{ratingCount}})</span>
@@ -304,11 +304,11 @@
             <div class="flex space-x-8">
               <div class="flex items-center">
                 <i class="fa fa-location-dot text-gray-500 pr-2"></i>
-                <span class="text-gray-800">{{selectedCar?.location}}</span>
+                <span class="text-gray-800">{{selectedCar.location}}</span>
               </div>
               <div class="flex items-center">
                 <i class="fa fa-calendar text-gray-500 pr-2"></i>
-                <span class="text-gray-800">{{selectedCar?.year}}</span>
+                <span class="text-gray-800">{{selectedCar.year}}</span>
               </div>
             </div>
           </div>
@@ -316,56 +316,50 @@
       </div>
       <div
         class="flex justify-start space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap lg:pb-4 2xl:pb-6 rounded-scrollbar text-gray-700 lg:text-sm 2xl:text-base">
-        <span class="lg:py-1 2xl:py-2 lg:px-3 2xl:px-4 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.brand
-          ?? '' |
-          capitalizeFirst}}
+        <span class="lg:py-1 2xl:py-2 lg:px-3 2xl:px-4 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.brand | capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.model ?? '' |
-          capitalizeFirst}}
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.model | capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
         <span *ngIf="selectedCar?.horsepower" class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">
-          {{selectedCar?.horsepower ?? 0 | thousandSeparator }}
+          {{selectedCar.horsepower | thousandSeparator }}
           hp
           <i class="fa fa-car pl-2"></i>
         </span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.fuel ?? '' |
-          capitalizeFirst}}
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.fuel| capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.gearbox ?? '' |
-          capitalizeFirst}}
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.gearbox | capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
         <span *ngIf="selectedCar?.type" class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">
-          {{selectedCar?.type}}
+          {{selectedCar.type}}
           <i class="fa fa-car pl-2"></i>
         </span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.distance ?? 0 |
-          roundToThousandth}} km
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.distance | roundToThousandth}} km
           <i class="fa fa-car pl-2"></i>
         </span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.seats}} seats
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.seats}} seats
           <i class="fa fa-car pl-2"></i></span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar?.doors}} doors
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.doors}} doors
           <i class="fa fa-car pl-2"></i>
         </span>
       </div>
       <div *ngIf="selectedCar?.description"
         class="text-gray-700 lg:max-h-32 2xl:max-h-60 lg:text-base 2xl:text-lg overflow-y-auto overflow-x-hidden pr-8 rounded-scrollbar">
-        {{selectedCar?.description}}
+        {{selectedCar.description}}
       </div>
       <div class="flex justify-between space-x-3 items-center">
         <div class="flex space-x-4 text-gray-500 lg:text-sm 2xl:text-base">
           <div>
-            <p>{{selectedCar?.views}} views</p>
+            <p>{{selectedCar.views}} views</p>
           </div>
           <div>
-            <p>{{selectedCar?.saves}} saves</p>
+            <p>{{selectedCar.saves}} saves</p>
           </div>
         </div>
-        <button [routerLink]="['/car', selectedCar?.id]" (click)="resetBehavior()"
+        <button [routerLink]="['/car', selectedCar.id]" (click)="resetBehavior()"
           class="rounded-md bg-sky-600 hover:bg-sky-700 lg:text-sm 2xl:text-base transition-all px-3 py-2 text-white">
           More info
           <i class="fa fa-circle-info text-white px-2"></i>
