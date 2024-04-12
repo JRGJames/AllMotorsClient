@@ -128,6 +128,7 @@ export class CarPageComponent implements OnInit {
         this.totalPageCount = data.totalPages;
         this.totalElements = data.totalElements; // Asegúrate de que esta propiedad está disponible
         this.currentPage = pageNumber;
+        this.fillSavedCars();
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
@@ -189,6 +190,7 @@ export class CarPageComponent implements OnInit {
     }
     this.isExpanded = {};
     this.getPage(pageNumber);
+    
   }
 
   scrollToTop() {
