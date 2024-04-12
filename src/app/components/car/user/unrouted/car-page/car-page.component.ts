@@ -32,8 +32,9 @@ export class CarPageComponent implements OnInit {
   selectedCar: ICar = {} as ICar // Car seleccionado para mostrar en el modal
   isExpanded: { [key: number]: boolean } = {};
   imageIndex: number = 0;
+  ratings: IRating[] = [];
   averageRating: number = 0;
-  ratingCount: number = 0;
+  ratingCount: number[] = [];
   fullStars: number[] = [];
   halfStar: boolean = false;
   selectedButtonIndex: number = 0;
@@ -62,6 +63,9 @@ export class CarPageComponent implements OnInit {
         this.totalElements = data.totalElements;
         this.currentPage = 0;
         this.fillSavedCars();
+        data.content.forEach((car) => {
+          car.owner.ratingCount = this.getRatingCount(car.owner.id);
+        });
         // Actualiza la UI según sea necesario aquí
       },
       error: (error) => {
@@ -222,15 +226,17 @@ export class CarPageComponent implements OnInit {
     this.imageIndex = newPage;
   }
 
-  getRatingCount(ownerId: number): void {
+  getRatingCount(ownerId: number): number {
     this.ratingService.getUserRatingCount(ownerId).subscribe({
       next: (ratingCount) => {
-        this.ratingCount = ratingCount;
+        return ratingCount;
       },
       error: (error) => {
         console.error('Error al obtener la cantidad de valoraciones', error);
+        return 0;
       },
     });
+    return 0;
   }
 
   getRatingAverage(ownerId: number): void {

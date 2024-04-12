@@ -24,4 +24,8 @@ export class RatingService {
     return this.http.get<number>(`${this.url}/user/${userId}/count`);
   }
 
+  getAllRatings(): Observable<IRating> {
+    return this.http.get<IRating>(`${this.url}/all`);
+  }
+
 }
