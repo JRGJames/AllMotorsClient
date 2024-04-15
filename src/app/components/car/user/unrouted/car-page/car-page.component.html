@@ -54,17 +54,18 @@
   </div>
   <div class="grid gap-8 inset-0"
     [ngClass]="{'sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3': selectedButtonIndex !== 1, 'grid-cols-1': selectedButtonIndex === 1}">
-    <div *ngFor="let car of cars; let i = index" [ngClass]="{'row-span-2 ': isExpanded[car.id]}"
-      class="group relative rounded-lg h-auto w-full text-card-foreground shadow-sm flex bg-gray-100 hover:bg-gray-200 transition-all ease-linear hover:shadow-md hover:-translate-y-1 transform">
+    <div *ngFor="let car of cars; let i = index"
+      [ngClass]="{'h-40 sm:h-60': !isExpanded[car.id], 'sm:h-[32em] row-span-2': isExpanded[car.id], 'sm:h-96': selectedButtonIndex === 1}"
+      class="group relative rounded-lg w-full shadow-sm flex bg-gray-100 transition-transform duration-200 hover:bg-gray-200 hover:shadow-md hover:-translate-y-1">
       <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
         class="save-btn absolute text-gray-800 hover:text-yellow-500 top-2 left-8 text-4xl sm:text-4xl md:text-5xl transition-colors rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
       <a [routerLink]="['/car', car.id]" (click)="resetBehavior()"
-        [ngClass]="{'h-40 sm:h-60': selectedButtonIndex !== 1, 'sm:h-96': selectedButtonIndex === 1}"
+        [ngClass]="{'h-40 sm:h-60': !isExpanded[car.id], 'sm:h-[32em]': isExpanded[car.id], 'sm:h-96': selectedButtonIndex === 1}"
         class="flex-col w-full text-decoration-none cursor-pointer">
         <div class="flex">
-          <div class="flex w-1/2 rounded-l-lg text-white p-4 h-40 sm:h-60"
+          <div class="flex rounded-l-lg text-white p-4 h-40 sm:h-60"
             [ngClass]="{'h-40 sm:h-60 w-1/2': selectedButtonIndex !== 1, 'sm:h-96 w-1/3': selectedButtonIndex === 1}">
             <img [src]="url + car.images[0]?.imageUrl" class="object-cover rounded-lg w-full h-full">
           </div>
@@ -153,13 +154,14 @@
 
 
         <!-- Sección adicional que se muestra solo cuando el coche está desplegado -->
-        <div *ngIf="isExpanded[car.id]" class="px-7 py-3 flex-col space-y-5 transition-all duration-1000 ease-out h-68">
-          <div class="flex justify-between space-x-5 overflow-hidden">
+        <div *ngIf="isExpanded[car.id]" class="px-7 py-3 flex-col space-y-5">
+          <div class="flex justify-between space-x-5overflow-hidden">
             <span class="flex flex-shrink-0 text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.gearbox |
               capitalizeFirst}}</span>
             <span class="flex flex-shrink-0 text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.fuel |
               capitalizeFirst}}</span>
-            <span class="flex flex-shrink-0 text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.distance |
+            <span *ngIf="car.horsepower"
+              class="flex flex-shrink-0 text-base text-gray-600 bg-gray-300 py-1 px-3 rounded-3xl">{{car.distance |
               roundToThousandth}} km
             </span>
             <span *ngIf="car.horsepower"
