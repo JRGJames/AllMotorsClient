@@ -84,8 +84,8 @@
               <div class="flex items-center w-full"
                 [ngClass]="{'space-y-2': selectedButtonIndex !==1, 'space-x-5 h-fit' : selectedButtonIndex === 1}">
 
-                <div [ngClass]="{'pb-4': selectedButtonIndex === 1, 'pb-2': selectedButtonIndex === 0}" 
-                class="flex space-x-5 items-center w-full justify-between overflow-hidden ">
+                <div [ngClass]="{'pb-4': selectedButtonIndex === 1, 'pb-2': selectedButtonIndex === 0}"
+                  class="flex space-x-5 items-center w-full justify-between overflow-hidden ">
                   <div class="flex space-x-5">
                     <div *ngIf="selectedButtonIndex === 1" class="flex space-x-3 text-base">
                       <div class="flex space-x-3">
@@ -94,13 +94,17 @@
                         </div>
                         <p class="text-gray-500">{{car.owner.username }}</p>
                       </div>
-                      <div class="flex space-x-2 self-center">
-                        <i *ngFor="let star of fullStars" class="fa fa-star text-gray-500 self-center"></i>
-                        <i *ngIf="halfStar" class="fa fa-star-half text-gray-500 self-center"></i>
-                        <span class="text-gray-800 self-center">({{ratingCount}})</span>
+                      <div class="flex space-x-2 items-center">
+                        <i *ngFor="let starIndex of getStarRange(car.owner.id)"
+                          class="fa fa-star text-gray-500 self-center"></i>
+                        <i *ngIf="car.owner.ratingAverage % 1 > 0"
+                          class="fa fa-star-half text-gray-500 self-center"></i>
+                        <span class="text-gray-800 self-center text-sm">({{car.owner.ratingCount}})</span>
                       </div>
                     </div>
-                    <div [ngClass]="{'space-x-2 text-xs sm:text-sm md:text-base': selectedButtonIndex !== 1, 'space-x-5 text-base': selectedButtonIndex === 1}"
+
+                    <div
+                      [ngClass]="{'space-x-2 text-xs sm:text-sm md:text-base': selectedButtonIndex !== 1, 'space-x-5 text-base': selectedButtonIndex === 1}"
                       class="flex">
                       <span class="flex flex-shrink-0 text-gray-500 items-center">
                         <i *ngIf="selectedButtonIndex === 1" class="fa fa-location px-2"></i>
@@ -277,7 +281,7 @@
 
           <button (click)="handleFavorites(selectedCar)" attr.data-car-id="{{selectedCar.id}}"
             class="relative save-btn lg:-top-2 2xl:-top-1 left-8 lg:text-4xl 2xl:text-5xl hover:text-yellow-500 text-gray-800 transition-colors rounded-lg">
-            
+
             <i class="fas fa-bookmark"></i>
           </button>
         </div>
@@ -297,9 +301,11 @@
                 <img src="" alt="" class="">
               </div>
               <span class="text-gray-800">{{selectedCar.owner.username}}</span>
-              <i *ngFor="let star of fullStars" class="fa fa-star text-gray-500"></i>
-              <i *ngIf="halfStar" class="fa fa-star-half text-gray-500"></i>
-              <span class="text-gray-800 self-center">({{ratingCount}})</span>
+              <div class="flex space-x-1">
+                <i *ngFor="let starIndex of getStarRange(selectedCar.owner.id)" class="fa fa-star text-gray-500"></i>
+                <i *ngIf="selectedCar.owner.ratingAverage % 1 > 0" class="fa fa-star-half text-gray-500"></i>
+              </div>
+              <span class="text-gray-800 self-center">({{selectedCar.owner.ratingCount}})</span>
             </div>
             <div class="flex space-x-8">
               <div class="flex items-center">
@@ -316,7 +322,8 @@
       </div>
       <div
         class="flex justify-start space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap lg:pb-4 2xl:pb-6 rounded-scrollbar text-gray-700 lg:text-sm 2xl:text-base">
-        <span class="lg:py-1 2xl:py-2 lg:px-3 2xl:px-4 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.brand | capitalizeFirst}}
+        <span class="lg:py-1 2xl:py-2 lg:px-3 2xl:px-4 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.brand |
+          capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
         <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.model | capitalizeFirst}}
@@ -337,7 +344,8 @@
           {{selectedCar.type}}
           <i class="fa fa-car pl-2"></i>
         </span>
-        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.distance | roundToThousandth}} km
+        <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.distance | roundToThousandth}}
+          km
           <i class="fa fa-car pl-2"></i>
         </span>
         <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.seats}} seats

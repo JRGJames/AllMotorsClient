@@ -46,7 +46,6 @@ export interface IUser extends IEntity {
     status: Boolean;
     phone: string;
     email: string;
-    rating: IRating,
     ratingCount: number;
     ratingAverage: number;
     password: string;

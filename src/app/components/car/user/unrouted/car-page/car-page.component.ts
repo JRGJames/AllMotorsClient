@@ -9,6 +9,7 @@ import { API_URL } from 'src/environment/environment';
 import { RatingService } from 'src/app/service/rating.service';
 import { SavedService } from 'src/app/service/saved.service';
 import { query } from '@angular/animations';
+import { catchError, Observable, of } from 'rxjs';
 
 
 @Component({
@@ -32,11 +33,7 @@ export class CarPageComponent implements OnInit {
   selectedCar: ICar = {} as ICar // Car seleccionado para mostrar en el modal
   isExpanded: { [key: number]: boolean } = {};
   imageIndex: number = 0;
-  ratings: IRating[] = [];
-  averageRating: number = 0;
-  ratingCount: number[] = [];
-  fullStars: number[] = [];
-  halfStar: boolean = false;
+  fullStars: { key: number, stars: number }[] = [];
   selectedButtonIndex: number = 0;
   isScreenSmall: boolean = window.innerWidth < 640;
 
@@ -63,9 +60,8 @@ export class CarPageComponent implements OnInit {
         this.totalElements = data.totalElements;
         this.currentPage = 0;
         this.fillSavedCars();
-        data.content.forEach((car) => {
-          car.owner.ratingCount = this.getRatingCount(car.owner.id);
-        });
+        this.getAllRatings();
+
         // Actualiza la UI según sea necesario aquí
       },
       error: (error) => {
@@ -83,7 +79,6 @@ export class CarPageComponent implements OnInit {
     event.stopPropagation(); // Detiene la propagación del evento
     this.imageIndex = 0; // Reinicia el índice de la imagen
     this.selectedCar = car; // Establece el coche seleccionado
-    console.log('Car selected:', this.selectedCar);
     this.isViewModalVisible = true; // Muestra el modal
     this.getRatingCount(this.selectedCar.owner.id);
     this.getRatingAverage(this.selectedCar.owner.id);
@@ -194,7 +189,7 @@ export class CarPageComponent implements OnInit {
     }
     this.isExpanded = {};
     this.getPage(pageNumber);
-    
+
   }
 
   scrollToTop() {
@@ -226,38 +221,65 @@ export class CarPageComponent implements OnInit {
     this.imageIndex = newPage;
   }
 
-  getRatingCount(ownerId: number): number {
-    this.ratingService.getUserRatingCount(ownerId).subscribe({
-      next: (ratingCount) => {
-        return ratingCount;
-      },
-      error: (error) => {
+  getAllRatings(): void {
+    this.getAllRatingCount();
+    this.getAllRatingsAverage();
+  }
+
+  getAllRatingCount(): void {
+    this.cars.forEach((car) => {
+      this.getRatingCount(car.owner.id).subscribe(ratingCount => {
+        car.owner.ratingCount = ratingCount;
+      });
+
+    });
+  }
+
+  getRatingCount(ownerId: number): Observable<number> {
+    return this.ratingService.getUserRatingCount(ownerId).pipe(
+      catchError(error => {
         console.error('Error al obtener la cantidad de valoraciones', error);
-        return 0;
-      },
-    });
-    return 0;
+        return of(0); // Devuelve un observable que emite 0 en caso de error
+      })
+    );
   }
 
-  getRatingAverage(ownerId: number): void {
-    this.ratingService.getUserAverageRating(ownerId).subscribe({
-      next: (averageRating) => {
-        this.averageRating = averageRating;
-        this.updateStars(); // Intenta actualizar las estrellas
-      },
-      error: (error) => {
-        console.error('Error al obtener la valoración media', error);
-      },
+
+  getAllRatingsAverage(): void {
+    this.cars.forEach((car) => {
+      this.getRatingAverage(car.owner.id).subscribe(ratingAverage => {
+        car.owner.ratingAverage = ratingAverage;
+        this.updateStars(car);
+      });
     });
   }
 
-  updateStars(): void {
-    if (this.averageRating !== undefined && this.ratingCount !== undefined) {
-      this.fullStars = Array(Math.floor(this.averageRating)).fill(0);
-      this.halfStar = this.averageRating % 1 >= 0.5;
+  getRatingAverage(ownerId: number): Observable<number> {
+    return this.ratingService.getUserAverageRating(ownerId).pipe(
+      catchError(error => {
+        console.error('Error al obtener la cantidad de valoraciones', error);
+        return of(0); // Devuelve un observable que emite 0 en caso de error
+      })
+    );
+  }
+
+  updateStars(car: ICar): void {
+    // Verificar si el ownerId ya está ocupado en fullStars
+    const keyExistsFullStars = this.fullStars.some(item => item.key === car.owner.id);
+
+    // Si el ownerId no está ocupado, añadir las estrellas
+    if (car.owner.ratingAverage > 0) {
+      if (!keyExistsFullStars) {
+        this.fullStars.push({ key: car.owner.id, stars: Math.floor(car.owner.ratingAverage) });
+      }
     }
   }
 
+  getStarRange(ownerId: number): number[] {
+    const starsCount = this.fullStars.find(item => item.key === ownerId)?.stars || 0;
+    return Array.from({ length: starsCount }, (_, index) => index);
+  }
+ 
   addToSaved(carId: number): void {
     const saveBtn = document.querySelectorAll(`button[data-car-id="${carId}"]`);
 
