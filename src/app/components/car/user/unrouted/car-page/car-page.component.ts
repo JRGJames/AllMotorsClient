@@ -293,8 +293,8 @@ export class CarPageComponent implements OnInit {
         console.log('Coche añadido a favoritos: +', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
-            btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
-            btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
+            btn.classList.remove('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
+            btn.classList.add('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
           }
         });
       },
@@ -312,8 +312,8 @@ export class CarPageComponent implements OnInit {
         console.log('Coche eliminado de favoritos: -', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
-            btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
-            btn.classList.add('text-gray-800', 'hover:text-yellow-500');
+            btn.classList.remove('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
+            btn.classList.add('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
           }
         });
       },
@@ -342,8 +342,8 @@ export class CarPageComponent implements OnInit {
   fillSavedCars(): void {
     const saveBtns = document.querySelectorAll('button.save-btn');
     saveBtns.forEach((btn) => {
-      btn.classList.add('text-gray-800', 'hover:text-yellow-500');
-      btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
+      btn.classList.add('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
+      btn.classList.remove('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
     });
 
     // Verifica si this.currentUser está definido y es un número antes de continuar
@@ -359,8 +359,8 @@ export class CarPageComponent implements OnInit {
             saveBtn.forEach((btn) => {
 
               if (btn) {
-                btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
-                btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
+                btn.classList.add('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
+                btn.classList.remove('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
               }
             });
           });
