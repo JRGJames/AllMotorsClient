@@ -5,10 +5,6 @@
   /* Cambia el color a gris claro o cualquier color que indique "deshabilitado" */
 }
 
-.h-68 {
-  height: 17rem;
-}
-
 .description {
   overflow: hidden;
   text-overflow: ellipsis;

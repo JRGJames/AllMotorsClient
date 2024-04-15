@@ -35,7 +35,6 @@ export class CarPageComponent implements OnInit {
   imageIndex: number = 0;
   fullStars: { key: number, stars: number }[] = [];
   selectedButtonIndex: number = 0;
-  isScreenSmall: boolean = window.innerWidth < 640;
 
   constructor(
     private carService: CarService,
@@ -73,6 +72,11 @@ export class CarPageComponent implements OnInit {
   onSearch(): void {
     this.loadCars();
     this.isExpanded = {};
+    if (window.innerWidth < 640) {
+      this.scrollToTopSm();
+    } else {
+      this.scrollToTop();
+    }
   }
 
   openViewModal(event: MouseEvent, car: ICar): void {
@@ -161,7 +165,7 @@ export class CarPageComponent implements OnInit {
 
   prevPage() {
     if (this.currentPage > 0) {
-      if (this.isScreenSmall) {
+      if (window.innerWidth < 640) {
         this.scrollToTopSm();
       } else {
         this.scrollToTop();
@@ -172,7 +176,7 @@ export class CarPageComponent implements OnInit {
 
   nextPage() {
     if (this.currentPage < this.totalPageCount) {
-      if (this.isScreenSmall) {
+      if (window.innerWidth < 640) {
         this.scrollToTopSm();
       } else {
         this.scrollToTop();
@@ -181,8 +185,9 @@ export class CarPageComponent implements OnInit {
     }
   }
 
-  changePage(pageNumber: number) {
-    if (this.isScreenSmall) {
+  public changePage(pageNumber: number) {
+    console.log(window.innerWidth);
+    if (window.innerWidth < 640) {
       this.scrollToTopSm();
     } else {
       this.scrollToTop();

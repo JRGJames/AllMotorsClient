@@ -113,4 +113,9 @@ export class NavbarComponent implements OnInit {
   //     })
   //   })
   // }
+
+  // when click on the logo reload the page
+  goToHome() {
+    window.location.href = '/home';
+  }
 }

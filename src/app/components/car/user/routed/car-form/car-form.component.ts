@@ -29,7 +29,7 @@ export class CarFormComponent implements OnInit {
   years: string[] = [];
   brands: string[] = [];
   models: string[] = [];
-  backgroundImage: string = `url(assets/images/image1.jpg)`;
+  backgroundImage: string = `url(assets/images/image1.webp)`;
 
   constructor(
     private formBuilder: FormBuilder,

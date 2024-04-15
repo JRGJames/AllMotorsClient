@@ -25,7 +25,7 @@ export class CarEditComponent implements OnInit {
   currentUser: IUser = {} as IUser;
   selectedUser: IUser = {} as IUser;
   selectedBrand: string = '';
-  backgroundImage: string = `url(assets/images/image1.jpg)`;
+  backgroundImage: string = `url(assets/images/image1.webp)`;
   years: number[] = [];
   brands: string[] = [];
   models: string[] = [];

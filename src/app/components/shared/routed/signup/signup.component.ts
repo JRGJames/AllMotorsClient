@@ -50,10 +50,10 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
     const images = [
-      'image1.jpg',
-      'image2.jpg',
-      'image3.jpg',
-      'image4.jpg'
+      'image1.webp',
+      'image2.webp',
+      'image3.webp',
+      'image4.webp'
     ];
 
     const randomImage = images[Math.floor(Math.random() * images.length)];
