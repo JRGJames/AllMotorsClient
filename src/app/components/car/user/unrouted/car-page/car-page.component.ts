@@ -54,13 +54,15 @@ export class CarPageComponent implements OnInit {
   loadCars(): void {
     this.carService.getPage(this.pageSize, this.currentPage, 'id', 'asc', 0, this.searchFilter).subscribe({
       next: (data) => {
+        if (data.content.length === 0) {
+          console.log('No se encontraron coches');
+        }
         this.cars = data.content; // Asume que ICarPage tiene una propiedad content con los coches
         this.totalPageCount = data.totalPages;
         this.totalElements = data.totalElements;
         this.currentPage = 0;
         this.fillSavedCars();
         this.getAllRatings();
-
         // Actualiza la UI según sea necesario aquí
       },
       error: (error) => {
@@ -165,35 +167,37 @@ export class CarPageComponent implements OnInit {
 
   prevPage() {
     if (this.currentPage > 0) {
+      this.getPage(this.currentPage - 1);    
+      this.isExpanded = {};
       if (window.innerWidth < 640) {
         this.scrollToTopSm();
       } else {
         this.scrollToTop();
       }
-      this.getPage(this.currentPage - 1);
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPageCount) {
+      this.getPage(this.currentPage + 1);
+      this.isExpanded = {};
+
       if (window.innerWidth < 640) {
         this.scrollToTopSm();
       } else {
         this.scrollToTop();
       }
-      this.getPage(this.currentPage + 1);
     }
   }
 
   public changePage(pageNumber: number) {
-    console.log(window.innerWidth);
+    this.isExpanded = {};
+    this.getPage(pageNumber);
     if (window.innerWidth < 640) {
       this.scrollToTopSm();
     } else {
       this.scrollToTop();
     }
-    this.isExpanded = {};
-    this.getPage(pageNumber);
 
   }
 
@@ -214,11 +218,13 @@ export class CarPageComponent implements OnInit {
     this.isExpanded[carId] = !this.isExpanded[carId];
   }
 
-  prevImage() {
+  prevImage(event: MouseEvent) {
+    event.stopPropagation(); // Detiene la propagación del evento
     this.imageIndex--;
   }
 
-  nextImage() {
+  nextImage(event: MouseEvent) {
+    event.stopPropagation(); // Detiene la propagación del evento
     this.imageIndex++;
   }
 
@@ -293,8 +299,8 @@ export class CarPageComponent implements OnInit {
         console.log('Coche añadido a favoritos: +', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
-            btn.classList.remove('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
-            btn.classList.add('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
+            btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
+            btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
           }
         });
       },
@@ -312,8 +318,8 @@ export class CarPageComponent implements OnInit {
         console.log('Coche eliminado de favoritos: -', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
-            btn.classList.remove('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
-            btn.classList.add('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
+            btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
+            btn.classList.add('text-gray-800', 'hover:text-yellow-500');
           }
         });
       },
@@ -342,8 +348,8 @@ export class CarPageComponent implements OnInit {
   fillSavedCars(): void {
     const saveBtns = document.querySelectorAll('button.save-btn');
     saveBtns.forEach((btn) => {
-      btn.classList.add('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
-      btn.classList.remove('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
+      btn.classList.add('text-gray-800', 'hover:text-yellow-500');
+      btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
     });
 
     // Verifica si this.currentUser está definido y es un número antes de continuar
@@ -359,8 +365,8 @@ export class CarPageComponent implements OnInit {
             saveBtn.forEach((btn) => {
 
               if (btn) {
-                btn.classList.add('text-yellow-500', 'hover:text-yellow-600', 'focus:text-yellow-600');
-                btn.classList.remove('text-gray-800', 'hover:text-yellow-500', 'focus:text-yellow-500');
+                btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
+                btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
               }
             });
           });

@@ -1,6 +1,12 @@
 <div class="relative top-0 inset-0 flex">
   <div class="text-white flex object-cover w-full h-[20em] sm:h-[39em] justify-center">
     <div class="relative flex overflow-hidden slider w-full">
+      <div *ngIf="popularCars.length <= 0" class="w-full flex inset-0 absolute h-full">
+        <img *ngIf="popularCars.length <= 0" src="../../../../../assets/images/image1.webp" class="object-cover w-full h-full" alt="There are no cars to be shown">
+        <div class="gradient object-cover absolute top-0 w-full h-full"></div>
+        <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
+        <h1 class="absolute z-10 self-end text-center w-full text-4xl px-10 sm:text-5xl font-bold mb-10 sm:mb-20">There are no cars to be shown</h1>
+      </div>
       <a *ngFor="let car of popularCars; let i = index" [routerLink]="['/car', car.id]"
         class="w-full absolute inset-0 h-full focus:outline-none slide">
         <img class="object-cover w-full h-full" [src]="url + car.images[0].imageUrl">
@@ -46,8 +52,6 @@
         </div>
       </div>
     </div>
-    
-
   </div>
 </div>
 <app-car-page></app-car-page>
