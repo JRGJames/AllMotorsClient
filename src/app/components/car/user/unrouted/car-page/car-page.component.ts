@@ -32,7 +32,7 @@ export class CarPageComponent implements OnInit {
   isViewModalVisible: boolean = false;
   selectedCar: ICar = {} as ICar // Car seleccionado para mostrar en el modal
   isExpanded: { [key: number]: boolean } = {};
-  imageIndex: number = 0;
+  imageIndex: { [key: number]: number } = {};
   fullStars: { key: number, stars: number }[] = [];
   selectedButtonIndex: number = 0;
 
@@ -42,7 +42,7 @@ export class CarPageComponent implements OnInit {
     private userService: UserService,
     private ratingService: RatingService,
     private savedService: SavedService,
-    private router: Router, // inyectar Router
+    private router: Router, // inyectar Router    
   ) { }
 
   ngOnInit() {
@@ -63,6 +63,9 @@ export class CarPageComponent implements OnInit {
         this.currentPage = 0;
         this.fillSavedCars();
         this.getAllRatings();
+        for (const car of data.content) { // 'cars' sería tu lista de coches
+          this.imageIndex[car.id] = 0;
+        }
         // Actualiza la UI según sea necesario aquí
       },
       error: (error) => {
@@ -83,7 +86,7 @@ export class CarPageComponent implements OnInit {
 
   openViewModal(event: MouseEvent, car: ICar): void {
     event.stopPropagation(); // Detiene la propagación del evento
-    this.imageIndex = 0; // Reinicia el índice de la imagen
+    this.imageIndex[car.id] = 0; // Reinicia el índice de la imagen
     this.selectedCar = car; // Establece el coche seleccionado
     this.isViewModalVisible = true; // Muestra el modal
     this.getRatingCount(this.selectedCar.owner.id);
@@ -101,6 +104,10 @@ export class CarPageComponent implements OnInit {
   resetBehavior(): void {
     document.body.classList.remove('overflow-hidden');
     document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  goToCar(car: ICar): void {
+    this.router.navigate(['/car', car.id]);
   }
 
   getCurrentUser(): void {
@@ -218,18 +225,18 @@ export class CarPageComponent implements OnInit {
     this.isExpanded[carId] = !this.isExpanded[carId];
   }
 
-  prevImage(event: MouseEvent) {
+  prevImage(event: MouseEvent, car: ICar) {
     event.stopPropagation(); // Detiene la propagación del evento
-    this.imageIndex--;
+    this.imageIndex[car.id] = this.imageIndex[car.id] - 1;
   }
 
-  nextImage(event: MouseEvent) {
+  nextImage(event: MouseEvent, car: ICar) {
     event.stopPropagation(); // Detiene la propagación del evento
-    this.imageIndex++;
+    this.imageIndex[car.id] = this.imageIndex[car.id] + 1;
   }
 
-  changePageCarousel(newPage: number) {
-    this.imageIndex = newPage;
+  changePageCarousel(index: number, car: ICar) {
+    this.imageIndex[car.id] = index;
   }
 
   getAllRatings(): void {

@@ -22,6 +22,7 @@ export class NavbarComponent implements OnInit {
   strUrl: string = "";
   showDropdown: boolean = false;
   showMenu: boolean = false;
+  showAccountDropdown: boolean = false;
 
   constructor(
     private sessionService: SessionService,
@@ -71,31 +72,37 @@ export class NavbarComponent implements OnInit {
     this.showMenu = !this.showMenu;
   }
 
+  toggleAccountDropdown() {
+    this.showAccountDropdown = !this.showAccountDropdown;
+  }
+
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
   }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    const clickedElement = event.target as HTMLElement;
+  // @HostListener('document:click', ['$event'])
+  // onClickOutside(event: Event) {
+  //   const clickedElement = event.target as HTMLElement;
 
-    if (clickedElement && this.dropdownButton && this.dropdownButton.nativeElement.contains(clickedElement)) {
-      return;
-    }
+  //   if (clickedElement && this.dropdownButton && this.dropdownButton.nativeElement.contains(clickedElement)) {
+  //     return;
+  //   }
 
-    if (clickedElement && this.menuButton && this.menuButton.nativeElement.contains(clickedElement)) {
-      return;
-    }
+  //   if (clickedElement && this.menuButton && this.menuButton.nativeElement.contains(clickedElement)) {
+  //     return;
+  //   }
 
-    this.showDropdown = false;
-
-    this.showMenu = false;
-  }
+  //   this.showDropdown = false;
+  //   this.showMenu = false;
+  // }
 
   logout() {
     this.sessionService.logout();
     this.sessionService.emit({ type: 'logout' });
     this.router.navigate(['/home']);
+    this.showAccountDropdown = false;
+    this.showDropdown = false;
+    this.showMenu = false;
   }
 
   // when click on the logo reload the page
