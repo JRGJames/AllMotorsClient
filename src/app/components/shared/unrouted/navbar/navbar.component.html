@@ -1,6 +1,6 @@
 <nav [ngClass]="{'h-fit': showMenu, 'h-16': !showMenu}"
   class="fixed inset-0 bg-gray-800 transition-transform duration-500 top-0 backdrop-blur-md bg-opacity-50 block sm:flex justify-between items-center z-50 sm:px-10">
-  <div class="logo-container flex items-center self-center justify-between h-16 px-6 sm:px-0">
+  <div class="logo-container flex items-center self-center justify-between h-16 px-6 sm:px-0 overflow-y-hidden">
     <a (click)="goToHome()" class="flex text-white font-bold text-2xl sm:text-3xl focus:outline-none cursor-pointer">
       <i class="fas fa-cog text-white text-xl sm:text-2xl self-center mr-1"></i>
       AllMotors
@@ -22,7 +22,7 @@
     </button>
     <button *ngIf="strUserName" [ngClass]="{'h-[10em]': showAccountDropdown, 'h-10': !showAccountDropdown}"
       (click)="toggleAccountDropdown()"
-      class="flex self-center hover:bg-gray-500 hover:bg-opacity-40 focus:bg-opacity-40focus:outline-none transition-all text-white w-full">
+      class="flex overflow-y-hidden self-center hover:bg-gray-500 hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none transition-all text-white w-full">
 
       <div class="flex flex-col w-full">
         <div class="flex w-full px-6">
@@ -48,7 +48,6 @@
         </div>
       </div>
     </button>
-
     <button *ngIf="strUserName" routerLink="/upload" (click)="showMenu = false"
       class="flex items-start bg-sky-600 hover:bg-sky-500 focus:bg-sky-500 bg-opacity-50 hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none transition-all text-white w-full py-2 px-6">
       Publish
@@ -58,6 +57,7 @@
       Login
     </button>
   </div>
+
   <div class="hidden sm:flex h-full items-center space-x-10">
     <button *ngIf="strUserName" class="items-center text-white focus:outline-none">
       <i class="fas fa-comment text-xl"></i>

@@ -23,6 +23,7 @@ export class NavbarComponent implements OnInit {
   showDropdown: boolean = false;
   showMenu: boolean = false;
   showAccountDropdown: boolean = false;
+  loadAccoundDropdown: boolean = false;
 
   constructor(
     private sessionService: SessionService,
@@ -74,6 +75,10 @@ export class NavbarComponent implements OnInit {
 
   toggleAccountDropdown() {
     this.showAccountDropdown = !this.showAccountDropdown;
+  }
+
+  openAccountDropdown() {
+    this.loadAccoundDropdown = !this.loadAccoundDropdown;
   }
 
   toggleDropdown() {
