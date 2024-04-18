@@ -1,15 +1,16 @@
-<div class="relative top-0 inset-0 flex">
-  <div class="text-white flex object-cover w-full h-[20em] sm:h-[39em] justify-center">
-    <div class="relative flex overflow-hidden slider w-full">
-      <div *ngIf="popularCars.length <= 0" class="w-full flex inset-0 absolute h-full">
-        <img *ngIf="popularCars.length <= 0" src="../../../../../assets/images/image1.webp" class="object-cover w-full h-full" alt="There are no cars to be shown">
-        <div class="gradient object-cover absolute top-0 w-full h-full"></div>
-        <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
-        <h1 class="absolute z-10 self-end text-center w-full text-4xl px-10 sm:text-5xl font-bold mb-10 sm:mb-20">There are no cars to be shown</h1>
-      </div>
-      <a *ngFor="let car of popularCars; let i = index" [routerLink]="['/car', car.id]"
-        class="w-full absolute inset-0 h-full focus:outline-none slide">
-        <img class="object-cover w-full h-full" [src]="url + car.images[0].imageUrl">
+<div class="top-0 flex">
+  <div id="carousel" class="text-white relative flex justify-start object-cover h-[20em] overflow-hidden sm:h-[39em]">
+    <!-- <div *ngIf="popularCars.length <= 0" class="w-full flex inset-0 absolute h-full">
+      <img *ngIf="popularCars.length <= 0" src="../../../../../assets/images/image1.webp"
+        class="object-cover w-full h-full" alt="There are no cars to be shown">
+      <div class="gradient object-cover absolute top-0 w-full h-full"></div>
+      <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
+      <h1 class="absolute z-10 self-end text-center w-full text-4xl px-10 sm:text-5xl font-bold mb-10 sm:mb-20">There
+        are no cars to be shown</h1>
+    </div> -->
+    <div id="slider" class="flex h-full w-[500%] flex-shrink-0">
+      <a *ngFor="let car of popularCars" [routerLink]="'/car/' + car.id" class="h-full relative basis-[20%] w-[20%]">
+        <img [src]='url + car.images[0].imageUrl' alt="slide" class="h-full w-full object-cover object-center">
         <div class="gradient object-cover absolute top-0 w-full h-full"></div>
         <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
         <div class="absolute mt-12 top-0 left-0 w-full">
@@ -17,15 +18,23 @@
             <h1 class="text-3xl sm:text-5xl font-bold opacity-80">{{car.brand}} {{car.model}}
             </h1>
             <div class="flex mt-3 sm:mt-5 space-x-4">
-              <p class="bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.gearbox | capitalizeFirst}}
+              <p
+                class="bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">
+                {{car.gearbox | capitalizeFirst}}
               </p>
-              <p class="bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.fuel |
+              <p
+                class="bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">
+                {{car.fuel |
                 capitalizeFirst}}
               </p>
-              <p class="hidden sm:block bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.distance
+              <p
+                class="hidden sm:block bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">
+                {{car.distance
                 |
                 roundToThousandth }} km</p>
-              <p *ngIf="car.horsepower" class="hidden sm:block bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">{{car.horsepower
+              <p *ngIf="car.horsepower"
+                class="hidden sm:block bg-gray-200 text-gray-700 bg-opacity-50 backdrop-blur-sm rounded-2xl px-4 text-xs sm:text-base py-1">
+                {{car.horsepower
                 | thousandSeparator }} hp</p>
             </div>
             <h3 class="mt-3 sm:mt-5 text-2xl sm:text-4xl opacity-80">{{car.price | thousandSeparator}}
@@ -34,22 +43,24 @@
           </div>
         </div>
       </a>
-      <div class="absolute left-0 right-0 bottom-0 items-center rounded-b-xl justify-between w-full">
-        <div class="m-4 mx-6 sm:mx-10 flex justify-between">
-          <button class="text-gray-200 hover:text-gray-400 font-bold transition-all focus:outline-none" id="prev" (click)="prevPage()">
-            <i class="fas fa-chevron-left text-2xl"></i>
-          </button>
-          <div class="flex space-x-5">
-            <button *ngFor="let car of popularCars; let i = index"
-              class="w-2 sm:w-3 h-2 sm:h-3 rounded-lg hover:bg-gray-400 hover:w-5 transition-all cursor-pointer focus:outline-none self-center"
-              [ngClass]="{'bg-gray-500': currentPage - 1 === i, 'bg-gray-300': currentPage - 1 !== i}"
-              (click)="changePage(i + 1)">
-            </button>
-          </div>
-          <button class="text-gray-200 hover:text-gray-400 rounded-3xl font-bold transition-all focus:outline-none" id="next" (click)="nextPage()">
-            <i class="fas fa-chevron-right text-2xl"></i>
+    </div>
+    <div class="absolute left-0 right-0 bottom-0 items-center rounded-b-xl justify-between w-full">
+      <div class="m-4 mx-6 sm:mx-10 flex justify-between">
+        <button class="buttons text-gray-200 hover:text-gray-400 font-bold transition-all focus:outline-none" id="prev"
+          (click)="prevPage()">
+          <i class="fas fa-chevron-left text-2xl"></i>
+        </button>
+        <div class="flex space-x-5">
+          <button *ngFor="let car of popularCars; let i = index"
+            class="buttons w-2 sm:w-3 h-2 sm:h-3 rounded-lg hover:bg-gray-400 hover:w-5 transition-all cursor-pointer focus:outline-none self-center"
+            [ngClass]="{'bg-gray-500': currentPage - 1 === i, 'bg-gray-300': currentPage - 1 !== i}"
+            (click)="changePage(i + 1)">
           </button>
         </div>
+        <button class="buttons text-gray-200 hover:text-gray-400 rounded-3xl font-bold transition-all focus:outline-none"
+          id="next" (click)="nextPage()">
+          <i class="fas fa-chevron-right text-2xl"></i>
+        </button>
       </div>
     </div>
   </div>
