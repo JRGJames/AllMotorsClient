@@ -30,8 +30,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     const slider = document.getElementById('slider');
     const buttons = document.querySelectorAll('.buttons');
 
-    if (slider) { 
+    if (slider) {
       slider.addEventListener('transitionend', () => {
+
         if (this.direction === -1) {
           slider.appendChild(slider.firstElementChild as HTMLElement);
         } else if (this.direction === 1) {
@@ -41,17 +42,18 @@ export class HomeComponent implements OnInit, OnDestroy {
         slider.style.transition = 'none';
         slider.style.transform = 'translateX(0)';
         buttons.forEach((button) => {
-
+          button.setAttribute('disabled', 'true');
         });
 
         setTimeout(() => {
           slider.style.transition = 'all 0.5s';
+          buttons.forEach((button) => {
+            button.removeAttribute('disabled');
+          });
         });
       });
     }
   }
-
-
 
   ngOnDestroy() {
     if (this.autoChangePage) {
@@ -81,7 +83,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   prevPage() {
     const slider = document.getElementById('slider');
     const carousel = document.getElementById('carousel');
-    
+    const buttons = document.querySelectorAll('.buttons');
+
     if (slider) {
       if (this.direction === -1) {
         slider.appendChild(slider.firstElementChild as HTMLElement);
@@ -90,11 +93,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.direction = 1;
       slider.style.transform = 'translateX(20%)';
       slider.style.transition = 'all 0.5s';
-      
+
     }
     if (carousel) {
       carousel.style.justifyContent = 'flex-end';
     }
+
+    buttons.forEach((button) => {
+      button.setAttribute('disabled', 'true');
+    });
 
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -108,6 +115,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   nextPage() {
     const slider = document.getElementById('slider');
     const carousel = document.getElementById('carousel');
+    const buttons = document.querySelectorAll('.buttons');
+
     this.direction = -1;
 
     if (slider) {
@@ -117,6 +126,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (carousel) {
       carousel.style.justifyContent = 'flex-start';
     }
+
+    buttons.forEach((button) => {
+      button.setAttribute('disabled', 'true');
+    });
 
     if (this.currentPage < this.popularCars.length) {
       this.currentPage++;
@@ -135,7 +148,55 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   changePage(newPage: number) {
-    this.currentPage = newPage;
-    this.resetAutoChangePage();
+  const slider = document.getElementById('slider');
+  const buttons = document.querySelectorAll('.buttons');
+  const slideWidth = 20; // Ancho de cada imagen en porcentaje
+
+  if (slider) {
+    const currentPosition = -(this.currentPage - 1) * slideWidth;
+    const targetPosition = -(newPage - 1) * slideWidth;
+    const displacement = targetPosition - currentPosition;
+
+    // Configuración de la transición
+    slider.style.transition = 'transform 3s';
+
+    // Añadir evento de transición
+    slider.addEventListener('transitionend', () => {
+      // Realizar el desplazamiento y ajustes adicionales al final de la transición
+      if (this.direction === -1) {
+        for (let i = 0; i < Math.abs(displacement / slideWidth); i++) {
+          slider.appendChild(slider.firstElementChild as HTMLElement);
+        }
+      } else if (this.direction === 1) {
+        for (let i = 0; i < Math.abs(displacement / slideWidth); i++) {
+          slider.prepend(slider.lastElementChild as HTMLElement);
+        }
+      }
+
+      // Restablecer la transformación y la transición
+      slider.style.transition = 'none';
+      slider.style.transform = 'translateX(0)';
+      buttons.forEach((button) => {
+        button.setAttribute('disabled', 'true');
+      });
+
+      setTimeout(() => {
+        slider.style.transition = 'all 3s';
+        buttons.forEach((button) => {
+          button.removeAttribute('disabled');
+        });
+
+        // Actualizar la página actual
+        this.currentPage = newPage;
+
+        // Reiniciar el cambio automático de página
+        this.resetAutoChangePage();
+      });
+    });
+
+    // Realizar el desplazamiento inicial
+    slider.style.transform = `translateX(${displacement}%)`;
   }
 }
+
+}  
