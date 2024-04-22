@@ -28,7 +28,7 @@
         </button>
       </div>
       <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
-        class="absolute -top-1 left-10 text-6xl hover:text-yellow-500 text-gray-800 transition-colors rounded-lg">
+        class="absolute -top-1 left-10 text-6xl hover:text-yellow-500 hover:scale-105 transition-all text-gray-800 rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
     </div>
@@ -84,7 +84,7 @@
               </button>
             </div>
             <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
-              class="absolute -top-1 left-10 text-5xl hover:text-yellow-500 text-gray-800 transition-colors rounded-lg">
+              class="absolute -top-1 left-10 text-5xl hover:text-yellow-500 hover:scale-105 text-gray-800 transition-all rounded-lg">
               <i class="fas fa-bookmark"></i>
             </button>
           </div>
