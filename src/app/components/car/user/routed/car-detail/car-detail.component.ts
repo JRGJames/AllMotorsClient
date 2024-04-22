@@ -8,6 +8,7 @@ import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
 import { API_URL } from 'src/environment/environment';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexYAxis, ApexStroke, ApexMarkers, ApexFill, ApexTooltip, ApexDataLabels } from "ng-apexcharts";
+import { SavedService } from 'src/app/service/saved.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -48,7 +49,7 @@ export class CarDetailComponent implements OnInit {
       }
     ],
     chart: {
-      height: 400,
+      height: 300,
       type: "area",
       zoom: {
         enabled: false
@@ -61,12 +62,12 @@ export class CarDetailComponent implements OnInit {
       text: "Price history",
       align: "left",
       style: {
-        fontSize:  '20px',
-        fontWeight:  'bold',
-        fontFamily:  'sans-serif',
-        color:  '#1F2937'
+        fontSize: '20px',
+        fontWeight: 'bold',
+        fontFamily: 'sans-serif',
+        color: '#1F2937'
       },
-      
+
     },
     stroke: {
       curve: "smooth"
@@ -89,10 +90,10 @@ export class CarDetailComponent implements OnInit {
         rotate: 360,
         offsetY: 0,
         style: {
-          fontSize:  '16px',
-          fontWeight:  'bold',
-          fontFamily:  'sans-serif',
-          color:  '#1F2937'
+          fontSize: '16px',
+          fontWeight: 'bold',
+          fontFamily: 'sans-serif',
+          color: '#1F2937'
         }
       },
       stepSize: 10,
@@ -106,12 +107,12 @@ export class CarDetailComponent implements OnInit {
         enabled: false
       },
       title: {
-        text: "Months", 
+        text: "Months",
         style: {
-          fontSize:  '16px',
-          fontWeight:  'bold',
-          fontFamily:  'sans-serif',
-          color:  '#1F2937'
+          fontSize: '16px',
+          fontWeight: 'bold',
+          fontFamily: 'sans-serif',
+          color: '#1F2937'
         }
       }
     },
@@ -139,7 +140,8 @@ export class CarDetailComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private ratingService: RatingService
+    private ratingService: RatingService,
+    private savedService: SavedService
 
   ) { }
 
@@ -177,6 +179,7 @@ export class CarDetailComponent implements OnInit {
         this.getRatingCount(this.car.owner.id);
         console.log(this.currentUser.id);
         this.getRatingAverage(this.car.owner.id);
+        this.checkIfCarIsSaved(this.car.id);
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
@@ -231,12 +234,88 @@ export class CarDetailComponent implements OnInit {
   }
 
   handleFavorites(car: ICar): void {
-    if (!this.sessionService.isSessionActive()) {
-      this.router.navigate(['/login']);
+    if (this.sessionService.isSessionActive()) {
+      this.savedService.isSaved(this.currentUser.id, car.id).subscribe({
+        next: (response: boolean) => {
+          if (response) {
+            this.removeFromSaved(car.id);
+          } else {
+            this.addToSaved(car.id);
+          }
+        }
+      });
     } else {
-      console.log('Añadir a favoritos:', car);
+      this.router.navigate(['/login']);
     }
   }
+
+  addToSaved(carId: number): void {
+    const saveBtn = document.querySelectorAll(`button[data-car-id="${carId}"]`);
+
+    this.savedService.addToSaved(this.currentUser.id, carId).subscribe({
+      next: () => {
+        console.log('Coche añadido a favoritos: +', carId);
+        saveBtn.forEach((btn) => {
+          if (btn) {
+            btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
+            btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
+          }
+        });
+      },
+      error: (error: string) => {
+        console.error('Error al añadir coche a favoritos:', error);
+      },
+    });
+  }
+
+  removeFromSaved(carId: number): void {
+    const saveBtn = document.querySelectorAll(`button[data-car-id="${carId}"]`);
+
+    this.savedService.removeFromSaved(this.currentUser.id, carId).subscribe({
+      next: () => {
+        console.log('Coche eliminado de favoritos: -', carId);
+        saveBtn.forEach((btn) => {
+          if (btn) {
+            btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
+            btn.classList.add('text-gray-800', 'hover:text-yellow-500');
+          }
+        });
+      },
+      error: (error: string) => {
+        console.error('Error al eliminar coche de favoritos:', error);
+      },
+    });
+  }
+
+  checkIfCarIsSaved(carId: number): void {
+    if (this.sessionService.isSessionActive()) {
+      this.savedService.isSaved(this.currentUser.id, carId).subscribe({
+        next: (response: boolean) => {
+          const saveBtn = document.querySelectorAll(`button[data-car-id="${carId}"]`);
+
+          if (response) {
+            saveBtn.forEach((btn) => {
+              if (btn) {
+                btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
+                btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
+              }
+            });
+          } else {
+            saveBtn.forEach((btn) => {
+              if (btn) {
+                btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
+                btn.classList.add('text-gray-800', 'hover:text-yellow-500');
+              }
+            });
+          }
+        },
+        error: (error: string) => {
+          console.error('Error al comprobar si el coche está en favoritos:', error);
+        },
+      });
+    }
+  }
+
 
   isCurrentUserOwner(): boolean {
     return this.car.owner.id === this.currentUser.id || this.currentUser.role === true;

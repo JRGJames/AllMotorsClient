@@ -15,3 +15,7 @@
 .rounded-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #0284C7;
 }
+
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
