@@ -1,8 +1,8 @@
-import { UserService } from '../../../../../service/user.service';
+import { UserService } from '../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ICar, IImage, IRating, IUser } from 'src/app/model/model';
+import { ICar, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -177,7 +177,6 @@ export class CarDetailComponent implements OnInit {
         this.car = data;
         this.increaseViews(this.car.id);
         this.getRatingCount(this.car.owner.id);
-        console.log(this.currentUser.id);
         this.getRatingAverage(this.car.owner.id);
         this.checkIfCarIsSaved(this.car.id);
       },

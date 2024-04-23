@@ -103,14 +103,15 @@
             for="contact">
             Contact Information
           </label>
-          <p class="text-sm md:text-base lg:text-lg text-gray-600">
-            {{ car.owner.username }} -
-            <span *ngIf="!showPhoneNumber"></span>
-            <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
-            <a class="cursor-pointer text-gray-700" (click)="togglePhoneNumber()">
-              {{ showPhoneNumber ? '' : 'Show phone number'}}
-            </a>
-          </p>
+          <div class="flex items-center">
+            <p class="text-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center" [routerLink]="['/user/', car.owner.id]">
+              {{ car.owner.username }} - 
+            </p>
+            <p class="cursor-pointer text-sm md:text-base lg:text-lg text-gray-700 self-center pl-1" (click)="togglePhoneNumber()">
+              {{ showPhoneNumber ? '' : " Show phone number"}}
+              <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
+            </p>
+          </div>
           <div class="flex text-sm md:text-base lg:text-lg items-center gap-1">
             <i class="fas fa-star text-gray-500"></i>
             <span class="text-gray-800">

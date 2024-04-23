@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ICar, ICarPage, IRating, IUser } from 'src/app/model/model';
+import { ICar, ICarPage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { SessionService } from 'src/app/service/session.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,6 @@ import { UserService } from 'src/app/service/user.service';
 import { API_URL } from 'src/environment/environment';
 import { RatingService } from 'src/app/service/rating.service';
 import { SavedService } from 'src/app/service/saved.service';
-import { query } from '@angular/animations';
 import { catchError, Observable, of } from 'rxjs';
 
 

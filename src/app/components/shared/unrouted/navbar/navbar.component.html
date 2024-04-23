@@ -39,7 +39,7 @@
               class="flex items-start hover:bg-gray-500 focus:bg-gray-500 hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none transition-all text-gray-100 w-full py-2 px-8">
               Configuration
             </button>
-            <button (click)="showMenu = false"
+            <button [routerLink]="['/user/', sessionUser.id]"
               class="flex items-start hover:bg-gray-500 focus:bg-gray-500 hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none transition-all text-gray-100 w-full py-2 px-8">
               Profile
             </button>
@@ -73,7 +73,7 @@
       class="flex items-center h-full text-white relative focus:outline-none">
       <span class="mr-2">{{ strUserName }}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
-        <img src="" alt="" class="">
+        <img src='../../../../../assets/images/nano.jpg' alt="profile_image" class=" flex h-full object-cover w-full items-center justify-center">
       </div>
     </button>
 

@@ -20,7 +20,7 @@ export class NavbarComponent implements OnInit {
   @ViewChild('accountDropdownContainer') accountDropdownContainer!: ElementRef;
 
   strUserName: string = "";
-  sessionUser: IUser | null = null;
+  sessionUser: IUser = {} as IUser;
   strUrl: string = "";
   showDropdown: boolean = false;
   showMenu: boolean = false;

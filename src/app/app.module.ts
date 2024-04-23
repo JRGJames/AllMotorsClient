@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Importar BrowserAnimationsModule
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -28,14 +27,11 @@ import { SignupComponent } from './components/shared/routed/signup/signup.compon
 import { NavbarComponent } from './components/shared/unrouted/navbar/navbar.component';
 import { FooterComponent } from './components/shared/unrouted/footer/footer.component';
 import { HomeComponent } from './components/shared/routed/home/home.component';
-import { CarFormComponent } from './components/car/user/routed/car-form/car-form.component';
-import { CarEditComponent } from './components/car/user/routed/car-edit/car-edit.component';
-import { CarDetailComponent } from './components/car/user/routed/car-detail/car-detail.component';
-import { CarPageComponent } from './components/car/user/unrouted/car-page/car-page.component';
-
-
-
-
+import { CarDetailComponent } from './components/car/routed/car-detail/car-detail.component';
+import { CarPageComponent } from './components/car/unrouted/car-page/car-page.component';
+import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
+import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
+import { CarEditComponent } from './components/car/routed/car-edit/car-edit.component';
 
 @NgModule({
   declarations: [
@@ -52,12 +48,12 @@ import { CarPageComponent } from './components/car/user/unrouted/car-page/car-pa
     CarFormComponent,
     CarDetailComponent,
     CarPageComponent,
-    CarEditComponent
+    CarEditComponent,
+    UserProfileComponent
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
-    BrowserAnimationsModule, // Añadir BrowserAnimationsModule aquí
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
