@@ -13,3 +13,7 @@
     background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0) 50%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff", endColorstr="#ffffff", GradientType=1);
 }
+
+.scroll-hide::-webkit-scrollbar {
+    display: none;
+}

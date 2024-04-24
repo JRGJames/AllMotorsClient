@@ -112,4 +112,8 @@ export class NavbarComponent implements OnInit {
   goToHome() {
     window.location.href = '/home';
   }
+
+  resetBehavior(): void {
+    document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' });
+  }
 }

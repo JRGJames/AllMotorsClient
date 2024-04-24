@@ -97,7 +97,7 @@
     class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg transition-all text-gray-700 hover:text-gray-800 focus:text-gray-800 w-full py-2 px-6">
     Configuration
   </button>
-  <button [routerLink]="['/user/', sessionUser.id]"
+  <button [routerLink]="['/user/', sessionUser.id]" (click)="resetBehavior()"
     class="flex items-start hover:bg-gray-200 hover:bg-opacity-40 focus:outline-none focus:bg-gray-200 focus:bg-opacity-40 focus:backdrop-blur-lg transition-all text-gray-700 hover:text-gray-800 focus:text-gray-800 w-full py-2 px-6">
     Profile
   </button>
