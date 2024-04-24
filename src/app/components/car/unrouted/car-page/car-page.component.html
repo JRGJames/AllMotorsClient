@@ -384,11 +384,17 @@
             <p>{{selectedCar.saves}} saves</p>
           </div>
         </div>
-        <button [routerLink]="['/car', selectedCar.id]" (click)="resetBehavior()"
-          class="rounded-md bg-sky-600 hover:bg-sky-700 lg:text-sm 2xl:text-base transition-all px-3 py-2 text-white">
-          More info
-          <i class="fa fa-circle-info text-white px-2"></i>
-        </button>
+        <div class="flex gap-1">
+          <button *ngIf="isCurrentUserOwner(selectedCar)" (click)="deleteCar(selectedCar.id)"
+            class="rounded-md bg-red-400 hover:bg-red-500 lg:text-sm 2xl:text-base transition-all px-3 py-2 text-white">
+            <i class="fa fa-trash text-white px-2"></i>
+          </button>
+          <button [routerLink]="['/car', selectedCar.id]" (click)="resetBehavior()"
+            class="rounded-md bg-sky-600 hover:bg-sky-700 lg:text-sm 2xl:text-base transition-all px-3 py-2 text-white">
+            More info
+            <i class="fa fa-circle-info text-white px-2"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -24,6 +24,11 @@ export class UserProfileComponent implements OnInit {
   searchFilter: string = '';
   cars: ICar[] = [];
   url = API_URL;
+  imageIndex: { [key: number]: number } = {};
+  isViewModalVisible: boolean = false;
+  selectedCar: ICar = {} as ICar; // Car seleccionado para mostrar en el modal
+  isDeleteModalVisible: boolean = false;
+  idToDelete: number | null = null;
 
   constructor(
     private userService: UserService,
@@ -32,9 +37,7 @@ export class UserProfileComponent implements OnInit {
     private ratingService: RatingService,
     private carService: CarService,
     private router: Router, // inyectar Router
-    private savedService: SavedService, // inyectar SavedService    
-
-
+    private savedService: SavedService, // inyectar SavedService
   ) { }
 
   ngOnInit() {
@@ -113,8 +116,6 @@ export class UserProfileComponent implements OnInit {
           console.log('No se encontraron coches');
         }
         this.cars = data.content; // Asume que ICarPage tiene una propiedad content con los coches
-        console.log('Coches cargados:', this.cars);
-        // this.totalElements = data.totalElements;
         this.fillSavedCars();
       },
       error: (error) => {
@@ -125,11 +126,13 @@ export class UserProfileComponent implements OnInit {
 
   goToCar(id: number): void {
     this.router.navigate(['/car', id]);
+    this.resetBehavior();
   }
 
   resetBehavior(): void {
-    document.body.classList.remove('overflow-hidden');
     document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' });
+    document.body.classList.remove('overflow-hidden');
+    this.closeViewModal();
   }
 
   fillSavedCars(): void {
@@ -219,5 +222,89 @@ export class UserProfileComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  openViewModal(event: MouseEvent, car: ICar): void {
+    event.stopPropagation(); // Detiene la propagación del evento
+    this.imageIndex[car.id] = 0; // Reinicia el índice de la imagen
+    this.selectedCar = car; // Establece el coche seleccionado
+    this.isViewModalVisible = true; // Muestra el modal
+    this.getRatingCount(this.selectedCar.owner.id);
+    this.getRatingAverage(this.selectedCar.owner.id);
+    this.fillSavedCars();
+    document.body.classList.add('overflow-hidden');
+  }
+
+  closeViewModal(): void {
+    this.isViewModalVisible = false;
+    this.selectedCar = {} as ICar; // Limpia el coche seleccionado
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  prevImage(event: MouseEvent, car: ICar) {
+    event.stopPropagation(); // Detiene la propagación del evento
+    this.imageIndex[car.id] = this.imageIndex[car.id] - 1;
+  }
+
+  nextImage(event: MouseEvent, car: ICar) {
+    event.stopPropagation(); // Detiene la propagación del evento
+    this.imageIndex[car.id] = this.imageIndex[car.id] + 1;
+  }
+
+  changePageCarousel(index: number, car: ICar) {
+    this.imageIndex[car.id] = index;
+  }
+
+  onSearch(): void {
+    this.loadCars();
+  }
+
+  isCurrentUserOwner(): boolean {
+    return this.user.id === this.currentUser.id || this.currentUser.role === true;
+  }
+
+  isCurrentUserAdmin(): boolean {
+    return this.currentUser.role === true;
+  }
+
+  openDeleteModal(id: number): void {
+    this.idToDelete = id;
+    this.isDeleteModalVisible = true;
+  }
+
+  closeDeleteModal(): void {
+    this.isDeleteModalVisible = false;
+    this.idToDelete = null;
+  }
+
+  deleteUser(): void {
+    if (this.idToDelete) {
+      this.userService.remove(this.idToDelete).subscribe({
+        next: () => {
+          this.closeDeleteModal();
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          console.error('Error deleting the user', error);
+          this.closeDeleteModal();
+        }
+      });
+    }
+  }
+
+  deleteCar(carId: number): void {
+    this.carService.remove(carId).subscribe({
+      next: () => {
+        this.goToProfile();
+        this.closeViewModal();
+      },
+      error: (error) => {
+        console.error('Error deleting the car', error);
+      }
+    });
+  }
+
+  goToProfile() {
+    window.location.href = '/user/' + this.user.id;
   }
 }

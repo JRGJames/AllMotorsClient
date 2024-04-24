@@ -315,9 +315,8 @@ export class CarDetailComponent implements OnInit {
     }
   }
 
-
-  isCurrentUserOwner(): boolean {
-    return this.car.owner.id === this.currentUser.id || this.currentUser.role === true;
+  isCurrentUserOwner(selectedCar: ICar): boolean {
+    return selectedCar.owner.id === this.currentUser.id || this.currentUser.role === true;
   }
 
   openDeleteModal(id: number): void {

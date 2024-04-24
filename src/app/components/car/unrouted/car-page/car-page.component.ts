@@ -173,7 +173,7 @@ export class CarPageComponent implements OnInit {
 
   prevPage() {
     if (this.currentPage > 0) {
-      this.getPage(this.currentPage - 1);    
+      this.getPage(this.currentPage - 1);
       this.isExpanded = {};
       if (window.innerWidth < 640) {
         this.scrollToTopSm();
@@ -261,7 +261,6 @@ export class CarPageComponent implements OnInit {
     );
   }
 
-
   getAllRatingsAverage(): void {
     this.cars.forEach((car) => {
       this.getRatingAverage(car.owner.id).subscribe(ratingAverage => {
@@ -296,7 +295,7 @@ export class CarPageComponent implements OnInit {
     const starsCount = this.fullStars.find(item => item.key === ownerId)?.stars || 0;
     return Array.from({ length: starsCount }, (_, index) => index);
   }
- 
+
   addToSaved(carId: number): void {
     const saveBtn = document.querySelectorAll(`button[data-car-id="${carId}"]`);
 
@@ -390,5 +389,26 @@ export class CarPageComponent implements OnInit {
     this.selectedButtonIndex = index;
     this.isExpanded = {};
   }
+
+  isCurrentUserOwner(selectedCar: ICar): boolean {
+    return selectedCar.owner.id === this.currentUser.id || this.currentUser.role === true;
+  }
+
+  deleteCar(carId: number): void {
+    this.carService.remove(carId).subscribe({
+      next: () => {
+        this.goToHome();
+        this.closeViewModal();
+      },
+      error: (error) => {
+        console.error('Error deleting the car', error);
+      }
+    });
+  }
+
+  goToHome() {
+    window.location.href = '/home';
+  }
+
 }
 

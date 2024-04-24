@@ -32,9 +32,10 @@ export class CarService {
     return this.http.get<ICar>(this.url + '/get/' + id);
   }
 
-  getPage(size: number | undefined, page: number | undefined, orderField: string, orderDirection: string, id_user: number, strFilter?: string): Observable<ICarPage> {
+  getPage(sizeInput: number | undefined, page: number | undefined, orderField: string, orderDirection: string, id_user: number, strFilter?: string): Observable<ICarPage> {
     let url_filter: string = strFilter ? `&filter=${encodeURIComponent(strFilter)}` : "";
     let strUrlUser: string = id_user > 0 ? `&user=${id_user}` : "";
+    let size = sizeInput ? sizeInput : 9999;
 
     return this.http.get<ICarPage>(`${this.url}/getPage/?size=${size}&page=${page}&sort=${orderField},${orderDirection}${strUrlUser}${url_filter}`);
   }

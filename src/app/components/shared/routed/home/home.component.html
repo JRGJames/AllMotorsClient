@@ -9,7 +9,7 @@
         are no cars to be shown</h1>
     </div> -->
     <div id="slider" class="flex h-full w-[500%] flex-shrink-0">
-      <a *ngFor="let car of popularCars" [routerLink]="'/car/' + car.id" class="h-full relative basis-[20%] w-[20%]">
+      <a *ngFor="let car of popularCars" (click)="resetBehavior()" [routerLink]="'/car/' + car.id" class="h-full relative basis-[20%] w-[20%]">
         <img [src]='url + car.images[0].imageUrl' alt="slide" class="h-full w-full object-cover object-center">
         <div class="gradient object-cover absolute top-0 w-full h-full"></div>
         <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
