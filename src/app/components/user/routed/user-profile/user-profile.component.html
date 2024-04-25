@@ -67,7 +67,7 @@
         class="flex justify-center bg-black hover:bg-gray-900 focus:bg-gray-900 focus:outline-none rounded-lg w-full text-white py-3 transition-colors">
         Contact
       </button>
-      <button  *ngIf="isCurrentUserOwner()"
+      <button *ngIf="isCurrentUserOwner()"
         class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white transition-all h-full w-2/12">
         <i class="fa fa-pencil px-2"></i>
       </button>
@@ -90,7 +90,7 @@
   <div class="flex h-full">
     <div class="w-full flex flex-col gap-3 px-5">
       <div class="flex h-14 items-center justify-center rounded-lg bg-gray-100 space-x-3 p-3 border-b w-full">
-        <button *ngIf="isCurrentUserOwner()" 
+        <button *ngIf="isCurrentUserOwner()"
           class="flex text-white bg-gray-900 hover:bg-gray-800 items-center justify-center rounded-md px-3 py-2 text-sm font-normal transition-all focus:outline-none focus:ring-2 flex-1">
           Info
         </button>
@@ -103,61 +103,71 @@
           Saved
         </button>
       </div>
-      <div class="flex flex-col bg-gray-100  rounded-lg overflow-y-scroll scroll-hide"
-      [ngClass]="{'h-[30rem]': cars.length === 0, 'h-[51rem]': cars.length !== 0}">
-        <div class="flex space-x-4 w-full px-4 pt-4">
-          <div
-            class="flex w-full self-center bg-gray-200 rounded-lg text-sm sm:text-base h-8 sm:h-10 justify-between hover:shadow-sm">
-            <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="onSearch()"
-              class="bg-transparent px-3 focus:outline-none w-full text-gray-500">
-            <div class="flex items-center">
-              <i class="fa fa-search text-gray-500 px-3 hover:text-sky-700"></i>
+      <div class="flex bg-gray-100 rounded-lg overflow-y-hidden overflow-x-scroll"
+        [ngClass]="{'h-[30rem]': cars.length === 0, 'h-[51rem]': cars.length !== 0}">
+        <div class="flex justify-center items-center text-6xl font-bold w-full">
+          info
+        </div>
+        <div class="w-full">
+          <div class="flex space-x-4 w-full p-4 sticky">
+            <div
+              class="flex w-full self-center bg-gray-200 rounded-lg text-sm sm:text-base h-8 sm:h-10 justify-between hover:shadow-sm">
+              <input type="text" placeholder="Search" [(ngModel)]="searchFilter" (keyup)="onSearch()"
+                class="bg-transparent px-3 focus:outline-none w-full text-gray-500">
+              <div class="flex items-center">
+                <i class="fa fa-search text-gray-500 px-3 hover:text-sky-700"></i>
+              </div>
+            </div>
+            <button
+              class="rounded-lg flex items-center text-sm sm:text-base text-white px-3 focus:outline-sky-800 h-8 sm:h-10 self-center bg-sky-600 hover:bg-sky-700 focus:bg-sky-700 transition-all">Filter
+              <i class="fa-solid fa-filter pl-2"></i>
+            </button>
+          </div>
+          <div *ngIf="cars.length === 0" class="flex flex-col w-full h-full items-center justify-center pb-20 px-10">
+            <div class="rotate-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car-off" width="140"
+                height="140" viewBox="0 0 24 24" stroke-width="1.5" stroke="#A1A1AA" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                <path d="M15.584 15.588a2 2 0 0 0 2.828 2.83" />
+                <path d="M5 17h-2v-6l2 -5h1m4 0h4l4 5h1a2 2 0 0 1 2 2v4m-6 0h-6m-6 -6h8m4 0h3m-6 -3v-2" />
+                <path d="M3 3l18 18" />
+              </svg>
+            </div>
+            <div class="rotate-6 font-bold text-3xl sm:text-4xl lg:text-5xl text-gray-400 text-center">
+              There are no cars published yet
             </div>
           </div>
-          <button
-            class="rounded-lg flex items-center text-sm sm:text-base text-white px-3 focus:outline-sky-800 h-8 sm:h-10 self-center bg-sky-600 hover:bg-sky-700 focus:bg-sky-700 transition-all">Filter
-            <i class="fa-solid fa-filter pl-2"></i>
-          </button>
-        </div>
-        <div *ngIf="cars.length === 0" class="flex flex-col w-full h-full items-center justify-center pb-20 px-10">
-          <div class="rotate-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-car-off" width="140" height="140" viewBox="0 0 24 24" stroke-width="1.5" stroke="#A1A1AA" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-              <path d="M15.584 15.588a2 2 0 0 0 2.828 2.83" />
-              <path d="M5 17h-2v-6l2 -5h1m4 0h4l4 5h1a2 2 0 0 1 2 2v4m-6 0h-6m-6 -6h8m4 0h3m-6 -3v-2" />
-              <path d="M3 3l18 18" />
-            </svg>
-          </div>
-          <div class="rotate-6 font-bold text-3xl sm:text-4xl lg:text-5xl text-gray-400 text-center">
-            There are no cars published yet
-          </div>
-        </div>
-        <div *ngIf="cars.length !== 0"
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 h-full w-full gap-6 xl:gap-8 p-4">
-          <div *ngFor="let car of cars; let i = index"
-            class="h-72 2xl:h-96 w-full bg-gray-200 hover:bg-gray-300 hover:-translate-y-1 transition-all rounded-md overflow-hidden relative">
-            <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
-              class="save-btn z-[2] absolute hover:scale-105 transition-all text-gray-800 hover:text-yellow-500 focus:outline-none top-2 left-8 text-4xl sm:text-4xl md:text-5xl rounded-lg">
-              <i class="fas fa-bookmark"></i>
-            </button>
-            <a (click)="goToCar(car.id)" class="w-full h-full cursor-pointer flex flex-col">
-              <div class="p-4 rounded-md h-48 2xl:h-72 w-full">
-                <img [src]="url + car.images[0]?.imageUrl" class="rounded-md h-full w-full object-cover object-center">
-              </div>
-              <div id="texto" class="px-4 pb-4 h-fit flex flex-col gap-1">
-                <p class="text-gray-800 text-lg 2xl:text-xl font-semibold">{{car.title}}</p>
-                <p class="text-gray-700 text-sm 2xl:text-base">{{car.year}} - {{car.location}}</p>
-                <div class="flex items-center justify-between">
-                  <p class="text-gray-700 font-semibold text-sm 2xl:text-base">{{car.price | thousandSeparator}} €</p>
-                  <button (click)="openViewModal($event, car)"
-                    class="hidden lg:block text-gray-500 hover:text-sky-700 transition-colors rounded-lg focus:text-sky-700 focus:outline-gray-400">
-                    <i class="fas text-sm 2xl:text-base fa-eye"></i>
-                  </button>
+          <div *ngIf="cars.length !== 0"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 h-full w-full gap-6 xl:gap-8 px-4 pb-[5.25rem] scroll-hide overflow-y-scroll">
+            <div *ngFor="let car of cars; let i = index"
+              class="h-72 2xl:h-96 w-full bg-gray-200 hover:bg-gray-300 hover:-translate-y-1 transition-all rounded-md overflow-hidden relative">
+              <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
+                class="save-btn z-[2] absolute hover:scale-105 transition-all text-gray-800 hover:text-yellow-500 focus:outline-none top-2 left-8 text-4xl sm:text-4xl md:text-5xl rounded-lg">
+                <i class="fas fa-bookmark"></i>
+              </button>
+              <a (click)="goToCar(car.id)" class="w-full h-full cursor-pointer flex flex-col">
+                <div class="p-4 rounded-md h-48 2xl:h-72 w-full">
+                  <img [src]="url + car.images[0]?.imageUrl" class="rounded-md h-full w-full object-cover object-center">
                 </div>
-              </div>
-            </a>
+                <div id="texto" class="px-4 pb-4 h-fit flex flex-col gap-1">
+                  <p class="text-gray-800 text-lg 2xl:text-xl font-semibold">{{car.title}}</p>
+                  <p class="text-gray-700 text-sm 2xl:text-base">{{car.year}} - {{car.location}}</p>
+                  <div class="flex items-center justify-between">
+                    <p class="text-gray-700 font-semibold text-sm 2xl:text-base">{{car.price | thousandSeparator}} €</p>
+                    <button (click)="openViewModal($event, car)"
+                      class="hidden lg:block text-gray-500 hover:text-sky-700 transition-colors rounded-lg focus:text-sky-700 focus:outline-gray-400">
+                      <i class="fas text-sm 2xl:text-base fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
+        </div>
+        <div class="flex justify-center items-center text-6xl font-bold w-full">
+          saved
         </div>
       </div>
     </div>
