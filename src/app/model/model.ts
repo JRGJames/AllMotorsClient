@@ -38,23 +38,22 @@ export interface IUser extends IEntity {
     gender: string;
     birthdate: Date;
     country: string;
-    province: string;
-    address: string;
-    postalCode: string;
+    city: string;
     description: string;
     profilePicture: string;
+    profileBackground: string;
     status: Boolean;
     phone: string;
     email: string;
-    ratingCount: number;
-    ratingAverage: number;
     password: string;
     role: Boolean;
     memberSince: Date;
-    lastLogin: Date;
+    lastConnection: Date;
     banned: Boolean;
     actived: Boolean;
     saves: ISaved[];
+    ratingCount: number;
+    ratingAverage: number;
 }
 
 export interface IUserPage extends IPage<IUser> {

@@ -21,8 +21,10 @@ export class UserProfileComponent implements OnInit {
   id!: number;
   ratingCount: number = 0;
   averageRating: number = 0;
-  searchFilter: string = '';
+  searchFilterPosts: string = '';
+  searchFilterSaved: string = '';
   cars: ICar[] = [];
+  savedCars: ICar[] = [];
   url = API_URL;
   imageIndex: { [key: number]: number } = {};
   isViewModalVisible: boolean = false;
@@ -46,6 +48,7 @@ export class UserProfileComponent implements OnInit {
       if (this.id) {
         this.getUser();
         this.getCurrentUser();
+        this.showPosts();
       } else {
         console.error('ID is undefined');
       }
@@ -59,6 +62,8 @@ export class UserProfileComponent implements OnInit {
         this.getRatingCount(this.id);
         this.getRatingAverage(this.id);
         this.loadCars();
+        this.getSavedCars();
+        this.fillSavedCars();
         console.log('Usuario cargado:', user);
       },
       error: (error: HttpErrorResponse) => {
@@ -110,7 +115,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadCars(): void {
-    this.carService.getPage(100, 0, 'id', 'asc', this.user.id, this.searchFilter).subscribe({
+    this.carService.getPage(100, 0, 'id', 'asc', this.user.id, this.searchFilterPosts).subscribe({
       next: (data) => {
         if (data.content.length === 0) {
           console.log('No se encontraron coches');
@@ -176,6 +181,7 @@ export class UserProfileComponent implements OnInit {
     this.savedService.addToSaved(this.currentUser.id, carId).subscribe({
       next: () => {
         console.log('Coche añadido a favoritos: +', carId);
+        this.getSavedCars();
         saveBtn.forEach((btn) => {
           if (btn) {
             btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
@@ -195,6 +201,7 @@ export class UserProfileComponent implements OnInit {
     this.savedService.removeFromSaved(this.currentUser.id, carId).subscribe({
       next: () => {
         console.log('Coche eliminado de favoritos: -', carId);
+        this.getSavedCars();
         saveBtn.forEach((btn) => {
           if (btn) {
             btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
@@ -218,6 +225,7 @@ export class UserProfileComponent implements OnInit {
             this.addToSaved(car.id);
           }
         }
+        
       });
     } else {
       this.router.navigate(['/login']);
@@ -255,8 +263,12 @@ export class UserProfileComponent implements OnInit {
     this.imageIndex[car.id] = index;
   }
 
-  onSearch(): void {
+  onSearchPosts(): void {
     this.loadCars();
+  }
+
+  onSearchSaved(): void {
+    this.getSavedCars();
   }
 
   isCurrentUserOwner(): boolean {
@@ -306,5 +318,62 @@ export class UserProfileComponent implements OnInit {
 
   goToProfile() {
     window.location.href = '/user/' + this.user.id;
+  }
+
+  showInfo(): void {
+    const container = document.getElementById('tabContainer');
+
+    if (container) {
+      container.style.transform = 'translateX(0)';
+    }
+  }
+
+  showPosts(): void {
+    const container = document.getElementById('tabContainer');
+
+    if (container) {
+      container.style.transform = 'translateX(-33.333%)';
+    }
+  }
+
+  showSaved(): void {
+    const container = document.getElementById('tabContainer');
+
+
+    if (container) {
+      if (this.savedCars.length === 0) {
+        container.classList.add('h-[30]');
+        container.classList.remove('h-[51]');
+      } else {
+        container.classList.remove('h-[30]');
+        container.classList.add('h-[51]');
+      }
+      container.style.transform = 'translateX(-66.666%)';
+    }
+  }
+
+  getSavedCars(): void {
+    this.savedService.getSavedCars(this.user.id).subscribe({
+      next: (savedCars: ICar[]) => {
+        this.savedCars = savedCars;
+        this.fillSavedCars();
+      },
+      error: (error: string) => {
+        console.error('Error al obtener coches favoritos:', error);
+      },
+    });
+  }
+
+  getUserInitials(): string {
+    if (this.user.name && this.user.lastname) {
+      return `${this.user.name.charAt(0)}${this.user.lastname.charAt(0)}`.toUpperCase();
+    }
+    return '';
+  }
+
+  uploadImage(): void {
+    // Aquí puedes implementar la lógica para abrir el diálogo de selección de archivos o la página de carga de imágenes
+    // Por ejemplo, puedes abrir un modal para que el usuario pueda seleccionar una nueva imagen
+    console.log('Subir imagen nueva');
   }
 }
