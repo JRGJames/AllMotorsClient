@@ -70,7 +70,7 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  toggleMenu() {
+  toggleMenu() {  
     this.showMenu = !this.showMenu;
     this.showAccountDropdown = false;
   }

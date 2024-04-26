@@ -1,79 +1,81 @@
-<div class="h-[34rem] md:h-[22rem] lg:h-[26rem] relative">
-  <img src='../../../../../assets/images/image3.webp' class="absolute h-full w-full object-cover object-center">
+<div class="h-[32rem] md:h-[22rem] lg:h-[26rem] relative">
+  <img *ngIf="user.profileBackground" src='../../../../../assets/images/image4.webp' class="absolute h-full w-full object-cover object-center">
+  <div *ngIf="!user.profileBackground" class="absolute h-full w-full bg-cyan-600"></div>
   <div class="gradient-mobile md:hidden object-cover absolute top-0 w-full h-full"></div>
   <div class="gradient-one hidden md:block object-cover absolute top-0 w-full h-full"></div>
   <div
-    class="flex flex-col absolute w-full items-center justify-start md:flex-row md:items-start gap-4 lg:gap-8 h-full px-6 md:px-10 pt-24 pb-10">
-    <div class="h-40 md:h-full flex items-center ">
-      <span (click)="uploadImage()"
-        class=" cursor-pointer md:cursor-default relative flex shrink-0 overflow-hidden rounded-full md:rounded-xl h-full w-full aspect-square">
-        <img *ngIf="user.profilePicture" src='../../../../../assets/images/nano.jpg'
-          class="flex h-full object-cover w-full items-center justify-center rounded-full md:rounded-xl">
-        <div *ngIf="!user.profilePicture"
-          class="flex items-center justify-center text-3xl md:text-8xl xl:text-9xl font-semibold text-white w-full h-full bg-slate-600">
-          {{getUserInitials()}}
-        </div>
+    class="flex flex-col absolute w-full items-center justify-between md:flex-row md:items-start gap-4 lg:gap-8 h-full px-6 md:px-10 pt-24 pb-10">
+    <div class="flex h-full flex-col md:flex-row gap-4 lg:gap-8 items-center">
+      <div class="h-40 md:h-full flex items-center">
+        <span (click)="uploadImage()"
+          class="cursor-pointer md:cursor-default relative flex-shrink-0 overflow-hidden rounded-full md:rounded-xl h-full w-full aspect-square">
+          <img *ngIf="user.profilePicture" src='../../../../../assets/images/nano.jpg'
+            class="flex h-full object-cover w-full">
 
-      </span>
-      <div class="absolute top-[6.25rem] md:top-28 md:left-14 h-5 w-5 rounded-full bg-green-500"></div>
-      <button (click)="uploadImage()"
-        class="absolute top-[6.25rem] hidden md:block md:top-[6.25rem] md:left-[13.25rem] lg:left-[17.25rem] h-10 w-10 rounded-lg text-white hover:text-gray-800 p-2 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-        <i class="fa fa-pencil text-xl "></i>
+          <div *ngIf="!user.profilePicture"
+            class="flex items-center justify-center text-5xl md:text-8xl xl:text-9xl font-semibold text-white w-40 md:w-full h-40 md:h-full bg-sky-600 border-4 border-black rounded-full md:rounded-xl">
+            {{getUserInitials()}}
+          </div>
+        </span>
+
+        <div class="absolute top-[6.75rem] ml-4 md:ml-0 md:top-28 md:left-14 h-5 w-5 rounded-full bg-green-500"></div>
+        <button (click)="uploadImage()"
+          class="absolute top-[6.25rem] hidden md:block md:top-[6.25rem] md:left-[13rem] lg:left-[17rem] h-10 w-10 rounded-lg text-white hover:text-gray-800 p-2 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+          <i class="fa fa-pencil text-xl "></i>
+        </button>
+      </div>
+      <div class="h-full gap-4 lg:gap-8 flex flex-col justify-between text-center md:text-left md:w-96">
+        <div
+          class="flex flex-col space-y-2 md:backdrop-blur-md h-full md:bg-gray-50 md:bg-opacity-50 md:rounded-lg md:py-3 md:px-5 lg:py-4">
+          <h1 class="text-2xl lg:text-3xl font-bold">{{user.name}} {{user.lastname}}</h1>
+          <p class="text-base lg:text-lg text-gray-800">@{{user.username}}</p>
+          <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone-filled" width="16"
+              height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#4B5563" fill="none" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M9 3a1 1 0 0 1 .877 .519l.051 .11l2 5a1 1 0 0 1 -.313 1.16l-.1 .068l-1.674 1.004l.063 .103a10 10 0 0 0 3.132 3.132l.102 .062l1.005 -1.672a1 1 0 0 1 1.113 -.453l.115 .039l5 2a1 1 0 0 1 .622 .807l.007 .121v4c0 1.657 -1.343 3 -3.06 2.998c-8.579 -.521 -15.418 -7.36 -15.94 -15.998a3 3 0 0 1 2.824 -2.995l.176 -.005h4z"
+                stroke-width="0" fill="currentColor" />
+            </svg>
+            <p>{{user.phone}}</p>
+          </div>
+          <div class="flex items-center justify-center md:justify-start gap-2">
+            <div class="flex space-x-1">
+              <i *ngIf="averageRating === 0" class="fa fa-star text-sm text-gray-800"></i>
+              <i *ngFor="let starIndex of getStarIndexes()" class="fa fa-star text-sm text-gray-800"></i>
+              <i *ngIf="averageRating % 1 > 0" class="fa fa-star-half text-sm text-gray-800"></i>
+            </div>
+            <span class="text-sm text-gray-700">({{ratingCount}})</span>
+          </div>
+        </div>
+        <div class="hidden md:flex gap-1 w-full">
+          <button
+            class="bg-black hover:bg-gray-900 justify-center focus:bg-gray-900 bg-opacity-80 backdrop-blur-md focus:outline-none rounded-lg w-full text-white py-2 lg:py-3 transition-colors">
+            Contact
+          </button>
+          <button *ngIf="isCurrentUserOwner()"
+            class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
+            <i class="fa fa-pencil px-2"></i>
+          </button>
+          <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
+            class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-red-600 transition-colors h-full w-2/12"
+            (click)="openDeleteModal(user.id)">
+            <i class="fa fa-trash px-2"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="hidden md:flex flex-col gap-2">
+      <button *ngIf="isDifferentUser()"
+        class="w-10 h-10 transition-all bg-blue-300 text-blue-200 hover:bg-blue-400 hover:bg-opacity-45 hover:text-blue-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+        <i class="fa fa-star"></i>
+      </button>
+      <button *ngIf="isDifferentUser()"
+        class="w-10 h-10 transition-all bg-rose-300 text-rose-200 hover:bg-rose-400 hover:bg-opacity-45 hover:text-rose-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+        <i class="fa-solid fa-flag"></i>
       </button>
     </div>
-    <div class="h-full gap-4 lg:gap-8 flex flex-col justify-between text-center md:text-left md:w-96">
-      <div
-        class="flex flex-col space-y-2 md:space-y-1 lg:space-y-2 md:backdrop-blur-md h-full md:bg-gray-50 md:bg-opacity-50 md:rounded-lg md:py-3 md:px-5 lg:py-4">
-        <h1 class="text-2xl lg:text-3xl font-bold">{{user.name}} {{user.lastname}}</h1>
-        <p class="text-base lg:text-lg text-gray-800">@{{user.username}}</p>
-        <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-phone-filled" width="16"
-            height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#4B5563" fill="none" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M9 3a1 1 0 0 1 .877 .519l.051 .11l2 5a1 1 0 0 1 -.313 1.16l-.1 .068l-1.674 1.004l.063 .103a10 10 0 0 0 3.132 3.132l.102 .062l1.005 -1.672a1 1 0 0 1 1.113 -.453l.115 .039l5 2a1 1 0 0 1 .622 .807l.007 .121v4c0 1.657 -1.343 3 -3.06 2.998c-8.579 -.521 -15.418 -7.36 -15.94 -15.998a3 3 0 0 1 2.824 -2.995l.176 -.005h4z"
-              stroke-width="0" fill="currentColor" />
-          </svg>
-          <p>{{user.phone}}</p>
-        </div>
-        <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin-filled" width="16"
-            height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#4B5563" fill="none" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z"
-              stroke-width="0" fill="currentColor" />
-          </svg>
-          <p>{{user.country}} - {{user.city}}</p>
-        </div>
-        <div class="flex items-center justify-center md:justify-start gap-2">
-          <div class="flex space-x-1">
-            <i *ngIf="averageRating === 0" class="fa fa-star text-sm text-gray-800"></i>
-            <i *ngFor="let starIndex of getStarIndexes()" class="fa fa-star text-sm text-gray-800"></i>
-            <i *ngIf="averageRating % 1 > 0" class="fa fa-star-half text-sm text-gray-800"></i>
-          </div>
-          <span class="text-sm text-gray-700">({{ratingCount}})</span>
-        </div>
-      </div>
-      <div class="hidden md:flex gap-1 w-full">
-        <button
-          class="bg-black hover:bg-gray-900 justify-center focus:bg-gray-900 bg-opacity-80 backdrop-blur-md focus:outline-none rounded-lg w-full text-white py-2 lg:py-3 transition-colors">
-          Contact
-        </button>
-        <button *ngIf="isCurrentUserOwner()"
-          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
-          <i class="fa fa-pencil px-2"></i>
-        </button>
-        <button *ngIf="isCurrentUserAdmin()"
-          class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-red-600 transition-colors h-full w-2/12"
-          (click)="openDeleteModal(user.id)">
-          <i class="fa fa-trash px-2"></i>
-        </button>
-      </div>
-    </div>
-    <!-- <div class="flex text-gray-700 self-end text-right text-sm">Member since: {{user.memberSince }}</div> -->
     <div class="flex md:hidden gap-1 w-full">
       <button
         class="flex justify-center bg-black hover:bg-gray-900 focus:bg-gray-900 focus:outline-none rounded-lg w-full text-white py-3 transition-colors">
@@ -83,17 +85,57 @@
         class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white transition-all h-full w-2/12">
         <i class="fa fa-pencil px-2"></i>
       </button>
-      <button *ngIf="isCurrentUserOwner()"
+      <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
         class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500  text-white hover:bg-red-600 transition-colors h-full w-2/12"
         (click)="openDeleteModal(user.id)">
         <i class="fa fa-trash px-2"></i>
       </button>
     </div>
   </div>
+  <div class="absolute flex md:hidden flex-col gap-2 right-3 top-[4.75rem]">
+    <button *ngIf="isDifferentUser()"
+      class="w-10 h-10 transition-all bg-blue-300 text-blue-200 hover:bg-blue-400 hover:bg-opacity-45 hover:text-blue-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+      <i class="fa fa-star"></i>
+    </button>
+    <button *ngIf="isDifferentUser()"
+      class="w-10 h-10 transition-all bg-rose-300 text-rose-200 hover:bg-rose-400 hover:bg-opacity-45 hover:text-rose-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+      <i class="fa-solid fa-flag"></i>
+    </button>
+  </div>
 </div>
 <div class="w-full px-6 md:px-10 pb-10 space-y-10">
-  <div>
-    <div class="grid gap-4 px-3">
+  <div class="flex flex-col gap-4">
+    <div class="flex px-3 text-sm text-gray-700 gap-5">
+      <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-month" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#4B5563" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+          <path d="M16 3v4" />
+          <path d="M8 3v4" />
+          <path d="M4 11h16" />
+          <path d="M7 14h.013" />
+          <path d="M10.01 14h.005" />
+          <path d="M13.01 14h.005" />
+          <path d="M16.015 14h.005" />
+          <path d="M13.015 17h.005" />
+          <path d="M7.01 17h.005" />
+          <path d="M10.01 17h.005" />
+        </svg>
+        <p>Joined {{user.memberSince.toString()| dateFormat}}</p>
+      </div>
+      <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin-filled" width="16"
+          height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#4B5563" fill="none" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z"
+            stroke-width="0" fill="currentColor" />
+        </svg>
+        <p>{{user.country}} - {{user.city}}</p>
+      </div>
+    </div>
+    <div class="px-3">
       <p class="text-gray-700">
         {{user.description}}
       </p>

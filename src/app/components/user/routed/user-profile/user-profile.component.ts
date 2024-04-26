@@ -279,6 +279,10 @@ export class UserProfileComponent implements OnInit {
     return this.currentUser.role === true;
   }
 
+  isDifferentUser(): boolean {
+    return this.user.id !== this.currentUser.id;
+  }
+
   openDeleteModal(id: number): void {
     this.idToDelete = id;
     this.isDeleteModalVisible = true;

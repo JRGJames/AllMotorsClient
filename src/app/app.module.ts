@@ -17,6 +17,7 @@ import { TrimPipe } from './pipes/trim.pipe';
 import { ThousandSeparatorPipe } from './pipes/thousandSeparator.pipe';
 import { RoundToThousandthPipe } from './pipes/roundToThousandth.pipe';
 import { CapitalizeFirstPipe } from './pipes/capitalizeFirst.pipe';
+import { DateFormatPipe } from './pipes/dateFormat.pipe';
 
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
@@ -40,6 +41,7 @@ import { CarEditComponent } from './components/car/routed/car-edit/car-edit.comp
     ThousandSeparatorPipe,
     RoundToThousandthPipe,
     CapitalizeFirstPipe,
+    DateFormatPipe,
     LoginComponent,
     SignupComponent,
     NavbarComponent,
