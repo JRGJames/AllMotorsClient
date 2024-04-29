@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class SessionService {
 
-    sUrl: string = API_URL + "/session";
+    url: string = API_URL + "/session";
 
     subjectSession = new Subject<SessionEvent>();
 
@@ -33,7 +33,7 @@ export class SessionService {
             ? { email: sIdentifier, password: sPassword }
             : { username: sIdentifier, password: sPassword };
 
-        return this.http.post<string>(`${this.sUrl}/login`, payload);
+        return this.http.post<string>(`${this.url}/login`, payload);
     }
 
 
