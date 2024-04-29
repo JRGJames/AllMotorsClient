@@ -31,6 +31,9 @@ export class UserProfileComponent implements OnInit {
   selectedCar: ICar = {} as ICar; // Car seleccionado para mostrar en el modal
   isDeleteModalVisible: boolean = false;
   idToDelete: number | null = null;
+  isInfoShown: boolean = false;
+  isPostsShown: boolean = false;
+  isSavedShown: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -326,6 +329,9 @@ export class UserProfileComponent implements OnInit {
 
   showInfo(): void {
     const container = document.getElementById('tabContainer');
+    this.isInfoShown = true;
+    this.isPostsShown = false;
+    this.isSavedShown = false;
 
     if (container) {
       container.style.transform = 'translateX(0)';
@@ -334,6 +340,9 @@ export class UserProfileComponent implements OnInit {
 
   showPosts(): void {
     const container = document.getElementById('tabContainer');
+    this.isInfoShown = false;
+    this.isPostsShown = true;
+    this.isSavedShown = false;
 
     if (container) {
       container.style.transform = 'translateX(-33.333%)';
@@ -342,7 +351,9 @@ export class UserProfileComponent implements OnInit {
 
   showSaved(): void {
     const container = document.getElementById('tabContainer');
-
+    this.isInfoShown = false;
+    this.isPostsShown = false;
+    this.isSavedShown = true;
 
     if (container) {
       if (this.savedCars.length === 0) {

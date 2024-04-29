@@ -71,9 +71,13 @@
     </button>
     <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton
       class="flex items-center h-full text-white relative focus:outline-none">
-      <span class="mr-2">{{ strUserName }}</span>
+      <span class="mr-2">{{sessionUser.username}}</span>
       <div class="rounded-full overflow-hidden bg-white h-8 w-8">
-        <img src='../../../../../assets/images/nano.jpg' alt="profile_image" class=" flex h-full object-cover w-full items-center justify-center">
+        <img *ngIf="sessionUser.profilePicture" src='../../../../../assets/images/nano.jpg' alt="profile_image" class=" flex h-full object-cover w-full items-center justify-center">
+        <div *ngIf="!sessionUser.profilePicture" class="flex text-xs w-full h-full bg-sky-600 items-center justify-center tracking-[-0.1rem]">
+          {{sessionUser.name.charAt(0)}}
+          {{sessionUser.lastname.charAt(0)}}
+        </div>
       </div>
     </button>
 
