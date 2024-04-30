@@ -19,7 +19,7 @@
           </div>
         </span>
 
-        <div class="absolute top-[6.75rem] ml-4 md:ml-0 md:top-28 md:left-14 h-5 w-5 rounded-full bg-green-500"></div>
+        <div [ngClass]="{'bg-green-500': user.status, 'bg-red-500': !user.status}" class="absolute top-[6.75rem] ml-4 md:ml-0 md:top-28 md:left-14 h-5 w-5 rounded-full "></div>
         <button (click)="uploadImage()"
           class="absolute top-[6.25rem] hidden md:block md:top-[6.5rem] md:left-[13rem] lg:left-[17rem] h-10 w-10 rounded-lg text-white hover:text-gray-800 p-2 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-pencil text-xl "></i>

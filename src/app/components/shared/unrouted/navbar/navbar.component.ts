@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { catchError, concatMap } from 'rxjs';
 import { IUser, SessionEvent } from 'src/app/model/model';
 import { SessionService } from 'src/app/service/session.service';
 import { UserService } from 'src/app/service/user.service';
@@ -70,7 +71,7 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  toggleMenu() {  
+  toggleMenu() {
     this.showMenu = !this.showMenu;
     this.showAccountDropdown = false;
   }
@@ -99,14 +100,33 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  logout() {
-    this.sessionService.logout();
-    this.sessionService.emit({ type: 'logout' });
-    this.router.navigate(['/home']);
-    this.showAccountDropdown = false;
-    this.showDropdown = false;
-    this.showMenu = false;
+  logout(): void {
+
+    if (this.sessionService.isSessionActive()) {
+      const sessionUser = this.sessionUser;
+
+      if (sessionUser) {
+        sessionUser.status = false;
+
+        this.userService.update(sessionUser).pipe(
+          concatMap((user: IUser) => {
+            this.sessionService.logout();
+            this.sessionService.emit({ type: 'logout' });
+            this.showAccountDropdown = false;
+            this.showDropdown = false;
+            this.showMenu = false;
+            return this.router.navigate(['/home']);
+          }),
+          catchError((error: HttpErrorResponse) => {
+            return this.router.navigate(['/home']);
+          })
+        ).subscribe();
+      } else {
+        this.router.navigate(['/home']);
+      }
+    }
   }
+
 
   // when click on the logo reload the page
   goToHome() {
