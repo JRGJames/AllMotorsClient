@@ -8,6 +8,8 @@ import { RatingService } from 'src/app/service/rating.service';
 import { CarService } from 'src/app/service/car.service';
 import { API_URL } from 'src/environment/environment';
 import { SavedService } from 'src/app/service/saved.service';
+import { MediaService } from 'src/app/service/media.service';
+import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -19,12 +21,13 @@ export class UserProfileComponent implements OnInit {
   user: IUser = {} as IUser;
   currentUser: IUser = {} as IUser;
   id!: number;
-  ratingCount: number = 0;
-  averageRating: number = 0;
+  userRatingCount: number = 0;
+  userAverageRating: number = 0;
   searchFilterPosts: string = '';
   searchFilterSaved: string = '';
   cars: ICar[] = [];
   savedCars: ICar[] = [];
+  urlPictureBackground: string = API_URL + "/media/";
   url = API_URL;
   imageIndex: { [key: number]: number } = {};
   isViewModalVisible: boolean = false;
@@ -34,6 +37,9 @@ export class UserProfileComponent implements OnInit {
   isInfoShown: boolean = false;
   isPostsShown: boolean = false;
   isSavedShown: boolean = false;
+  ratingCount: { [key: number]: number } = {};
+  ratingAverage: { [key: number]: number } = {};
+  selectedFile!: File;
 
   constructor(
     private userService: UserService,
@@ -43,6 +49,8 @@ export class UserProfileComponent implements OnInit {
     private carService: CarService,
     private router: Router, // inyectar Router
     private savedService: SavedService, // inyectar SavedService
+    private mediaService: MediaService,
+    // private toast: ToastComponent
   ) { }
 
   ngOnInit() {
@@ -62,12 +70,11 @@ export class UserProfileComponent implements OnInit {
     this.userService.get(this.id).subscribe({
       next: (user: IUser) => {
         this.user = user;
-        this.getRatingCount(this.id);
-        this.getRatingAverage(this.id);
+        this.getUserRatingCount(this.id);
+        this.getUserRatingAverage(this.id);
         this.loadCars();
         this.getSavedCars();
         this.fillSavedCars();
-        console.log('Usuario cargado:', user);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al cargar los datos del usuario:', error);
@@ -81,7 +88,6 @@ export class UserProfileComponent implements OnInit {
       this.userService.getByUsername(username).subscribe({
         next: (user: IUser) => {
           this.currentUser = user;
-          console.log('Usuario actual cargado:', user);
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los datos del usuario actual:', error);
@@ -90,10 +96,10 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  getRatingCount(ownerId: number): void {
+  getUserRatingCount(ownerId: number): void {
     this.ratingService.getUserRatingCount(ownerId).subscribe({
-      next: (ratingCount) => {
-        this.ratingCount = ratingCount;
+      next: (userRatingCount) => {
+        this.userRatingCount = userRatingCount;
       },
       error: (error) => {
         console.error('Error al obtener la cantidad de valoraciones', error);
@@ -101,10 +107,32 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  getRatingAverage(ownerId: number): void {
+  getRatingCount(owner: IUser): void {
+    this.ratingService.getUserRatingCount(owner.id).subscribe({
+      next: (ratingCount) => {
+        owner.ratingCount = ratingCount;
+      },
+      error: (error) => {
+        console.error('Error al obtener la cantidad de valoraciones', error);
+      },
+    });
+  }
+
+  getUserRatingAverage(ownerId: number): void {
     this.ratingService.getUserAverageRating(ownerId).subscribe({
-      next: (averageRating) => {
-        this.averageRating = averageRating;
+      next: (userAverageRating) => {
+        this.userAverageRating = userAverageRating;
+      },
+      error: (error) => {
+        console.error('Error al obtener la valoración media', error);
+      },
+    });
+  }
+
+  getRatingAverage(owner: IUser): void {
+    this.ratingService.getUserAverageRating(owner.id).subscribe({
+      next: (ratingAverage) => {
+        owner.ratingAverage = ratingAverage;
       },
       error: (error) => {
         console.error('Error al obtener la valoración media', error);
@@ -113,7 +141,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   getStarIndexes(): number[] {
-    const starCount = Math.floor(this.averageRating);
+    const starCount = Math.floor(this.userAverageRating);
     return Array(starCount).fill(0).map((_, index) => index);
   }
 
@@ -183,7 +211,6 @@ export class UserProfileComponent implements OnInit {
 
     this.savedService.addToSaved(this.currentUser.id, carId).subscribe({
       next: () => {
-        console.log('Coche añadido a favoritos: +', carId);
         this.getSavedCars();
         saveBtn.forEach((btn) => {
           if (btn) {
@@ -203,7 +230,6 @@ export class UserProfileComponent implements OnInit {
 
     this.savedService.removeFromSaved(this.currentUser.id, carId).subscribe({
       next: () => {
-        console.log('Coche eliminado de favoritos: -', carId);
         this.getSavedCars();
         saveBtn.forEach((btn) => {
           if (btn) {
@@ -228,7 +254,7 @@ export class UserProfileComponent implements OnInit {
             this.addToSaved(car.id);
           }
         }
-        
+
       });
     } else {
       this.router.navigate(['/login']);
@@ -240,8 +266,8 @@ export class UserProfileComponent implements OnInit {
     this.imageIndex[car.id] = 0; // Reinicia el índice de la imagen
     this.selectedCar = car; // Establece el coche seleccionado
     this.isViewModalVisible = true; // Muestra el modal
-    this.getRatingCount(this.selectedCar.owner.id);
-    this.getRatingAverage(this.selectedCar.owner.id);
+    this.getRatingCount(this.selectedCar.owner);
+    this.getRatingAverage(this.selectedCar.owner);
     this.fillSavedCars();
     document.body.classList.add('overflow-hidden');
   }
@@ -386,9 +412,100 @@ export class UserProfileComponent implements OnInit {
     return '';
   }
 
-  uploadImage(): void {
-    // Aquí puedes implementar la lógica para abrir el diálogo de selección de archivos o la página de carga de imágenes
-    // Por ejemplo, puedes abrir un modal para que el usuario pueda seleccionar una nueva imagen
-    console.log('Subir imagen nueva');
+  onPictureSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (this.checkFileSizePicture(file)) {
+        if (this.checkFileType(file)) {
+          this.uploadPicture(file);
+        } else {
+          // this.toast.show('El archivo seleccionado no es una imagen.');
+          console.error('El archivo seleccionado no es una imagen.');
+          return;
+        } 
+      } else {
+        // this.toast.show('El archivo seleccionado excede el tamaño máximo permitido.');
+        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        return;
+      }
+    }
+  }
+
+  onBackgroundSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (this.checkFileSizeBackground(file)) {
+        if (this.checkFileType(file)) {
+          this.uploadBackground(file);
+        } else {
+          // this.toast.show('El archivo seleccionado no es una imagen.');
+          console.error('El archivo seleccionado no es una imagen.');
+          return;
+        } 
+      } else {
+        // this.toast.show('El archivo seleccionado excede el tamaño máximo permitido.');
+        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        return;
+      }
+    }
+  }
+
+  uploadPicture(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+    this.mediaService.uploadPicture(formData, this.user.id).subscribe({
+      next: () => {
+        this.userService.get(this.id).subscribe({
+          next: (user: IUser) => {
+            this.user = user;
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al cargar los datos del usuario:', error);
+          }
+        })
+      },
+      error: (error) => {
+        console.error('Error al subir la imagen:', error);
+      }
+    });
+  }
+
+  uploadBackground(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+    this.mediaService.uploadBackground(formData, this.user.id).subscribe({
+      next: () => {
+        this.userService.get(this.id).subscribe({
+          next: (user: IUser) => {
+            this.user = user;
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al cargar los datos del usuario:', error);
+          }
+        })
+      },
+      error: (error) => {
+        console.error('Error al subir la imagen:', error);
+      }
+    });
+  }
+
+  checkFileSizePicture(file: File): boolean {
+    const maxSizeInBytes = 2 * 1024 * 1024; // Tamaño máximo permitido en bytes (2 MB en este ejemplo)
+    return file.size <= maxSizeInBytes;
+  }
+
+  checkFileSizeBackground(file: File): boolean {
+    const maxSizeInBytes = 6 * 1024 * 1024; // Tamaño máximo permitido en bytes (6 MB en este ejemplo)
+    return file.size <= maxSizeInBytes;
+  }
+
+  checkFileType(file: File): boolean {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']; // Tipos MIME permitidos
+    return allowedTypes.includes(file.type);
+  }
+
+  dateToString(date: Date): string {
+    return new Date(date).toLocaleDateString();
   }
 }

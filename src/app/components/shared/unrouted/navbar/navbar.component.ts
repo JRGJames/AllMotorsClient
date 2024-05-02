@@ -5,6 +5,7 @@ import { catchError, concatMap } from 'rxjs';
 import { IUser, SessionEvent } from 'src/app/model/model';
 import { SessionService } from 'src/app/service/session.service';
 import { UserService } from 'src/app/service/user.service';
+import { API_URL } from 'src/environment/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -26,6 +27,8 @@ export class NavbarComponent implements OnInit {
   showDropdown: boolean = false;
   showMenu: boolean = false;
   showAccountDropdown: boolean = false;
+  url = API_URL + "/media/";
+
 
   constructor(
     private sessionService: SessionService,
@@ -127,6 +130,12 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  getUserInitials(): string {
+    if (this.sessionUser.name && this.sessionUser.lastname) {
+      return `${this.sessionUser.name.charAt(0)}${this.sessionUser.lastname.charAt(0)}`.toUpperCase();
+    }
+    return '';
+  }
 
   // when click on the logo reload the page
   goToHome() {

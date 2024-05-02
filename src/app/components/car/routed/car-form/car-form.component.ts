@@ -201,42 +201,42 @@ export class CarFormComponent implements OnInit {
   }
 
 
-  onSubmit() {
-    console.log('Formulario:', this.carForm.value);
-    if (this.carForm.valid) {
-      // Convertir datos del formulario a JSON para incluirlos en FormData
-      const formData = new FormData();
+  // onSubmit() {
+  //   console.log('Formulario:', this.carForm.value);
+  //   if (this.carForm.valid) {
+  //     // Convertir datos del formulario a JSON para incluirlos en FormData
+  //     const formData = new FormData();
 
-      if (this.operation === 'NEW') {
-        this.carService.create(this.carForm.value).subscribe({
-          next: (car: ICar) => {
-            console.log('Coche creado:', car);
+  //     if (this.operation === 'NEW') {
+  //       this.carService.create(this.carForm.value).subscribe({
+  //         next: (car: ICar) => {
+  //           console.log('Coche creado:', car);
 
-            if (this.images && this.images.length > 2) {
-              // Array.from(this.images).forEach((image) => {
-              //   formData.append('images', image.imageUrl, car.id.toString());
-              // });
+  //           if (this.images && this.images.length > 2) {
+  //             // Array.from(this.images).forEach((image) => {
+  //             //   formData.append('images', image.imageUrl, car.id.toString());
+  //             // });
 
-              this.mediaService.uploadMultipleFiles(formData).subscribe({
-                next: (response) => {
-                  console.log('Imágenes subidas:', response);
-                  this.router.navigate(['/car', car.id]);
-                },
-                error: (uploadError) => {
-                  console.error('Error subiendo imágenes:', uploadError);
-                  this.status = uploadError;
-                }
-              });
-            } else {
-              this.router.navigate(['/car', car]);
-            }
-          },
-          error: (createError) => {
-            console.error('Error creando el coche:', createError);
-            this.status = createError;
-          }
-        });
-      }
-    }
-  }
+  //             this.mediaService.uploadMultipleFiles(formData).subscribe({
+  //               next: (response) => {
+  //                 console.log('Imágenes subidas:', response);
+  //                 this.router.navigate(['/car', car.id]);
+  //               },
+  //               error: (uploadError) => {
+  //                 console.error('Error subiendo imágenes:', uploadError);
+  //                 this.status = uploadError;
+  //               }
+  //             });
+  //           } else {
+  //             this.router.navigate(['/car', car]);
+  //           }
+  //         },
+  //         error: (createError) => {
+  //           console.error('Error creando el coche:', createError);
+  //           this.status = createError;
+  //         }
+  //       });
+  //     }
+  //   }
+  // }
 }

@@ -7,14 +7,17 @@ import { API_URL } from 'src/environment/environment';
   providedIn: 'root'
 })
 export class MediaService {
-  url = API_URL;
+  url: string = API_URL + '/media';
 
   constructor(
     private http: HttpClient
   ) { }
 
-  uploadMultipleFiles(formData: FormData): Observable<any> {
-    return this.http.post(this.url + "/media/upload", formData);
+  uploadPicture(formData: FormData, userId: number): Observable<any> {
+    return this.http.post<any>(this.url + `/upload/picture/${userId}`, formData);
   }
 
+  uploadBackground(formData: FormData, userId: number): Observable<any> {
+    return this.http.post<any>(this.url + `/upload/background/${userId}`, formData);
+  }
 }

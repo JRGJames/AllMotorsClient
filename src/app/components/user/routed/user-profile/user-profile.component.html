@@ -1,5 +1,5 @@
 <div class="h-[32rem] md:h-[22rem] lg:h-[26rem] relative">
-  <img *ngIf="user.profileBackground" src='../../../../../assets/images/image4.webp'
+  <img *ngIf="user.profileBackground" [src]="urlPictureBackground + user.profileBackground"
     class="absolute h-full w-full object-cover object-center">
   <div *ngIf="!user.profileBackground" class="absolute h-full w-full bg-cyan-600"></div>
   <div class="gradient-mobile md:hidden object-cover absolute top-0 w-full h-full"></div>
@@ -8,9 +8,12 @@
     class="flex flex-col absolute w-full items-center justify-between md:flex-row md:items-start gap-4 lg:gap-8 h-full px-6 md:px-10 pt-24 pb-10">
     <div class="flex h-full flex-col md:flex-row gap-4 lg:gap-8 items-center">
       <div class="h-40 md:h-full flex items-center">
-        <span (click)="uploadImage()"
-          class="cursor-pointer md:cursor-default relative flex-shrink-0 overflow-hidden rounded-full md:rounded-xl h-full w-full aspect-square">
-          <img *ngIf="user.profilePicture" src='../../../../../assets/images/nano.jpg'
+        <span class="relative flex-shrink-0 overflow-hidden rounded-full md:rounded-xl h-full w-full aspect-square">
+          <input type="file" hidden id="picture" (change)="onPictureSelected($event)" accept="image/*">
+          <label *ngIf="isCurrentUserOwner()" for="picture"
+            class="absolute flex md:hidden w-full h-full justify-center items-center cursor-pointer rounded-full">
+          </label>
+          <img *ngIf="user.profilePicture" [src]="urlPictureBackground + user.profilePicture"
             class="flex h-full object-cover w-full">
 
           <div *ngIf="!user.profilePicture"
@@ -19,11 +22,13 @@
           </div>
         </span>
 
-        <div [ngClass]="{'bg-green-500': user.status, 'bg-red-500': !user.status}" class="absolute top-[6.75rem] ml-4 md:ml-0 md:top-28 md:left-14 h-5 w-5 rounded-full "></div>
-        <button (click)="uploadImage()"
-          class="absolute top-[6.25rem] hidden md:block md:top-[6.5rem] md:left-[13rem] lg:left-[17rem] h-10 w-10 rounded-lg text-white hover:text-gray-800 p-2 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-          <i class="fa fa-pencil text-xl "></i>
-        </button>
+        <div [ngClass]="{'bg-green-500': user.status, 'bg-red-500': !user.status}"
+          class="absolute top-[6.75rem] ml-4 md:ml-0 md:top-28 md:left-14 h-5 w-5 rounded-full "></div>
+        <input type="file" hidden id="pictureDesktop" (change)="onPictureSelected($event)" accept="image/*">
+        <label *ngIf="isCurrentUserOwner()" for="pictureDesktop"
+          class="absolute cursor-pointer top-[6.25rem] hidden md:block md:top-[6.5rem] md:left-[13rem] lg:left-[17rem] h-10 w-10 rounded-lg text-white hover:text-gray-800 p-2 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+          <i class="fa fa-pencil text-xl"></i>
+        </label>
       </div>
       <div class="h-full gap-4 lg:gap-8 flex flex-col justify-between text-center md:text-left md:w-96">
         <div
@@ -43,11 +48,11 @@
           </div>
           <div class="flex items-center justify-center md:justify-start gap-2">
             <div class="flex space-x-1">
-              <i *ngIf="averageRating === 0" class="fa fa-star text-sm text-gray-800"></i>
+              <i *ngIf="userAverageRating === 0" class="fa fa-star text-sm text-gray-800"></i>
               <i *ngFor="let starIndex of getStarIndexes()" class="fa fa-star text-sm text-gray-800"></i>
-              <i *ngIf="averageRating % 1 > 0" class="fa fa-star-half text-sm text-gray-800"></i>
+              <i *ngIf="userAverageRating % 1 > 0" class="fa fa-star-half text-sm text-gray-800"></i>
             </div>
-            <span class="text-sm text-gray-700">({{ratingCount}})</span>
+            <span class="text-sm text-gray-700">({{userRatingCount}})</span>
           </div>
         </div>
         <div class="hidden md:flex gap-1 w-full">
@@ -76,6 +81,11 @@
         class="w-10 h-10 transition-all bg-rose-300 text-rose-200 hover:bg-rose-400 hover:bg-opacity-45 hover:text-rose-50 bg-opacity-40 backdrop-blur-md rounded-lg">
         <i class="fa-solid fa-flag"></i>
       </button>
+      <input type="file" hidden id="backgroundDesktop" (change)="onBackgroundSelected($event)" accept="image/*">
+      <label *ngIf="isCurrentUserOwner()" for="backgroundDesktop"
+        class="w-10 h-10 flex justify-center items-center cursor-pointer transition-all bg-white text-white hover:bg-white hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
+        <i class="fa-solid fa-pencil"></i>
+      </label>
     </div>
     <div class="flex md:hidden gap-1 w-full">
       <button
@@ -102,6 +112,11 @@
       class="w-10 h-10 transition-all bg-rose-300 text-rose-200 hover:bg-rose-400 hover:bg-opacity-45 hover:text-rose-50 bg-opacity-40 backdrop-blur-md rounded-lg">
       <i class="fa-solid fa-flag"></i>
     </button>
+    <input type="file" hidden id="background" (change)="onBackgroundSelected($event)" accept="image/*">
+    <label *ngIf="isCurrentUserOwner()" for="background"
+      class="w-10 h-10 transition-all bg-white text-white cursor-pointer justify-center items-center flex hover:bg-white hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
+      <i class="fa-solid fa-pencil"></i>
+    </label>
   </div>
 </div>
 <div class="w-full px-6 md:px-10 pb-10 space-y-10">
@@ -124,7 +139,7 @@
           <path d="M7.01 17h.005" />
           <path d="M10.01 17h.005" />
         </svg>
-        <p>Joined {{user.memberSince.toString()| dateFormat}}</p>
+        <p>Joined {{dateToString(user.memberSince)}}</p>
       </div>
       <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-map-pin-filled" width="16"
@@ -162,7 +177,7 @@
       </div>
       <div class="overflow-hidden bg-transparent rounded-md">
         <div class="flex bg-gray-100 rounded-md w-[300%] overflow-hidden transition-all duration-500" id="tabContainer"
-          [ngClass]="{'h-[49.3rem] md:h-[31.5rem] lg:h-[18rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
+          [ngClass]="{'h-[49.3rem] md:h-[31.5rem] lg:h-[17rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
           <div class="flex flex-col justify-start w-full rounded-md overflow-y-auto scroll-hide">
             <div class="flex flex-col md:flex-row p-10 gap-8 md:gap-4">
               <div class="flex flex-col md:w-1/2 gap-8 h-full">
@@ -182,7 +197,7 @@
                     </div>
                   </div>
                 </div>
-  
+
                 <div class="flex gap-8 flex-col lg:flex-row">
                   <div class="flex items-center gap-3 lg:w-1/2">
                     <i class="fa-solid text-4xl text-gray-800 fa-phone"></i>
@@ -204,7 +219,7 @@
                     <i class="fa-solid text-4xl text-gray-800 fa-calendar"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Date of birth:</p>
-                      <p>{{user.birthdate.toString() | birthdate}}</p>
+                      <p>{{dateToString(user.birthdate)}}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3 lg:w-1/2">
@@ -226,10 +241,10 @@
                   </div>
                 </div>
                 <div class="bg-sky-600 w-full h-48 md:h-full rounded-lg">
-                  
+
                 </div>
               </div>
-              
+
             </div>
           </div>
           <div class="w-full">
@@ -366,7 +381,7 @@
       <div class="flex lg:h-40 2xl:h-52 space-x-8">
         <div class="relative h-full rounded-lg lg:w-5/12 2xl:w-4/12">
           <img class="absolute object-cover h-full w-full hover:shadow-lg rounded-xl"
-            [src]="url + selectedCar.images?.[imageIndex[selectedCar.id]]?.imageUrl">
+            [src]="url + selectedCar.images[imageIndex[selectedCar.id]]?.imageUrl">
 
           <button *ngIf="imageIndex[selectedCar.id] > 0"
             class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-2 left-2 rounded-lg lg:text-xl 2xl:text-2xl text-white transition-colors hover:text-gray-800"
@@ -411,8 +426,11 @@
           <div class="block 2xl:flex space-y-3 2xl:space-y-0 items-center 2xl:space-x-10 lg:text-base 2xl:text-lg">
             <div class="flex space-x-2 items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 lg:h-5 2xl:w-7 lg:w-5 2xl:h-7">
-                <img *ngIf="selectedCar.owner.profilePicture" src='../../../../../assets/images/nano.jpg' class="flex h-full object-cover w-full items-center justify-center">
-                <div *ngIf="!selectedCar.owner.profilePicture" class="w-full h-full bg-sky-600 justify-center items-center flex tracking-[-0.1rem] text-[10px] text-white">
+                <img *ngIf="selectedCar.owner.profilePicture"
+                  [src]='urlPictureBackground + selectedCar.owner.profilePicture'
+                  class="flex h-full object-cover w-full items-center justify-center">
+                <div *ngIf="!selectedCar.owner.profilePicture"
+                  class="w-full h-full bg-sky-600 justify-center items-center flex tracking-[-0.1rem] text-[10px] text-white">
                   {{selectedCar.owner.name.charAt(0)}}
                   {{selectedCar.owner.lastname.charAt(0)}}
                 </div>

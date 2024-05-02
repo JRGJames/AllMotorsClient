@@ -18,6 +18,7 @@ import { catchError, Observable, of } from 'rxjs';
 })
 export class CarPageComponent implements OnInit {
   url = API_URL;
+  urlPicture: string = API_URL + "/media/";
   searchFilter: string = '';
   carsSearch: ICarPage | undefined;
   cars: ICar[] = [];
@@ -301,7 +302,6 @@ export class CarPageComponent implements OnInit {
 
     this.savedService.addToSaved(this.currentUser.id, carId).subscribe({
       next: () => {
-        console.log('Coche añadido a favoritos: +', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
             btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
@@ -320,7 +320,6 @@ export class CarPageComponent implements OnInit {
 
     this.savedService.removeFromSaved(this.currentUser.id, carId).subscribe({
       next: () => {
-        console.log('Coche eliminado de favoritos: -', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
             btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');

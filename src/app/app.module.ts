@@ -12,6 +12,7 @@ import { UserService } from './service/user.service';
 import { CarService } from './service/car.service';
 import { ChatService } from './service/chat.service';
 import { MessageService } from './service/message.service';
+import { RatingService } from './service/rating.service';
 
 import { TrimPipe } from './pipes/trim.pipe';
 import { ThousandSeparatorPipe } from './pipes/thousandSeparator.pipe';
@@ -34,6 +35,7 @@ import { CarPageComponent } from './components/car/unrouted/car-page/car-page.co
 import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
 import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 import { CarEditComponent } from './components/car/routed/car-edit/car-edit.component';
+import { ToastComponent } from './components/shared/unrouted/toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import { CarEditComponent } from './components/car/routed/car-edit/car-edit.comp
     CarDetailComponent,
     CarPageComponent,
     CarEditComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ToastComponent
   ],
   imports: [
     HttpClientModule,
@@ -70,6 +73,7 @@ import { CarEditComponent } from './components/car/routed/car-edit/car-edit.comp
     ChatService,
     MessageService,
     CryptoService,
+    RatingService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
