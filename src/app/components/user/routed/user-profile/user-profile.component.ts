@@ -10,6 +10,8 @@ import { API_URL } from 'src/environment/environment';
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
 import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.component';
+import { query } from '@angular/animations';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-profile',
@@ -39,7 +41,8 @@ export class UserProfileComponent implements OnInit {
   isSavedShown: boolean = false;
   ratingCount: { [key: number]: number } = {};
   ratingAverage: { [key: number]: number } = {};
-  selectedFile!: File;
+  setContentEditable: boolean = false;
+  userForm!: FormGroup;
 
   constructor(
     private userService: UserService,
@@ -50,6 +53,7 @@ export class UserProfileComponent implements OnInit {
     private router: Router, // inyectar Router
     private savedService: SavedService, // inyectar SavedService
     private mediaService: MediaService,
+
     // private toast: ToastComponent
   ) { }
 
@@ -422,7 +426,7 @@ export class UserProfileComponent implements OnInit {
           // this.toast.show('El archivo seleccionado no es una imagen.');
           console.error('El archivo seleccionado no es una imagen.');
           return;
-        } 
+        }
       } else {
         // this.toast.show('El archivo seleccionado excede el tamaño máximo permitido.');
         console.error('El archivo seleccionado excede el tamaño máximo permitido.');
@@ -441,7 +445,7 @@ export class UserProfileComponent implements OnInit {
           // this.toast.show('El archivo seleccionado no es una imagen.');
           console.error('El archivo seleccionado no es una imagen.');
           return;
-        } 
+        }
       } else {
         // this.toast.show('El archivo seleccionado excede el tamaño máximo permitido.');
         console.error('El archivo seleccionado excede el tamaño máximo permitido.');
@@ -507,5 +511,51 @@ export class UserProfileComponent implements OnInit {
 
   dateToString(date: Date): string {
     return new Date(date).toLocaleDateString();
+  }
+
+  isEditable(): void {
+    const editables = document.querySelectorAll('.editable');
+
+    if (this.setContentEditable) {
+
+      // Actualizamos los datos del usuario
+      this.userForm = new FormGroup({
+        name: new FormControl(this.user.name, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+        lastname: new FormControl(this.user.lastname, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
+        username: new FormControl(this.user.username, [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
+        phone: new FormControl(this.user.phone, [Validators.required, Validators.pattern('^[0-9]{9}$')]),
+        description: new FormControl(this.user.description, [Validators.required, Validators.minLength(3), Validators.maxLength(500)]),
+      });
+
+      if (this.userForm.valid) {
+        this.userService.update(this.user).subscribe({
+          next: (user: IUser) => {
+            this.user = user;
+            // Una vez actualizado el usuario, deshabilitamos la edición
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al actualizar los datos del usuario:', error);
+          }
+        });
+      } else {
+        console.error('Error en el formulario');
+      }
+
+    } else {
+      console.error('Error en el formulario');
+    }
+
+    this.setContentEditable = !this.setContentEditable;
+    this.showInfo();
+
+    editables.forEach((editable) => {
+      if (this.setContentEditable) {
+        editable.classList.add('animate-pulse', 'italic');
+        editable.setAttribute('contenteditable', 'true');
+      } else {
+        editable.classList.remove('animate-pulse', 'italic');
+        editable.setAttribute('contenteditable', 'false');
+      }
+    });
   }
 }

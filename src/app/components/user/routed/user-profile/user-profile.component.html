@@ -60,9 +60,10 @@
             class="bg-black hover:bg-gray-900 justify-center focus:bg-gray-900 bg-opacity-80 backdrop-blur-md focus:outline-none rounded-lg w-full text-white py-2 lg:py-3 transition-colors">
             Contact
           </button>
-          <button *ngIf="isCurrentUserOwner()"
+          <button *ngIf="isCurrentUserOwner()" (click)="isEditable()" [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
             class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
-            <i class="fa fa-pencil px-2"></i>
+            <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
+            <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
           </button>
           <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
             class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-red-600 transition-colors h-full w-2/12"
@@ -92,10 +93,11 @@
         class="flex justify-center bg-black hover:bg-gray-900 focus:bg-gray-900 focus:outline-none rounded-lg w-full text-white py-3 transition-colors">
         Contact
       </button>
-      <button *ngIf="isCurrentUserOwner()"
-        class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white transition-all h-full w-2/12">
-        <i class="fa fa-pencil px-2"></i>
-      </button>
+      <button *ngIf="isCurrentUserOwner()" (click)="isEditable()" [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
+            class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
+            <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
+            <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
+          </button>
       <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
         class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500  text-white hover:bg-red-600 transition-colors h-full w-2/12"
         (click)="openDeleteModal(user.id)">
@@ -119,7 +121,7 @@
     </label>
   </div>
 </div>
-<div class="w-full px-6 md:px-10 pb-10 space-y-10">
+<div class="w-full px-6 md:px-10 pb-10 space-y-10" [formGroup]="userForm">
   <div class="flex flex-col gap-4">
     <div class="flex px-3 text-sm text-gray-700 gap-5">
       <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
@@ -154,7 +156,7 @@
       </div>
     </div>
     <div class="px-3">
-      <p class="text-gray-700">
+      <p class="text-gray-700 editable focus:outline-none" formControlName="description">
         {{user.description}}
       </p>
     </div>
@@ -186,14 +188,17 @@
                     <i class="fa-solid text-4xl text-gray-800 fa-user"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Name and lastname:</p>
-                      <p>{{user.name}} {{user.lastname}}</p>
+                      <div class="flex gap-1">
+                        <p class="editable focus:outline-none" formControlName="name">{{user.name}}</p>
+                        <p class="editable focus:outline-none" formControlName="lastname">{{user.lastname}}</p>
+                      </div>
                     </div>
                   </div>
                   <div class="flex items-center gap-2 w-full lg:w-1/2">
                     <p class="font-bold text-4xl">@</p>
                     <div class="flex flex-col">
                       <p class="text-sm">Username:</p>
-                      <p>{{user.username}}</p>
+                      <p class="editable focus:outline-none" formControlName="username">{{user.username}}</p>
                     </div>
                   </div>
                 </div>
@@ -203,14 +208,14 @@
                     <i class="fa-solid text-4xl text-gray-800 fa-phone"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Phone number:</p>
-                      <p>{{user.phone}}</p>
+                      <p class="editable focus:outline-none" formControlName="phone">{{user.phone}}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3 lg:w-1/2">
-                    <i class="fa-solid text-4xl text-gray-800 fa-envelope"></i>
+                    <i class="fa-solid text-4xl text-gray-800 fa-venus-mars"></i>
                     <div class="flex flex-col">
-                      <p class="text-sm">Email:</p>
-                      <p>{{user.email}}</p>
+                      <p class="text-sm">Gender:</p>
+                      <p class="editable focus:outline-none" formControlName="gender">{{user.gender}}</p>
                     </div>
                   </div>
                 </div>
@@ -223,10 +228,10 @@
                     </div>
                   </div>
                   <div class="flex items-center gap-3 lg:w-1/2">
-                    <i class="fa-solid text-4xl text-gray-800 fa-venus-mars"></i>
+                    <i class="fa-solid text-4xl text-gray-800 fa-envelope"></i>
                     <div class="flex flex-col">
-                      <p class="text-sm">Gender:</p>
-                      <p>{{user.gender}}</p>
+                      <p class="text-sm">Email:</p>
+                      <p>{{user.email}}</p>
                     </div>
                   </div>
                 </div>
@@ -240,7 +245,7 @@
                     <p>{{user.country}}, {{user.city}}</p>
                   </div>
                 </div>
-                <div class="bg-sky-600 w-full h-48 md:h-full rounded-lg">
+                <div class="bg-sky-600 w-full h-48 md:h-full rounded-lg editable">
 
                 </div>
               </div>
@@ -522,7 +527,7 @@
     class="fixed inset-0 bg-gray-400 backdrop-blur-md bg-opacity-50 h-full w-full flex items-center justify-center"
     id="my-modal">
     <div (click)="$event.stopPropagation()"
-      class="p-5 border w-96 shadow-lg rounded-xl bg-white bg-opacity-75 backdrop-blur-lg">
+      class="p-5 border w-72 sm:w-96 shadow-lg rounded-xl bg-white bg-opacity-75 backdrop-blur-lg">
       <div class="mt-3 text-center">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
           <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>Confirm Deletion
@@ -535,13 +540,13 @@
             This action cannot be undone.
           </p>
         </div>
-        <div class="flex items-center justify-evenly px-4 py-3 sm:flex-row flex-col">
+        <div class="flex items-center justify-evenly px-4 gap-2 py-3 sm:flex-row flex-col">
           <button id="ok-btn" (click)="deleteUser()"
-            class="flex items-center justify-center px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition-colors w-full sm:w-auto">
+            class="flex items-center justify-center px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition-colors sm:w-full w-2/3">
             <i class="fas fa-check mr-2"></i>Confirm
           </button>
           <button id="cancel-btn" (click)="closeDeleteModal()"
-            class="flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-900 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors w-full sm:w-auto">
+            class="flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-900 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors sm:w-full w-2/3">
             <i class="fas fa-times mr-2"></i>Cancel
           </button>
         </div>
