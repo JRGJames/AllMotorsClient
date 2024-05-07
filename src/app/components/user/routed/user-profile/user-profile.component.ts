@@ -42,7 +42,6 @@ export class UserProfileComponent implements OnInit {
   ratingCount: { [key: number]: number } = {};
   ratingAverage: { [key: number]: number } = {};
   setContentEditable: boolean = false;
-  setComboboxVisible: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -549,27 +548,10 @@ export class UserProfileComponent implements OnInit {
         editable.setAttribute('contenteditable', 'false');
       }
     });
-
-    
-  }
-
-  setCombobox(): void {
-    const tabContainer = document.getElementById('tabContainer');
-
-    this.setComboboxVisible = !this.setComboboxVisible;
-    if (tabContainer && this.setComboboxVisible) {
-      tabContainer.classList.remove('overflow-hidden');
-      tabContainer.classList.add('overflow-auto');
-    } else {
-      tabContainer?.classList.add('overflow-hidden');
-      tabContainer?.classList.remove('overflow-auto');
-    }
-
   }
 
   changeGender(gender: string): void {
     this.user.gender = gender;
-    this.setComboboxVisible = false;
   }
 
 }
