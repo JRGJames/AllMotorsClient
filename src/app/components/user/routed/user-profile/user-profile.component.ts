@@ -42,6 +42,7 @@ export class UserProfileComponent implements OnInit {
   ratingCount: { [key: number]: number } = {};
   ratingAverage: { [key: number]: number } = {};
   setContentEditable: boolean = false;
+  setComboboxVisible: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -524,7 +525,6 @@ export class UserProfileComponent implements OnInit {
       this.user.gender = document.getElementById('gender')?.textContent || '';
       this.user.description = document.getElementById('description')?.textContent || '';
 
-
       this.userService.update(this.user).subscribe({
         next: (user: IUser) => {
           this.user = user;
@@ -535,7 +535,6 @@ export class UserProfileComponent implements OnInit {
         }
       });
 
-
     } else {
       console.error('Error en el formulario');
     }
@@ -545,12 +544,32 @@ export class UserProfileComponent implements OnInit {
 
     editables.forEach((editable) => {
       if (this.setContentEditable) {
-        editable.classList.add('animate-pulse', 'italic');
         editable.setAttribute('contenteditable', 'true');
       } else {
-        editable.classList.remove('animate-pulse', 'italic');
         editable.setAttribute('contenteditable', 'false');
       }
     });
+
+    
   }
+
+  setCombobox(): void {
+    const tabContainer = document.getElementById('tabContainer');
+
+    this.setComboboxVisible = !this.setComboboxVisible;
+    if (tabContainer && this.setComboboxVisible) {
+      tabContainer.classList.remove('overflow-hidden');
+      tabContainer.classList.add('overflow-auto');
+    } else {
+      tabContainer?.classList.add('overflow-hidden');
+      tabContainer?.classList.remove('overflow-auto');
+    }
+
+  }
+
+  changeGender(gender: string): void {
+    this.user.gender = gender;
+    this.setComboboxVisible = false;
+  }
+
 }
