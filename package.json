@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@fortawesome/fontawesome-free": "^6.5.1",
+    "@preline/combobox": "^2.1.0",
     "@tomtom-international/web-sdk-maps": "^6.25.0",
     "apexcharts": "^3.48.0",
     "crypto-js": "^4.2.0",

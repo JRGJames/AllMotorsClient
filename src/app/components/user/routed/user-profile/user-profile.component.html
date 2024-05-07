@@ -60,7 +60,8 @@
             class="bg-black hover:bg-gray-900 justify-center focus:bg-gray-900 bg-opacity-80 backdrop-blur-md focus:outline-none rounded-lg w-full text-white py-2 lg:py-3 transition-colors">
             Contact
           </button>
-          <button *ngIf="isCurrentUserOwner()" (click)="isEditable()" [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
+          <button *ngIf="isCurrentUserOwner()" (click)="setEditable()"
+            [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
             class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
             <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
             <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
@@ -84,7 +85,7 @@
       </button>
       <input type="file" hidden id="backgroundDesktop" (change)="onBackgroundSelected($event)" accept="image/*">
       <label *ngIf="isCurrentUserOwner()" for="backgroundDesktop"
-        class="w-10 h-10 flex justify-center items-center cursor-pointer transition-all bg-white text-white hover:bg-white hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
+        class="w-10 h-10 flex justify-center items-center cursor-pointer transition-all bg-white text-white hover:bg-white hover:text-gray-600 hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
         <i class="fa-solid fa-pencil"></i>
       </label>
     </div>
@@ -93,11 +94,12 @@
         class="flex justify-center bg-black hover:bg-gray-900 focus:bg-gray-900 focus:outline-none rounded-lg w-full text-white py-3 transition-colors">
         Contact
       </button>
-      <button *ngIf="isCurrentUserOwner()" (click)="isEditable()" [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
-            class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
-            <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
-            <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
-          </button>
+      <button *ngIf="isCurrentUserOwner()" (click)="setEditable()"
+        [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
+        class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
+        <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
+        <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
+      </button>
       <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
         class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500  text-white hover:bg-red-600 transition-colors h-full w-2/12"
         (click)="openDeleteModal(user.id)">
@@ -121,7 +123,7 @@
     </label>
   </div>
 </div>
-<div class="w-full px-6 md:px-10 pb-10 space-y-10" [formGroup]="userForm">
+<div class="w-full px-6 md:px-10 pb-10 space-y-10">
   <div class="flex flex-col gap-4">
     <div class="flex px-3 text-sm text-gray-700 gap-5">
       <div class="flex justify-center md:justify-start items-center space-x-1 text-sm xl:text-base text-gray-800">
@@ -156,7 +158,7 @@
       </div>
     </div>
     <div class="px-3">
-      <p class="text-gray-700 editable focus:outline-none" formControlName="description">
+      <p class="text-gray-700 editable focus:outline-none" id="description">
         {{user.description}}
       </p>
     </div>
@@ -189,8 +191,8 @@
                     <div class="flex flex-col">
                       <p class="text-sm">Name and lastname:</p>
                       <div class="flex gap-1">
-                        <p class="editable focus:outline-none" formControlName="name">{{user.name}}</p>
-                        <p class="editable focus:outline-none" formControlName="lastname">{{user.lastname}}</p>
+                        <p class="editable focus:outline-none" id="name">{{user.name}}</p>
+                        <p class="editable focus:outline-none" id="lastname">{{user.lastname}}</p>
                       </div>
                     </div>
                   </div>
@@ -198,7 +200,7 @@
                     <p class="font-bold text-4xl">@</p>
                     <div class="flex flex-col">
                       <p class="text-sm">Username:</p>
-                      <p class="editable focus:outline-none" formControlName="username">{{user.username}}</p>
+                      <p class="focus:outline-none">{{user.username}}</p>
                     </div>
                   </div>
                 </div>
@@ -208,14 +210,76 @@
                     <i class="fa-solid text-4xl text-gray-800 fa-phone"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Phone number:</p>
-                      <p class="editable focus:outline-none" formControlName="phone">{{user.phone}}</p>
+                      <p class="editable focus:outline-none" id="phone">{{user.phone}}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3 lg:w-1/2">
                     <i class="fa-solid text-4xl text-gray-800 fa-venus-mars"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Gender:</p>
-                      <p class="editable focus:outline-none" formControlName="gender">{{user.gender}}</p>
+                      <div class="relative" data-hs-combo-box="hola">
+                        <div class="relative">
+                          <input
+                            class="py-1 block w-full border-black rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none focus:outline-none editable"
+                            type="text" value="{{user.gender}}" data-hs-combo-box-input="">
+                          <div class="absolute top-1/2 end-3 -translate-y-1/2" data-hs-combo-box-toggle="">
+                            <svg class="flex-shrink-0 size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                              width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="m7 15 5 5 5-5"></path>
+                              <path d="m7 9 5-5 5 5"></path>
+                            </svg>
+                          </div>
+                        </div>
+                        <div
+                          class="absolute z-50 w-full max-h-72 p-1 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300"
+                          style="display: none;" data-hs-combo-box-output="">
+                          <div
+                            class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                            tabindex="0" data-hs-combo-box-output-item="">
+                            <div class="flex justify-between items-center w-full">
+                              <span data-hs-combo-box-search-text="Argentina"
+                                data-hs-combo-box-value="">Woman</span>
+                              <span class="hidden hs-combo-box-selected:block">
+                                <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                                  width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M20 6 9 17l-5-5"></path>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                            tabindex="1" data-hs-combo-box-output-item="">
+                            <div class="flex justify-between items-center w-full">
+                              <span data-hs-combo-box-search-text="Brazil" data-hs-combo-box-value="">Man</span>
+                              <span class="hidden hs-combo-box-selected:block">
+                                <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                                  width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M20 6 9 17l-5-5"></path>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100"
+                            tabindex="2" data-hs-combo-box-output-item="">
+                            <div class="flex justify-between items-center w-full">
+                              <span data-hs-combo-box-search-text="China" data-hs-combo-box-value="">Prefer not to say</span>
+                              <span class="hidden hs-combo-box-selected:block">
+                                <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                                  width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M20 6 9 17l-5-5"></path>
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -550,6 +614,80 @@
             <i class="fas fa-times mr-2"></i>Cancel
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="relative" data-hs-combo-box="">
+  <div class="relative">
+    <input class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" type="text" value="Argentina" data-hs-combo-box-input="">
+    <div class="absolute top-1/2 end-3 -translate-y-1/2" data-hs-combo-box-toggle="">
+      <svg class="flex-shrink-0 size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m7 15 5 5 5-5"></path>
+        <path d="m7 9 5-5 5 5"></path>
+      </svg>
+    </div>
+  </div>
+  <div class="absolute z-50 w-full max-h-72 p-1 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300" style="display: none;" data-hs-combo-box-output="">
+    <div class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100" tabindex="0" data-hs-combo-box-output-item="">
+      <div class="flex justify-between items-center w-full">
+        <span data-hs-combo-box-search-text="Argentina" data-hs-combo-box-value="">Argentina</span>
+        <span class="hidden hs-combo-box-selected:block">
+          <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100" tabindex="1" data-hs-combo-box-output-item="">
+      <div class="flex justify-between items-center w-full">
+        <span data-hs-combo-box-search-text="Brazil" data-hs-combo-box-value="">Brazil</span>
+        <span class="hidden hs-combo-box-selected:block">
+          <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100" tabindex="2" data-hs-combo-box-output-item="">
+      <div class="flex justify-between items-center w-full">
+        <span data-hs-combo-box-search-text="China" data-hs-combo-box-value="">China</span>
+        <span class="hidden hs-combo-box-selected:block">
+          <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100" tabindex="3" data-hs-combo-box-output-item="">
+      <div class="flex justify-between items-center w-full">
+        <span data-hs-combo-box-search-text="USA" data-hs-combo-box-value="">USA</span>
+        <span class="hidden hs-combo-box-selected:block">
+          <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100" tabindex="3" data-hs-combo-box-output-item="">
+      <div class="flex justify-between items-center w-full">
+        <span data-hs-combo-box-search-text="Italy" data-hs-combo-box-value="">Italy</span>
+        <span class="hidden hs-combo-box-selected:block">
+          <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100" tabindex="3" data-hs-combo-box-output-item="">
+      <div class="flex justify-between items-center w-full">
+        <span data-hs-combo-box-search-text="France" data-hs-combo-box-value="">France</span>
+        <span class="hidden hs-combo-box-selected:block">
+          <svg class="flex-shrink-0 size-3.5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+        </span>
       </div>
     </div>
   </div>

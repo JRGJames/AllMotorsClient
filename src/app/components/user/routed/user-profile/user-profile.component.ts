@@ -42,7 +42,6 @@ export class UserProfileComponent implements OnInit {
   ratingCount: { [key: number]: number } = {};
   ratingAverage: { [key: number]: number } = {};
   setContentEditable: boolean = false;
-  userForm!: FormGroup;
 
   constructor(
     private userService: UserService,
@@ -513,33 +512,29 @@ export class UserProfileComponent implements OnInit {
     return new Date(date).toLocaleDateString();
   }
 
-  isEditable(): void {
+  setEditable(): void {
     const editables = document.querySelectorAll('.editable');
 
     if (this.setContentEditable) {
 
       // Actualizamos los datos del usuario
-      this.userForm = new FormGroup({
-        name: new FormControl(this.user.name, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
-        lastname: new FormControl(this.user.lastname, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]),
-        username: new FormControl(this.user.username, [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
-        phone: new FormControl(this.user.phone, [Validators.required, Validators.pattern('^[0-9]{9}$')]),
-        description: new FormControl(this.user.description, [Validators.required, Validators.minLength(3), Validators.maxLength(500)]),
+      this.user.name = document.getElementById('name')?.textContent || '';
+      this.user.lastname = document.getElementById('lastname')?.textContent || '';
+      this.user.phone = document.getElementById('phone')?.textContent || '';
+      this.user.gender = document.getElementById('gender')?.textContent || '';
+      this.user.description = document.getElementById('description')?.textContent || '';
+
+
+      this.userService.update(this.user).subscribe({
+        next: (user: IUser) => {
+          this.user = user;
+          // Una vez actualizado el usuario, deshabilitamos la edición
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al actualizar los datos del usuario:', error);
+        }
       });
 
-      if (this.userForm.valid) {
-        this.userService.update(this.user).subscribe({
-          next: (user: IUser) => {
-            this.user = user;
-            // Una vez actualizado el usuario, deshabilitamos la edición
-          },
-          error: (error: HttpErrorResponse) => {
-            console.error('Error al actualizar los datos del usuario:', error);
-          }
-        });
-      } else {
-        console.error('Error en el formulario');
-      }
 
     } else {
       console.error('Error en el formulario');
