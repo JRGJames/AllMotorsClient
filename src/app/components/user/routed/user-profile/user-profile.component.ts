@@ -12,6 +12,7 @@ import { MediaService } from 'src/app/service/media.service';
 import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.component';
 import { query } from '@angular/animations';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { catchError, concatMap } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -520,14 +521,27 @@ export class UserProfileComponent implements OnInit {
       // Actualizamos los datos del usuario
       this.user.name = document.getElementById('name')?.textContent || '';
       this.user.lastname = document.getElementById('lastname')?.textContent || '';
+      let username: string = document.getElementById('username')?.textContent || '';
       this.user.phone = document.getElementById('phone')?.textContent || '';
-      this.user.gender = document.getElementById('gender')?.textContent || '';
       this.user.description = document.getElementById('description')?.textContent || '';
+      if (this.user.gender) {
+        this.user.gender = true;
+      } else {
+        this.user.gender = false;
+      }
+      if (this.checkUsername(username)) {
+        if (this.user.username === this.currentUser.username) {
+          this.logout();
+        }
+        this.user.username = username;
+      } else {
+        console.error('Nombre de usuario no disponible');
+        // toast here
+      }
 
       this.userService.update(this.user).subscribe({
         next: (user: IUser) => {
           this.user = user;
-          // Una vez actualizado el usuario, deshabilitamos la edición
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al actualizar los datos del usuario:', error);
@@ -550,8 +564,45 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  changeGender(gender: string): void {
-    this.user.gender = gender;
+  checkUsername(username: string): boolean {
+    let exists: boolean = true;
+
+    this.userService.getByUsername(username).subscribe({
+      next: (user: IUser) => {
+        if (user) {
+          exists = true;
+        } else {
+          exists = false;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al comprobar el nombre de usuario:', error);
+        exists = false;
+      }
+    });
+    return exists;
   }
 
+  logout(): void {
+    if (this.sessionService.isSessionActive()) {
+      const sessionUser = this.currentUser;
+
+      if (sessionUser) {
+        sessionUser.status = false;
+
+        this.userService.update(sessionUser).pipe(
+          concatMap((user: IUser) => {
+            this.sessionService.logout();
+            this.sessionService.emit({ type: 'logout' });
+            return window.location.href = '/user/' + this.user.id;
+          }),
+          catchError((error: HttpErrorResponse) => {
+            return window.location.href = '/user/' + this.user.id;
+          })
+        ).subscribe();
+      } else {
+        this.router.navigate(['/home']);
+      }
+    }
+  }
 }

@@ -61,10 +61,9 @@
             Contact
           </button>
           <button *ngIf="isCurrentUserOwner()" (click)="setEditable()"
-            [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
-            class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
-            <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
-            <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
+            [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500 hover:bg-yellow-500': !setContentEditable}"
+            class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-opacity-80 backdrop-blur-md text-white transition-all h-full w-2/12">
+            <i [ngClass]="{'fa-check': setContentEditable, 'fa-pencil': !setContentEditable}" class="fa px-2"></i>
           </button>
           <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
             class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-red-600 transition-colors h-full w-2/12"
@@ -76,11 +75,11 @@
     </div>
     <div class="hidden md:flex flex-col gap-2">
       <button *ngIf="isDifferentUser()"
-        class="w-10 h-10 transition-all bg-blue-300 text-blue-200 hover:bg-blue-400 hover:bg-opacity-45 hover:text-blue-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+        class="w-10 h-10 transition-all bg-blue-300 text-blue-50 hover:bg-blue-400 hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
         <i class="fa fa-star"></i>
       </button>
       <button *ngIf="isDifferentUser()"
-        class="w-10 h-10 transition-all bg-rose-300 text-rose-200 hover:bg-rose-400 hover:bg-opacity-45 hover:text-rose-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+        class="w-10 h-10 transition-all bg-rose-300 text-rose-50 hover:bg-rose-400 hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
         <i class="fa-solid fa-flag"></i>
       </button>
       <input type="file" hidden id="backgroundDesktop" (change)="onBackgroundSelected($event)" accept="image/*">
@@ -95,10 +94,9 @@
         Contact
       </button>
       <button *ngIf="isCurrentUserOwner()" (click)="setEditable()"
-        [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500': !setContentEditable}"
-        class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-yellow-500 bg-opacity-80 backdrop-blur-md text-white hover:bg-yellow-500 transition-all h-full w-2/12">
-        <i *ngIf="setContentEditable" class="fa fa-check px-2"></i>
-        <i *ngIf="!setContentEditable" class="fa fa-pencil px-2"></i>
+        [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-500 hover:bg-yellow-500': !setContentEditable}"
+        class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-opacity-80 backdrop-blur-md text-white transition-all h-full w-2/12">
+        <i [ngClass]="{'fa-check': setContentEditable, 'fa-pencil': !setContentEditable}" class="fa px-2"></i>
       </button>
       <button *ngIf="isCurrentUserAdmin() && isDifferentUser()"
         class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-lg bg-red-500  text-white hover:bg-red-600 transition-colors h-full w-2/12"
@@ -109,11 +107,11 @@
   </div>
   <div class="absolute flex md:hidden flex-col gap-2 right-3 top-[4.75rem]">
     <button *ngIf="isDifferentUser()"
-      class="w-10 h-10 transition-all bg-blue-300 text-blue-200 hover:bg-blue-400 hover:bg-opacity-45 hover:text-blue-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+      class="w-10 h-10 transition-all bg-blue-300 text-blue-50 hover:bg-blue-400 hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
       <i class="fa fa-star"></i>
     </button>
     <button *ngIf="isDifferentUser()"
-      class="w-10 h-10 transition-all bg-rose-300 text-rose-200 hover:bg-rose-400 hover:bg-opacity-45 hover:text-rose-50 bg-opacity-40 backdrop-blur-md rounded-lg">
+      class="w-10 h-10 transition-all bg-rose-300 text-rose-50 hover:bg-rose-400 hover:bg-opacity-45 bg-opacity-40 backdrop-blur-md rounded-lg">
       <i class="fa-solid fa-flag"></i>
     </button>
     <input type="file" hidden id="background" (change)="onBackgroundSelected($event)" accept="image/*">
@@ -158,7 +156,8 @@
       </div>
     </div>
     <div class="px-3">
-      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none text-gray-700" id="description">
+      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none text-gray-700"
+        id="description">
         {{user.description}}
       </p>
     </div>
@@ -181,7 +180,7 @@
       </div>
       <div class="overflow-hidden bg-transparent rounded-md">
         <div class="flex bg-gray-100 rounded-md w-[300%] overflow-hidden transition-all duration-500" id="tabContainer"
-          [ngClass]="{'h-[49.3rem] md:h-[31.5rem] lg:h-[17rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
+          [ngClass]="{'h-[49.3rem] md:h-[31.5rem] lg:h-[17.25rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
           <div class="flex flex-col justify-start w-full rounded-md overflow-y-auto scroll-hide">
             <div class="flex flex-col md:flex-row p-10 gap-8 md:gap-4">
               <div class="flex flex-col md:w-1/2 gap-8 h-full">
@@ -191,8 +190,10 @@
                     <div class="flex flex-col">
                       <p class="text-sm">Name and lastname:</p>
                       <div class="flex gap-1">
-                        <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none" id="name">{{user.name}}</p>
-                        <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none" id="lastname">{{user.lastname}}</p>
+                        <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none"
+                          id="name">{{user.name}}</p>
+                        <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none"
+                          id="lastname">{{user.lastname}}</p>
                       </div>
                     </div>
                   </div>
@@ -200,7 +201,7 @@
                     <p class="font-bold text-4xl">@</p>
                     <div class="flex flex-col">
                       <p class="text-sm">Username:</p>
-                      <p class="focus:outline-none">{{user.username}}</p>
+                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none" id="username">{{user.username}}</p>
                     </div>
                   </div>
                 </div>
@@ -210,27 +211,31 @@
                     <i class="fa-solid text-4xl text-gray-800 fa-phone"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Phone number:</p>
-                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none" id="phone">{{user.phone}}</p>
+                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none"
+                        id="phone">{{user.phone}}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3 lg:w-1/2">
                     <i class="fa-solid text-4xl text-gray-800 fa-venus-mars"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Gender:</p>
-                      <div *ngIf="setContentEditable" [ngClass]="{'animate-pulse': setContentEditable, 'cursor-text': !setContentEditable}" class="relative flex gap-2">
-                        <button (click)="changeGender('Man')"
-                          [ngClass]="{'font-bold': user.gender === 'Man', 'italic': setContentEditable}"
+                      <div *ngIf="setContentEditable"
+                        [ngClass]="{'animate-pulse': setContentEditable, 'cursor-text': !setContentEditable}"
+                        class="relative flex gap-2">
+                        <button (click)="user.gender = !user.gender"
+                          [ngClass]="{'font-bold': user.gender, 'italic': setContentEditable}"
                           class="focus:outline-none cursor-pointer">
                           Man
                         </button>
                         /
-                        <button (click)="changeGender('Woman')"
-                        [ngClass]="{'font-bold': user.gender === 'Woman', 'italic': setContentEditable}"
+                        <button (click)="user.gender = !user.gender"
+                          [ngClass]="{'font-bold': !user.gender, 'italic': setContentEditable}"
                           class="focus:outline-none cursor-pointer">
                           Woman
                         </button>
                       </div>
-                      <p *ngIf="!setContentEditable" >{{user.gender}}</p>
+                      <p *ngIf="!setContentEditable && user.gender">Man</p>
+                      <p *ngIf="!setContentEditable &&  !user.gender">Woman</p>
                     </div>
                   </div>
                 </div>
@@ -260,11 +265,10 @@
                     <p>{{user.country}}, {{user.city}}</p>
                   </div>
                 </div>
-                <div class="bg-sky-600 w-full h-48 md:h-full rounded-lg editable">
+                <div class="bg-sky-600 w-full h-48 md:h-full rounded-lg">
 
                 </div>
               </div>
-
             </div>
           </div>
           <div class="w-full">
