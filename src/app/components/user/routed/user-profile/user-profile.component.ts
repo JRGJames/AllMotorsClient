@@ -43,6 +43,7 @@ export class UserProfileComponent implements OnInit {
   ratingCount: { [key: number]: number } = {};
   ratingAverage: { [key: number]: number } = {};
   setContentEditable: boolean = false;
+  usernameIsTaken: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -205,8 +206,6 @@ export class UserProfileComponent implements OnInit {
           console.error('Error al obtener coches favoritos:', error);
         },
       });
-    } else {
-      console.error('Usuario no autenticado');
     }
   }
 
@@ -529,19 +528,24 @@ export class UserProfileComponent implements OnInit {
       } else {
         this.user.gender = false;
       }
+
       if (this.checkUsername(username)) {
-        if (this.user.username === this.currentUser.username) {
-          this.logout();
-        }
-        this.user.username = username;
-      } else {
-        console.error('Nombre de usuario no disponible');
         // toast here
+      } else {
+        this.user.username = username;
       }
 
       this.userService.update(this.user).subscribe({
         next: (user: IUser) => {
           this.user = user;
+          
+          if (user.id === this.currentUser.id) {
+            const token = localStorage.getItem('token');
+
+            if (token) {
+              this.login(user.username, token)
+            }
+          }
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al actualizar los datos del usuario:', error);
@@ -549,7 +553,7 @@ export class UserProfileComponent implements OnInit {
       });
 
     } else {
-      console.error('Error en el formulario');
+      console.error('Aun no se ha actualizado la información');
     }
 
     this.setContentEditable = !this.setContentEditable;
@@ -564,45 +568,33 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  checkUsername(username: string): boolean {
-    let exists: boolean = true;
 
+  checkUsername(username: string): boolean {
     this.userService.getByUsername(username).subscribe({
       next: (user: IUser) => {
-        if (user) {
-          exists = true;
-        } else {
-          exists = false;
+        if(user) {
+          this.usernameIsTaken = true;
+        } else{
+          this.usernameIsTaken = false;
         }
       },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al comprobar el nombre de usuario:', error);
-        exists = false;
+      error: () => {
+        return false;
       }
     });
-    return exists;
+    return this.usernameIsTaken;
   }
 
-  logout(): void {
-    if (this.sessionService.isSessionActive()) {
-      const sessionUser = this.currentUser;
+  login(username: string, passw: string): void {
+    this.sessionService.login(username, passw).subscribe({
+      next: (data: string) => {
+        this.sessionService.setToken(data);
+        this.sessionService.emit({ type: 'login' });
+        this.router.navigate(['/user', this.currentUser.id]);
+      },
+      error: (error: HttpErrorResponse) => {
 
-      if (sessionUser) {
-        sessionUser.status = false;
-
-        this.userService.update(sessionUser).pipe(
-          concatMap((user: IUser) => {
-            this.sessionService.logout();
-            this.sessionService.emit({ type: 'logout' });
-            return window.location.href = '/user/' + this.user.id;
-          }),
-          catchError((error: HttpErrorResponse) => {
-            return window.location.href = '/user/' + this.user.id;
-          })
-        ).subscribe();
-      } else {
-        this.router.navigate(['/home']);
       }
-    }
+    });
   }
 }
