@@ -1,26 +1,27 @@
-import { Component, Input, OnInit } from '@angular/core';
+// toast.component.ts
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-toast',
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.css']
 })
-export class ToastComponent implements OnInit {
+export class ToastComponent implements OnInit, OnDestroy {
+  message: string = '';
+  private subscription: Subscription = new Subscription();
 
-  @Input() isVisible: boolean = false;
-  @Input() message: string = '';
+  constructor(private toastService: ToastService) { }
 
-  constructor() { }
-
-  ngOnInit() {
+  ngOnInit(): void {
+    this.subscription = this.toastService.message$.subscribe(message => {
+      this.message = message;
+    });
   }
 
-  show(message: string): void {
-    this.message = message;
-    this.isVisible = true;
-    setTimeout(() => {
-      this.isVisible = false;
-    }, 3000);
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
-  
 }

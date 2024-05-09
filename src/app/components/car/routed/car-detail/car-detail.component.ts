@@ -40,6 +40,7 @@ export class CarDetailComponent implements OnInit {
   currentUser: IUser = {} as IUser;
   isDeleteModalVisible: boolean = false;
   idToDelete: number | null = null;
+  setContentEditable: boolean = false;
   chartOptions: Partial<ChartOptions> = {
     series: [
       {
@@ -151,6 +152,7 @@ export class CarDetailComponent implements OnInit {
       if (this.id) {
         this.getCurrentUser();
         this.getOne();
+        this.increaseViews(this.id);
       } else {
         console.error('ID is undefined');
       }
@@ -175,7 +177,6 @@ export class CarDetailComponent implements OnInit {
     this.carService.get(this.id).subscribe({
       next: (data: ICar) => {
         this.car = data;
-        this.increaseViews(this.car.id);
         this.getRatingCount(this.car.owner.id);
         this.getRatingAverage(this.car.owner.id);
         this.checkIfCarIsSaved(this.car.id);
@@ -238,8 +239,10 @@ export class CarDetailComponent implements OnInit {
         next: (response: boolean) => {
           if (response) {
             this.removeFromSaved(car.id);
+            this.decreaseSaves(car.id);
           } else {
             this.addToSaved(car.id);
+            this.increaseSaves(car.id);
           }
         }
       });
@@ -282,6 +285,28 @@ export class CarDetailComponent implements OnInit {
       },
       error: (error: string) => {
         console.error('Error al eliminar coche de favoritos:', error);
+      },
+    });
+  }
+
+  increaseSaves(carId: number): void {
+    this.savedService.increaseSaves(carId).subscribe({
+      next: () => {
+        this.getOne();
+      },
+      error: (error: string) => {
+        console.error('Error al aumentar el contador de favoritos:', error);
+      },
+    });
+  }
+
+  decreaseSaves(carId: number): void {
+    this.savedService.decreaseSaves(carId).subscribe({
+      next: () => {
+        this.getOne();
+      },
+      error: (error: string) => {
+        console.error('Error al disminuir el contador de favoritos:', error);
       },
     });
   }
@@ -343,5 +368,66 @@ export class CarDetailComponent implements OnInit {
         }
       });
     }
+  }
+
+  setEditable(): void {
+    const editables = document.querySelectorAll('.editable');
+
+    if (this.setContentEditable) {
+
+      // Actualizamos los datos del usuario
+      this.car.title = document.getElementById('title')?.textContent || '';
+      this.car.brand = document.getElementById('brand')?.textContent || '';
+      this.car.model = document.getElementById('model')?.textContent || '';
+      const priceText = document.getElementById('price')?.textContent || '';
+      this.car.price = Number(priceText.replace('.', ''));
+      this.car.currency = document.getElementById('currency')?.textContent || '';
+
+      this.car.color = document.getElementById('color')?.textContent || '';
+      this.car.year = Number(document.getElementById('year')?.textContent);
+
+      this.car.fuel = document.getElementById('fuel')?.textContent || '';
+      this.car.gearbox = document.getElementById('gearbox')?.textContent || '';
+      this.car.seats = Number(document.getElementById('seats')?.textContent);
+      this.car.doors = Number(document.getElementById('doors')?.textContent);
+      this.car.description = document.getElementById('description')?.textContent || '';
+
+      const distanceText = document.getElementById('distance')?.textContent || '';
+      this.car.distance = Number(distanceText.replace('.', ''));
+      this.car.type = document.getElementById('type')?.textContent || '';
+      const horsepowerText = document.getElementById('horsepower')?.textContent || '';
+      this.car.horsepower = Number(horsepowerText.replace('.', ''));
+      // this.car.lastITV = new Date(document.getElementById('lastITV')?.textContent || '');
+      this.car.consumption = Number(document.getElementById('consumption')?.textContent);
+      this.car.emissions = Number(document.getElementById('emissions')?.textContent);
+      this.car.acceleration = Number(document.getElementById('acceleration')?.textContent);
+      this.car.drive = document.getElementById('drive')?.textContent || '';
+      this.car.engine = document.getElementById('engine')?.textContent || '';
+      this.car.owner.username = document.getElementById('owner')?.textContent || '';
+
+
+
+      this.carService.update(this.car).subscribe({
+        next: (car: ICar) => {
+          this.car = car;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al actualizar los datos del coche:', error);
+        }
+      });
+
+    } else {
+      console.error('Aun no se ha actualizado la información');
+    }
+
+    this.setContentEditable = !this.setContentEditable;
+
+    editables.forEach((editable) => {
+      if (this.setContentEditable) {
+        editable.setAttribute('contenteditable', 'true');
+      } else {
+        editable.setAttribute('contenteditable', 'false');
+      }
+    });
   }
 }

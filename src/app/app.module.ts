@@ -13,6 +13,7 @@ import { CarService } from './service/car.service';
 import { ChatService } from './service/chat.service';
 import { MessageService } from './service/message.service';
 import { RatingService } from './service/rating.service';
+import { ToastService } from './service/toast.service';
 
 import { TrimPipe } from './pipes/trim.pipe';
 import { ThousandSeparatorPipe } from './pipes/thousandSeparator.pipe';
@@ -35,7 +36,6 @@ import { CarPageComponent } from './components/car/unrouted/car-page/car-page.co
 import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
 import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 import { CarEditComponent } from './components/car/routed/car-edit/car-edit.component';
-import { ToastComponent } from './components/shared/unrouted/toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +56,7 @@ import { ToastComponent } from './components/shared/unrouted/toast/toast.compone
     CarPageComponent,
     CarEditComponent,
     UserProfileComponent,
-    ToastComponent
+    
   ],
   imports: [
     HttpClientModule,
@@ -64,7 +64,7 @@ import { ToastComponent } from './components/shared/unrouted/toast/toast.compone
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    NgApexchartsModule
+    NgApexchartsModule,
   ],
   providers: [
     SessionService,
@@ -74,6 +74,7 @@ import { ToastComponent } from './components/shared/unrouted/toast/toast.compone
     MessageService,
     CryptoService,
     RatingService,
+    ToastService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

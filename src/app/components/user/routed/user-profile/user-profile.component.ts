@@ -13,6 +13,7 @@ import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.c
 import { query } from '@angular/animations';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError, concatMap } from 'rxjs';
+import { ToastService } from './../../../../service/toast.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -54,8 +55,7 @@ export class UserProfileComponent implements OnInit {
     private router: Router, // inyectar Router
     private savedService: SavedService, // inyectar SavedService
     private mediaService: MediaService,
-
-    // private toast: ToastComponent
+    private toastService: ToastService,
   ) { }
 
   ngOnInit() {
@@ -422,12 +422,12 @@ export class UserProfileComponent implements OnInit {
         if (this.checkFileType(file)) {
           this.uploadPicture(file);
         } else {
-          // this.toast.show('El archivo seleccionado no es una imagen.');
+          this.toastService.show('El archivo seleccionado no es una imagen.');
           console.error('El archivo seleccionado no es una imagen.');
           return;
         }
       } else {
-        // this.toast.show('El archivo seleccionado excede el tamaño máximo permitido.');
+        this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
         console.error('El archivo seleccionado excede el tamaño máximo permitido.');
         return;
       }
@@ -567,7 +567,6 @@ export class UserProfileComponent implements OnInit {
       }
     });
   }
-
 
   checkUsername(username: string): boolean {
     this.userService.getByUsername(username).subscribe({

@@ -33,4 +33,16 @@ export class SavedService {
   getSavedCars(userId: number): Observable<ICar[]> {
     return this.http.get<ICar[]>(this.url + `/get/${userId}`);
   }
+
+  countSaves(carId: number): Observable<number> {
+    return this.http.get<number>(this.url + `/count/${carId}`);
+  }
+
+  increaseSaves(carId: number): Observable<number> {
+    return this.http.post<number>(`${this.url}/increase/${carId}`, null);
+  }
+
+  decreaseSaves(carId: number): Observable<number> {
+    return this.http.post<number>(`${this.url}/decrease/${carId}`, null);
+  }
 }
