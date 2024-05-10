@@ -113,9 +113,14 @@
               [routerLink]="['/user/', car.owner.id]">
               {{ car.owner.username }}
             </p>
-            <p *ngIf="setContentEditable" id="owner" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-nonetext-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center editable">
-              {{ car.owner.username }}
-            </p>
+            <div class="relative">
+              <p *ngIf="setContentEditable" id="owner" (click)="isEditingUser = !isEditingUser" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-nonetext-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center editable">
+                {{ car.owner.username }}
+              </p>
+              <div *ngIf="setContentEditable && isEditingUser" class="z-10 absolute mt-1 flex flex-col text-left h-44 overflow-y-auto bg-gray-100 rounded-lg p-3 gap-2 bg-opacity-80 scroll-hide backdrop-blur-md">
+                <a *ngFor="let user of users; let i = index" class="h-8 text-sm md:text-base w-full cursor-pointer hover:bg-gray-200 bg-gray-50 transition-colors px-3 py-1 rounded-lg">{{user.username}}</a>
+              </div>
+            </div>
             <p class="pl-2 pr-1">-</p>
             <p class="cursor-pointer text-sm md:text-base lg:text-lg text-gray-700 self-center pl-1"
               (click)="togglePhoneNumber()">
@@ -180,13 +185,13 @@
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-car text-3xl text-gray-700"></i>
             <p id="brand" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 font-semibold editable">
-              {{car.brand}}
+              {{car.brand | capitalizeFirst}}
             </p>
           </div>
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-tag text-3xl text-gray-700"></i>
             <p id="model" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 font-semibold editable">
-              {{car.model}}
+              {{car.model | capitalizeFirst}}
             </p>
           </div>
           <div class="flex flex-col items-center gap-3">
@@ -325,13 +330,13 @@
           <div *ngIf="car.drive" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Drive:</p>
             <p id="drive" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
-              {{car.drive}}
+              {{car.drive.toUpperCase()}}
             </p>
           </div>
           <div *ngIf="car.engine" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Engine:</p>
             <p id="engine" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
-              {{car.engine}}
+              {{car.engine.toUpperCase()}}
             </p>
           </div>
         </div>

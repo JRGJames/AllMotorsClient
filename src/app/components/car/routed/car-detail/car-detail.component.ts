@@ -41,6 +41,8 @@ export class CarDetailComponent implements OnInit {
   isDeleteModalVisible: boolean = false;
   idToDelete: number | null = null;
   setContentEditable: boolean = false;
+  users: IUser[] = [];
+  isEditingUser: boolean = false;
   chartOptions: Partial<ChartOptions> = {
     series: [
       {
@@ -152,7 +154,6 @@ export class CarDetailComponent implements OnInit {
       if (this.id) {
         this.getCurrentUser();
         this.getOne();
-        this.increaseViews(this.id);
       } else {
         console.error('ID is undefined');
       }
@@ -180,6 +181,8 @@ export class CarDetailComponent implements OnInit {
         this.getRatingCount(this.car.owner.id);
         this.getRatingAverage(this.car.owner.id);
         this.checkIfCarIsSaved(this.car.id);
+        this.increaseViews(this.car.id);
+
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
@@ -292,7 +295,6 @@ export class CarDetailComponent implements OnInit {
   increaseSaves(carId: number): void {
     this.savedService.increaseSaves(carId).subscribe({
       next: () => {
-        this.getOne();
       },
       error: (error: string) => {
         console.error('Error al aumentar el contador de favoritos:', error);
@@ -303,7 +305,6 @@ export class CarDetailComponent implements OnInit {
   decreaseSaves(carId: number): void {
     this.savedService.decreaseSaves(carId).subscribe({
       next: () => {
-        this.getOne();
       },
       error: (error: string) => {
         console.error('Error al disminuir el contador de favoritos:', error);
@@ -373,37 +374,39 @@ export class CarDetailComponent implements OnInit {
   setEditable(): void {
     const editables = document.querySelectorAll('.editable');
 
+    this.loadUsers();
     if (this.setContentEditable) {
 
+
       // Actualizamos los datos del usuario
-      this.car.title = document.getElementById('title')?.textContent || '';
-      this.car.brand = document.getElementById('brand')?.textContent || '';
-      this.car.model = document.getElementById('model')?.textContent || '';
-      const priceText = document.getElementById('price')?.textContent || '';
+      this.car.title = document.getElementById('title')?.innerText || '';
+      this.car.brand = document.getElementById('brand')?.innerText?.toLowerCase() || '';
+      this.car.model = document.getElementById('model')?.innerText?.toLowerCase() || '';
+      const priceText = document.getElementById('price')?.innerText || '';
       this.car.price = Number(priceText.replace('.', ''));
-      this.car.currency = document.getElementById('currency')?.textContent || '';
+      this.car.currency = document.getElementById('currency')?.innerText || '';
 
-      this.car.color = document.getElementById('color')?.textContent || '';
-      this.car.year = Number(document.getElementById('year')?.textContent);
+      this.car.color = document.getElementById('color')?.innerText || '';
+      this.car.year = Number(document.getElementById('year')?.innerText);
 
-      this.car.fuel = document.getElementById('fuel')?.textContent || '';
-      this.car.gearbox = document.getElementById('gearbox')?.textContent || '';
-      this.car.seats = Number(document.getElementById('seats')?.textContent);
-      this.car.doors = Number(document.getElementById('doors')?.textContent);
-      this.car.description = document.getElementById('description')?.textContent || '';
+      this.car.fuel = document.getElementById('fuel')?.innerText?.toLowerCase() || '';
+      this.car.gearbox = document.getElementById('gearbox')?.innerText?.toLowerCase() || '';
+      this.car.seats = Number(document.getElementById('seats')?.innerText);
+      this.car.doors = Number(document.getElementById('doors')?.innerText);
+      this.car.description = document.getElementById('description')?.innerText || '';
 
-      const distanceText = document.getElementById('distance')?.textContent || '';
+      const distanceText = document.getElementById('distance')?.innerText || '';
       this.car.distance = Number(distanceText.replace('.', ''));
-      this.car.type = document.getElementById('type')?.textContent || '';
-      const horsepowerText = document.getElementById('horsepower')?.textContent || '';
+      this.car.type = document.getElementById('type')?.innerText?.toLowerCase() || '';
+      const horsepowerText = document.getElementById('horsepower')?.innerText || '';
       this.car.horsepower = Number(horsepowerText.replace('.', ''));
       // this.car.lastITV = new Date(document.getElementById('lastITV')?.textContent || '');
-      this.car.consumption = Number(document.getElementById('consumption')?.textContent);
-      this.car.emissions = Number(document.getElementById('emissions')?.textContent);
-      this.car.acceleration = Number(document.getElementById('acceleration')?.textContent);
-      this.car.drive = document.getElementById('drive')?.textContent || '';
-      this.car.engine = document.getElementById('engine')?.textContent || '';
-      this.car.owner.username = document.getElementById('owner')?.textContent || '';
+      this.car.consumption = Number(document.getElementById('consumption')?.innerText);
+      this.car.emissions = Number(document.getElementById('emissions')?.innerText);
+      this.car.acceleration = Number(document.getElementById('acceleration')?.innerText);
+      this.car.drive = document.getElementById('drive')?.innerText?.toLowerCase() || '';
+      this.car.engine = document.getElementById('engine')?.innerText?.toLowerCase() || '';
+      this.car.owner.username = document.getElementById('owner')?.innerText || '';
 
 
 
@@ -427,6 +430,17 @@ export class CarDetailComponent implements OnInit {
         editable.setAttribute('contenteditable', 'true');
       } else {
         editable.setAttribute('contenteditable', 'false');
+      }
+    });
+  }
+
+  loadUsers(): void {
+    this.userService.getAll().subscribe({
+      next: (users: IUser[]) => {
+        this.users = users;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar los usuarios:', error);
       }
     });
   }

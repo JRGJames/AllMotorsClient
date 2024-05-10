@@ -51,6 +51,10 @@ export class UserService {
     return this.http.get<IUserPage>(this.url + '/getPage?size=' + size + '&page=' + page + '&sort=' + orderField + ',' + orderDirection + url_filter);
   }
 
+  getAll(): Observable<IUser[]> {
+    return this.http.get<IUser[]>(this.url + '/getAll');
+  }
+
   create(user: IUser): Observable<IUser> {
     return this.http.post<IUser>(this.url + '/create', user);
   }
