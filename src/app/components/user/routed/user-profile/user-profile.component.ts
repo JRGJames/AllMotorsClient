@@ -523,11 +523,6 @@ export class UserProfileComponent implements OnInit {
       let username: string = document.getElementById('username')?.textContent || '';
       this.user.phone = document.getElementById('phone')?.textContent || '';
       this.user.description = document.getElementById('description')?.textContent || '';
-      if (this.user.gender) {
-        this.user.gender = true;
-      } else {
-        this.user.gender = false;
-      }
 
       if (this.checkUsername(username)) {
         // toast here

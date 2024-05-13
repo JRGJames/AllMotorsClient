@@ -37,16 +37,51 @@
         <div class="flex flex-col gap-2 w-full">
           <div class="flex gap-5 justify-between">
             <div class="flex flex-col">
-              <h1 id="title" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none font-bold text-2xl md:text-3xl lg:text-4xl text-gray-800 editable">
+              <h1 id="title" [ngClass]="{'animate-pulse italic':setContentEditable}"
+                class="focus:outline-none font-bold text-2xl md:text-3xl lg:text-4xl text-gray-800 editable">
                 {{car.title}}
               </h1>
-              <div class="text-xl md:text-3xl font-bold flex gap-1 text-gray-800 lg:pb-0 pb-4">
-                <p id="price" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none editable">
-                  {{ car.price | thousandSeparator}} 
+              <div class="text-xl md:text-3xl flex gap-2 text-gray-800 lg:pb-0 pb-4">
+                <p id="price" [ngClass]="{'animate-pulse italic':setContentEditable}"
+                  class="font-bold focus:outline-none editable">
+                  {{ car.price | thousandSeparator}}
                 </p>
-                <p id="currency" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none editable">
+                <p *ngIf="!setContentEditable" id="currency" [ngClass]="{'animate-pulse italic':setContentEditable}"
+                  class="font-bold focus:outline-none editable">
                   {{ car.currency }}
                 </p>
+
+                <div *ngIf="setContentEditable" [ngClass]="{'animate-pulse': setContentEditable}" class="flex gap-1">
+                  <button class="cursor-pointer"
+                    [ngClass]="{'font-bold': car.currency === '€', 'italic': setContentEditable}"
+                    (click)="car.currency = '€'">
+                    €
+                  </button>
+                  /
+                  <button class="cursor-pointer"
+                    [ngClass]="{'font-bold': car.currency === '$', 'italic': setContentEditable}"
+                    (click)="car.currency = '$'">
+                    $
+                  </button>
+                  /
+                  <button class="cursor-pointer"
+                    [ngClass]="{'font-bold': car.currency === '£', 'italic': setContentEditable}"
+                    (click)="car.currency = '£'">
+                    £
+                  </button>
+                  /
+                  <button class="cursor-pointer"
+                    [ngClass]="{'font-bold': car.currency === '¥', 'italic': setContentEditable}"
+                    (click)="car.currency = '¥'">
+                    ¥
+                  </button>
+                  /
+                  <button class="cursor-pointer"
+                    [ngClass]="{'font-bold': car.currency === '₽', 'italic': setContentEditable}"
+                    (click)="car.currency = '₽'">
+                    ₽
+                  </button>
+                </div>
               </div>
             </div>
             <div class="flex-col gap-2 flex lg:hidden text-xs md:text-sm">
@@ -109,18 +144,25 @@
             Contact Information
           </label>
           <div class="flex items-center">
-            <p *ngIf="!setContentEditable" class="text-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center editable"
+            <p *ngIf="!setContentEditable"
+              class="text-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center"
               [routerLink]="['/user/', car.owner.id]">
-              {{ car.owner.username }}
+              {{ selectedUser }}
             </p>
             <div class="relative">
-              <p *ngIf="setContentEditable" id="owner" (click)="isEditingUser = !isEditingUser" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-nonetext-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center editable">
-                {{ car.owner.username }}
+              <p *ngIf="setContentEditable" (click)="isEditingOwner = !isEditingOwner"
+                [ngClass]="{'animate-pulse italic': setContentEditable}"
+                class="focus:outline-nonetext-sm md:text-base lg:text-lg text-gray-600 cursor-pointer self-center editable">
+                {{ selectedUser }}
               </p>
-              <div *ngIf="setContentEditable && isEditingUser" class="z-10 absolute mt-1 flex flex-col text-left h-44 overflow-y-auto bg-gray-100 rounded-lg p-3 gap-2 bg-opacity-80 scroll-hide backdrop-blur-md">
-                <a *ngFor="let user of users; let i = index" class="h-8 text-sm md:text-base w-full cursor-pointer hover:bg-gray-200 bg-gray-50 transition-colors px-3 py-1 rounded-lg">{{user.username}}</a>
+              <div *ngIf="setContentEditable && isEditingOwner" #userList
+                class="z-10 absolute mt-1 flex flex-col text-left lg:h-36 xl:h-44 overflow-y-auto bg-gray-100 rounded-lg p-3 gap-2 bg-opacity-80 scroll-hide backdrop-blur-md">
+                <a *ngFor="let user of users; let i = index"
+                  class="h-8 text-sm md:text-base w-full cursor-pointer hover:bg-gray-200 bg-gray-50 transition-colors px-3 py-1 rounded-lg"
+                  (click)="selectUser(user.id)">{{ user.username }}</a>
               </div>
             </div>
+
             <p class="pl-2 pr-1">-</p>
             <p class="cursor-pointer text-sm md:text-base lg:text-lg text-gray-700 self-center pl-1"
               (click)="togglePhoneNumber()">
@@ -149,15 +191,31 @@
         </div>
         <div class="flex items-center gap-2">
           <i class="fas fa-calendar-alt text-gray-600"></i>
-          <p id="year" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-gray-800 editable">
+          <p id="year" [ngClass]="{'animate-pulse italic':setContentEditable}"
+            class="focus:outline-none text-gray-800 editable">
             {{car.year}}
           </p>
         </div>
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-tag text-gray-600"></i>
-          <p id="color" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-gray-800 editable">
-            {{car.color | capitalizeFirst}}
-          </p>
+        <div class="relative">
+          <button class="flex items-center gap-2"
+            (click)="isEditingColor = !isEditingColor">
+            <i [ngClass]="{'animate-bounce':setContentEditable}" class="fa-solid fa-palette text-gray-600"></i>
+            <div [ngClass]="{'animate-pulse':setContentEditable}"
+              class="focus:outline-none text-gray-800 h-5 w-16 rounded-xl self-center" [ngStyle]="{'background-color': car.color}">
+            </div>
+          </button>
+
+          <div *ngIf="setContentEditable && isEditingColor" #colorPicker
+            class="z-10 mt-1 p-2 gap-1 bottom-8 -left-2 absolute flex flex-col w-32 h-32 rounded-lg overflow-auto scroll-hide bg-gray-100 bg-opacity-80 backdrop-blur-md">
+            <a *ngFor="let color of colors; let i = index" (click)="selectColor(color.hex)"
+              class="h-8 text-sm md:text-base w-full cursor-pointer hover:bg-gray-200 bg-gray-50 transition-colors gap-2 px-3 py-1 rounded-lg items-center flex">
+              <div class="w-5 h-5 rounded-md" [ngStyle]="{'background-color': color.hex}"></div>
+              <p class="focus:outline-none text-gray-800 editable">
+                {{color.color | capitalizeFirst}}
+              </p>
+            </a>
+          </div>
+
         </div>
       </div>
       <div class="flex gap-1 order-4">
@@ -166,7 +224,7 @@
           Contact Seller
         </button>
         <button *ngIf="isCurrentUserOwner(car)" (click)="setEditable()"
-        [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-400 hover:bg-yellow-500': !setContentEditable}"
+          [ngClass]="{'bg-green-500 hover:bg-green-600': setContentEditable, 'bg-yellow-400 hover:bg-yellow-500': !setContentEditable}"
           class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg text-white transition-all w-2/12 sm:w-1/12">
           <i [ngClass]="{'fa-check': setContentEditable, 'fa-pencil': !setContentEditable}" class="fa px-2"></i>
         </button>
@@ -184,19 +242,22 @@
         <div class="flex justify-around w-full">
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-car text-3xl text-gray-700"></i>
-            <p id="brand" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 font-semibold editable">
+            <p id="brand" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 font-semibold editable">
               {{car.brand | capitalizeFirst}}
             </p>
           </div>
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-tag text-3xl text-gray-700"></i>
-            <p id="model" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 font-semibold editable">
+            <p id="model" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 font-semibold editable">
               {{car.model | capitalizeFirst}}
             </p>
           </div>
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-gas-pump text-3xl text-gray-700"></i>
-            <p id="fuel" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 font-semibold editable">
+            <p id="fuel" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 font-semibold editable">
               {{car.fuel | capitalizeFirst}}
             </p>
           </div>
@@ -204,7 +265,8 @@
         <div class="flex justify-around w-full">
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-cogs text-3xl text-gray-700"></i>
-            <p id="gearbox" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 font-semibold editable">
+            <p id="gearbox" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 font-semibold editable">
               {{car.gearbox | capitalizeFirst}}
             </p>
           </div>
@@ -272,7 +334,8 @@
           </div>
           <div *ngIf="car.type" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Type:</p>
-            <p id="type" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
+            <p id="type" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
               {{car.type | capitalizeFirst}}
             </p>
           </div>
@@ -289,7 +352,8 @@
           </div>
           <div *ngIf="car.consumption" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Last ITV:</p>
-            <p id="lastITV" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
+            <p id="lastITV" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
               {{ car.lastITV | date: 'MM/yyyy' }}
             </p>
           </div>
@@ -329,13 +393,15 @@
           </div>
           <div *ngIf="car.drive" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Drive:</p>
-            <p id="drive" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
+            <p id="drive" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
               {{car.drive.toUpperCase()}}
             </p>
           </div>
           <div *ngIf="car.engine" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Engine:</p>
-            <p id="engine" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
+            <p id="engine" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
               {{car.engine.toUpperCase()}}
             </p>
           </div>
@@ -345,7 +411,8 @@
       <div class="flex flex-col gap-10">
         <div class="flex flex-col lg:flex-row h-full gap-10">
           <div class="w-full lg:w-1/2 max-h-64 min-h-10 lg:max-h-96 overflow-y-auto rounded-scrollbar">
-            <p id="description" [ngClass]="{'animate-pulse italic':setContentEditable}" class="focus:outline-none text-gray-700 h-full overflow-y-auto pr-5 rounded-scrollbar px-3 lg:px-0 editable">
+            <p id="description" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              class="focus:outline-none text-gray-700 h-full overflow-y-auto pr-5 rounded-scrollbar px-3 lg:px-0 editable">
               {{car.description}}
             </p>
           </div>

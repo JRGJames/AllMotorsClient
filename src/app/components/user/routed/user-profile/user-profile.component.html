@@ -180,7 +180,7 @@
       </div>
       <div class="overflow-hidden bg-transparent rounded-md">
         <div class="flex bg-gray-100 rounded-md w-[300%] overflow-hidden transition-all duration-500" id="tabContainer"
-          [ngClass]="{'h-[49.3rem] md:h-[31.5rem] lg:h-[17.25rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
+          [ngClass]="{'h-[60.25rem] md:h-[41rem] lg:h-[22rem]': isInfoShown && currentUser.role, 'h-[49.3rem] md:h-[31.5rem] lg:h-[17.25rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
           <div class="flex flex-col justify-start w-full rounded-md overflow-y-auto scroll-hide">
             <div class="flex flex-col md:flex-row p-10 gap-8 md:gap-4">
               <div class="flex flex-col md:w-1/2 gap-8 h-full">
@@ -252,6 +252,54 @@
                     <div class="flex flex-col">
                       <p class="text-sm">Email:</p>
                       <p>{{user.email}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="currentUser.role" class="flex gap-8 flex-col lg:flex-row">
+                  <div class="flex items-center gap-3 lg:w-1/2">
+                    <i class="fa-solid text-4xl text-gray-800 fa-asterisk"></i>
+                    <div class="flex flex-col">
+                      <p class="text-sm">Role:</p>
+                      <div *ngIf="setContentEditable"
+                        [ngClass]="{'animate-pulse': setContentEditable, 'cursor-text': !setContentEditable}"
+                        class="relative flex gap-2">
+                        <button (click)="user.role = !user.role"
+                          [ngClass]="{'font-bold': user.role, 'italic': setContentEditable}"
+                          class="focus:outline-none cursor-pointer">
+                          Admin
+                        </button>
+                        /
+                        <button (click)="user.role = !user.role"
+                          [ngClass]="{'font-bold': !user.role, 'italic': setContentEditable}"
+                          class="focus:outline-none cursor-pointer">
+                          User
+                        </button>
+                      </div>
+                      <p *ngIf="!setContentEditable && user.role">Admin</p>
+                      <p *ngIf="!setContentEditable &&  !user.role">User</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3 lg:w-1/2">
+                    <i class="fa-solid text-4xl text-gray-800 fa-flag"></i>
+                    <div class="flex flex-col">
+                      <p class="text-sm">Banned:</p>
+                      <div *ngIf="setContentEditable"
+                        [ngClass]="{'animate-pulse': setContentEditable, 'cursor-text': !setContentEditable}"
+                        class="relative flex gap-2">
+                        <button (click)="user.banned = !user.banned"
+                          [ngClass]="{'font-bold': user.banned, 'italic': setContentEditable}"
+                          class="focus:outline-none cursor-pointer">
+                          True
+                        </button>
+                        /
+                        <button (click)="user.banned = !user.banned"
+                          [ngClass]="{'font-bold': !user.banned, 'italic': setContentEditable}"
+                          class="focus:outline-none cursor-pointer">
+                          False
+                        </button>
+                      </div>
+                      <p *ngIf="!setContentEditable && user.banned">True</p>
+                      <p *ngIf="!setContentEditable &&  !user.banned">False</p>
                     </div>
                   </div>
                 </div>
@@ -462,6 +510,7 @@
               <span class="text-gray-800 cursor-pointer" [routerLink]="['/user', selectedCar.owner.id]"
                 (click)="resetBehavior()">{{selectedCar.owner.username}}</span>
               <div class="flex space-x-1">
+                <i *ngIf="selectedCar.owner.ratingCount === 0" class="fa fa-star text-gray-500 self-center"></i>
                 <i *ngFor="let starIndex of getStarIndexes()" class="fa fa-star text-gray-500"></i>
                 <i *ngIf="selectedCar.owner.ratingAverage % 1 > 0" class="fa fa-star-half text-gray-500"></i>
               </div>
@@ -501,7 +550,7 @@
           <i class="fa fa-car pl-2"></i>
         </span>
         <span *ngIf="selectedCar?.type" class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">
-          {{selectedCar.type}}
+          {{selectedCar.type | capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
         <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.distance | roundToThousandth}}

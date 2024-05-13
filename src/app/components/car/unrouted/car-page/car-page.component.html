@@ -115,6 +115,7 @@
                         <p class="text-gray-500">{{car.owner.username }}</p>
                       </div>
                       <div class="flex space-x-2 items-center">
+                        <i *ngIf="car.owner.ratingCount === 0" class="fa fa-star text-gray-500 self-center"></i>
                         <i *ngFor="let starIndex of getStarRange(car.owner.id)"
                           class="fa fa-star text-gray-500 self-center"></i>
                         <i *ngIf="car.owner.ratingAverage % 1 > 0"
@@ -327,6 +328,7 @@
               </div>
               <span class="text-gray-800 cursor-pointer" [routerLink]="['/user', selectedCar.owner.id]" (click)="resetBehavior()">{{selectedCar.owner.username}}</span>
               <div class="flex space-x-1">
+                <i *ngIf="selectedCar.owner.ratingCount === 0" class="fa fa-star text-gray-500 self-center"></i>
                 <i *ngFor="let starIndex of getStarRange(selectedCar.owner.id)" class="fa fa-star text-gray-500"></i>
                 <i *ngIf="selectedCar.owner.ratingAverage % 1 > 0" class="fa fa-star-half text-gray-500"></i>
               </div>
@@ -366,7 +368,7 @@
           <i class="fa fa-car pl-2"></i>
         </span>
         <span *ngIf="selectedCar?.type" class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">
-          {{selectedCar.type}}
+          {{selectedCar.type | capitalizeFirst}}
           <i class="fa fa-car pl-2"></i>
         </span>
         <span class="py-2 px-3 bg-gray-300 rounded-3xl flex items-center">{{selectedCar.distance | roundToThousandth}}

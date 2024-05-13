@@ -1,6 +1,6 @@
 import { UserService } from '../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
@@ -29,6 +29,9 @@ export type ChartOptions = {
   styleUrls: ['./car-detail.component.css'],
 })
 export class CarDetailComponent implements OnInit {
+  @ViewChild('userList') userList!: ElementRef;
+  @ViewChild('colorPicker') colorPicker!: ElementRef;
+
   url = API_URL;
   showPhoneNumber: boolean = false;
   id!: number;
@@ -42,7 +45,31 @@ export class CarDetailComponent implements OnInit {
   idToDelete: number | null = null;
   setContentEditable: boolean = false;
   users: IUser[] = [];
-  isEditingUser: boolean = false;
+  isEditingOwner: boolean = false;
+  selectedUser: string = "";
+  isEditingColor: boolean = false;
+  colors: { color: string, hex: string }[] = [
+    { color: 'black', hex: '#1F2937' },
+    { color: 'maroon', hex: '#800000' },
+    { color: 'brown', hex: '#A52A2A' },
+    { color: 'red', hex: '#D92518' },
+    { color: 'orange', hex: '#FFA500' },
+    { color: 'yellow', hex: '#FFC107' },
+    { color: 'olive', hex: '#808000' },
+    { color: 'lime', hex: '#00FF00' },
+    { color: 'green', hex: '#2ECC71' },
+    { color: 'teal', hex: '#008080' },
+    { color: 'cyan', hex: '#00FFFF' },
+    { color: 'blue', hex: '#0284C7' },
+    { color: 'navy', hex: '#000080' },
+    { color: 'indigo', hex: '#4B0082' },
+    { color: 'purple', hex: '#800080' },
+    { color: 'magenta', hex: '#FF00FF' },
+    { color: 'pink', hex: '#FFC0CB' },
+    { color: 'grey', hex: '#8C8C8C' },
+    { color: 'silver', hex: '#C0C0C0' },
+    { color: 'white', hex: '#FFFFFF' }
+  ];
   chartOptions: Partial<ChartOptions> = {
     series: [
       {
@@ -89,7 +116,6 @@ export class CarDetailComponent implements OnInit {
     yaxis: {
       min: 0,
       title: {
-        text: "€",
         rotate: 360,
         offsetY: 0,
         style: {
@@ -144,7 +170,8 @@ export class CarDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private ratingService: RatingService,
-    private savedService: SavedService
+    private savedService: SavedService,
+    private elementRef: ElementRef
 
   ) { }
 
@@ -182,6 +209,7 @@ export class CarDetailComponent implements OnInit {
         this.getRatingAverage(this.car.owner.id);
         this.checkIfCarIsSaved(this.car.id);
         this.increaseViews(this.car.id);
+        this.selectedUser = this.car.owner.username;
 
       },
       error: (error: HttpErrorResponse) => {
@@ -376,7 +404,8 @@ export class CarDetailComponent implements OnInit {
 
     this.loadUsers();
     if (this.setContentEditable) {
-
+      this.isEditingOwner = false;
+      this.isEditingColor = false;
 
       // Actualizamos los datos del usuario
       this.car.title = document.getElementById('title')?.innerText || '';
@@ -384,9 +413,7 @@ export class CarDetailComponent implements OnInit {
       this.car.model = document.getElementById('model')?.innerText?.toLowerCase() || '';
       const priceText = document.getElementById('price')?.innerText || '';
       this.car.price = Number(priceText.replace('.', ''));
-      this.car.currency = document.getElementById('currency')?.innerText || '';
 
-      this.car.color = document.getElementById('color')?.innerText || '';
       this.car.year = Number(document.getElementById('year')?.innerText);
 
       this.car.fuel = document.getElementById('fuel')?.innerText?.toLowerCase() || '';
@@ -406,9 +433,7 @@ export class CarDetailComponent implements OnInit {
       this.car.acceleration = Number(document.getElementById('acceleration')?.innerText);
       this.car.drive = document.getElementById('drive')?.innerText?.toLowerCase() || '';
       this.car.engine = document.getElementById('engine')?.innerText?.toLowerCase() || '';
-      this.car.owner.username = document.getElementById('owner')?.innerText || '';
-
-
+      this.car.lastUpdate = new Date();
 
       this.carService.update(this.car).subscribe({
         next: (car: ICar) => {
@@ -424,6 +449,7 @@ export class CarDetailComponent implements OnInit {
     }
 
     this.setContentEditable = !this.setContentEditable;
+
 
     editables.forEach((editable) => {
       if (this.setContentEditable) {
@@ -444,4 +470,31 @@ export class CarDetailComponent implements OnInit {
       }
     });
   }
+
+  selectUser(userId: number): void {
+    this.car.owner.id = userId;
+    this.isEditingOwner = !this.isEditingOwner;
+    this.userService.get(userId).subscribe({
+      next: (user: IUser) => {
+        this.selectedUser = user.username;
+      }
+    });
+  }
+
+  selectColor(color: string): void {
+    this.car.color = color;
+    this.isEditingColor = !this.isEditingColor;
+  }
+
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const clickedElement = event.target as HTMLElement;
+
+    if ((clickedElement.contains(this.userList.nativeElement)) || (clickedElement.contains(this.colorPicker.nativeElement))) {
+      this.isEditingOwner = false;
+      this.isEditingColor = false;
+    }
+  }
+
 }
