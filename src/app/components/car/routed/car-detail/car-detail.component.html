@@ -160,7 +160,7 @@
             </div>
             <div *ngIf="setContentEditable && currentUser.role" class="relative flex items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 h-7 w-7 cursor-pointer"
-                (click)="isEditingOwner = !isEditingOwner; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false">
+                (click)="isEditingOwner = !isEditingOwner; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false">
                 <img *ngIf="car.owner.profilePicture" [src]="urlPicture + car.owner.profilePicture" alt=""
                   class="flex h-full object-cover w-full items-center justify-center">
                 <div *ngIf="!car.owner.profilePicture"
@@ -168,23 +168,35 @@
                   {{getUserInitials(car.owner)}}
                 </div>
               </div>
-              <p (click)="isEditingOwner = !isEditingOwner; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false"
+              <p (click)="isEditingOwner = !isEditingOwner; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false"
                 [ngClass]="{'animate-pulse italic': setContentEditable}"
-                class="focus:outline-nonetext-sm md:text-base pl-3 lg:text-lg text-gray-600 cursor-pointer self-center editable">
+                class="focus:outline-nonetext-sm md:text-base pl-3 lg:text-lg text-gray-600 cursor-pointer self-center">
                 {{ selectedUser }}
               </p>
-              <div *ngIf="setContentEditable && isEditingOwner" #userList
-                class="z-10 absolute mt-1 top-8 hidden lg:flex flex-col text-left lg:h-36 xl:h-44 overflow-y-auto bg-gray-100 rounded-lg p-3 gap-2 bg-opacity-80 scroll-hide backdrop-blur-md">
-                <a *ngFor="let user of users; let i = index"
-                  class="h-8 text-sm md:text-base w-full cursor-pointer hover:bg-gray-200 bg-gray-50 transition-colors px-3 py-1 rounded-lg"
-                  (click)="selectUser(user.id)">{{ user.username }}</a>
+              <div [ngClass]="{'h-0': !isEditingOwner, 'lg:h-32 xl:h-44 py-3': isEditingOwner}" #userList
+                class="z-10 absolute mt-1 top-8 -left-5 hidden lg:flex transition-all duration-300 flex-col text-left overflow-y-auto px-3 bg-gray-100 rounded-lg gap-2 bg-opacity-80 scroll-hide backdrop-blur-md">
+                <button *ngFor="let user of users; let i = index" (click)="selectUser(user.id)"
+                  class="h-8 text-sm md:text-base flex gap-2 items-center w-full cursor-pointer hover:bg-gray-200 transition-colors px-3 py-1 rounded-lg"
+                  [ngClass]="{'bg-gray-200': user.id === car.owner.id, 'bg-gray-50': user.id !== car.owner.id}">
+                  <div class="rounded-full overflow-hidden h-5 w-5 cursor-pointer">
+                    <img *ngIf="user.profilePicture" [src]="urlPicture + user.profilePicture" alt=""
+                      class="flex h-full object-cover w-full items-center justify-center">
+                    <div *ngIf="!user.profilePicture"
+                      class="flex w-full h-full justify-center items-center text-[10px] text-white bg-sky-600">
+                      {{getUserInitials(user)}}
+                    </div>
+                  </div>
+                  {{ user.username }}
+                </button>
               </div>
+
             </div>
 
             <p class="pl-2 pr-1">-</p>
-            <p class="cursor-pointer text-sm md:text-base lg:text-lg text-gray-700 self-center pl-1"
+            <p class="cursor-pointer text-sm md:text-base lg:text-lg text-gray-700 self-center pl-1 items-center flex gap-2"
               (click)="togglePhoneNumber()">
-              {{ showPhoneNumber ? '' : "Show phone number"}}
+              <i class="fa fa-solid fa-phone text-gray-500 mt-1 text-xs"></i>
+              {{ showPhoneNumber ? '' : "Show number"}}
               <span *ngIf="showPhoneNumber">{{ car.owner.phone }}</span>
             </p>
           </div>
@@ -216,7 +228,8 @@
         </div>
         <div class="relative">
           <button [ngClass]="{'cursor-default': !setContentEditable, 'cursor-pointer': setContentEditable}"
-            class="flex items-center gap-2" (click)="isEditingColor = !isEditingColor">
+            class="flex items-center gap-2"
+            (click)="isEditingColor = !isEditingColor; isEditingOwner = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false">
             <i [ngClass]="{'animate-bounce sm:animate-none':setContentEditable}"
               class="fa-solid fa-palette text-gray-600"></i>
             <div [ngClass]="{'animate-pulse':setContentEditable}"
@@ -226,12 +239,12 @@
             <p *ngIf="setContentEditable" class="hidden sm:flex animate-pulse italic text-gray-800">Select a color</p>
           </button>
 
-          <div *ngIf="setContentEditable && isEditingColor" #colorPicker
-            class="z-10 mt-1 p-2 gap-1 bottom-8 -left-2 absolute hidden lg:flex flex-col w-32 h-32 rounded-lg overflow-auto scroll-hide bg-gray-100 bg-opacity-80 backdrop-blur-md">
+          <div [ngClass]="{'h-0': !isEditingColor, 'w-auto h-32 py-2': isEditingColor}" #colorPicker
+            class="z-10 mt-1 gap-2 px-2 bottom-8 left-1 transition-all duration-300 absolute hidden lg:flex flex-col rounded-lg overflow-auto scroll-hide bg-gray-100 bg-opacity-80 backdrop-blur-md">
             <a *ngFor="let color of colors; let i = index" (click)="selectColor(color.hex)"
               class="h-8 text-sm md:text-base w-full cursor-pointer hover:bg-gray-200 bg-gray-50 transition-colors gap-2 px-3 py-1 rounded-lg items-center flex">
-              <div class="w-5 h-5 rounded-md" [ngStyle]="{'background-color': color.hex}"></div>
-              <p class="focus:outline-none text-gray-800">
+              <div class="h-5 w-16 rounded-xl" [ngStyle]="{'background-color': color.hex}"></div>
+              <p class="focus:outline-none text-sm text-gray-800">
                 {{color.color | capitalizeFirst}}
               </p>
             </a>
@@ -261,100 +274,108 @@
     <div class="aditional-information space-y-10 w-full">
       <div class="flex flex-col md:flex-row w-full space-y-8 md:space-y-0">
         <div class="flex justify-around w-full">
-          <div class="flex flex-col items-center gap-3">
+          <div *ngIf="!setContentEditable" class="flex flex-col items-center gap-3">
             <i class="fas fa-car text-3xl text-gray-700"></i>
-            <p id="brand" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-sm text-gray-800 font-semibold editable">
+            <p class="text-sm text-gray-800 font-semibold">
               {{car.brand | capitalizeFirst}}
             </p>
           </div>
-          <div class="flex flex-col items-center gap-3">
+          <button *ngIf="setContentEditable" class="flex flex-col items-center gap-3 focus:outline-none"
+            (click)="isEditingBrand = !isEditingBrand; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false; isEditingOwner = false; isEditingDrive = false; isEditingModel = false; isEditingType = false">
+            <i class="fas fa-car text-3xl text-gray-700"></i>
+            <p class="text-sm animate-pulse italic text-gray-800 font-semibold">
+              {{car.brand | capitalizeFirst}}
+            </p>
+          </button>
+          <div *ngIf="!setContentEditable" class="flex flex-col items-center gap-3">
             <i class="fas fa-tag text-3xl text-gray-700"></i>
-            <p id="model" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-sm text-gray-800 font-semibold editable">
+            <p class="text-sm text-gray-800 font-semibold">
               {{car.model | capitalizeFirst}}
             </p>
           </div>
-          <div class="flex flex-col relative">
-            <button *ngIf="setContentEditable"
-              (click)="isEditingFuel = !isEditingFuel; isEditingColor = false; isEditingGearbox = false; isEditingOwner = false"
-              class="flex flex-col gap-3 items-center">
-              <i [ngClass]="{'fa-gas-pump': car.fuel === 'gasoline' || 'diesel', 'fa-bolt': car.fuel === 'electric', 'fa-charging-station': car.fuel === 'hybrid'}"
-                class="fas text-3xl text-gray-700"></i>
-              <p class="focus:outline-none animate-pulse italic text-sm text-gray-800 font-semibold">
-                {{car.fuel | capitalizeFirst}}
-              </p>
-            </button>
-            <div *ngIf="!setContentEditable" class="flex items-center flex-col gap-3">
-              <i [ngClass]="{'fa-gas-pump': car.fuel === 'gasoline' || 'diesel', 'fa-bolt': car.fuel === 'electric', 'fa-charging-station': car.fuel === 'hybrid'}"
-                class="fas text-3xl text-gray-700"></i>
-              <p class="focus:outline-none text-sm text-gray-800 font-semibold">
-                {{car.fuel | capitalizeFirst}}
-              </p>
-            </div>
+          <button *ngIf="setContentEditable" class="flex flex-col items-center gap-3 focus:outline-none"
+            (click)="isEditingModel = !isEditingModel; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingOwner = false; isEditingType = false">
+            <i class="fas fa-tag text-3xl text-gray-700"></i>
+            <p class="text-sm animate-pulse italic text-gray-800 font-semibold">
+              {{car.model | capitalizeFirst}}
+            </p>
+          </button>
+          <div *ngIf="!setContentEditable" class="flex items-center flex-col gap-3">
+            <i [ngClass]="{'fa-gas-pump': car.fuel === 'gasoline' || 'diesel', 'fa-bolt': car.fuel === 'electric', 'fa-charging-station': car.fuel === 'hybrid'}"
+              class="fas text-3xl text-gray-700"></i>
+            <p class="text-sm text-gray-800 font-semibold">
+              {{car.fuel | capitalizeFirst}}
+            </p>
           </div>
+          <button *ngIf="setContentEditable"
+            (click)="isEditingFuel = !isEditingFuel; isEditingColor = false; isEditingOwner = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false"
+            class="flex flex-col gap-3 items-center focus:outline-none">
+            <i [ngClass]="{'fa-gas-pump': car.fuel === 'gasoline' || 'diesel', 'fa-bolt': car.fuel === 'electric', 'fa-charging-station': car.fuel === 'hybrid'}"
+              class="fas text-3xl text-gray-700"></i>
+            <p class="animate-pulse italic text-sm text-gray-800 font-semibold">
+              {{car.fuel | capitalizeFirst}}
+            </p>
+          </button>
         </div>
         <div class="flex justify-around w-full">
-          <div class="flex flex-col items-center gap-3">
-            <button *ngIf="setContentEditable"
-              (click)="isEditingGearbox = !isEditingGearbox; isEditingColor = false; isEditingFuel = false; isEditingOwner = false"
-              class="flex flex-col gap-3 items-center">
-              <svg *ngIf="car.gearbox === 'manual'" xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-manual-gearbox" width="36" height="36" viewBox="0 0 24 24"
-                stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M5 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M12 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M19 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M12 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 8l0 8" />
-                <path d="M12 8l0 8" />
-                <path d="M19 8v2a2 2 0 0 1 -2 2h-12" />
-              </svg>
-              <svg *ngIf="car.gearbox === 'automatic'" xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-automatic-gearbox" width="36" height="36" viewBox="0 0 24 24"
-                stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M17 17v4h1a2 2 0 1 0 0 -4h-1z" />
-                <path d="M17 11h1.5a1.5 1.5 0 0 0 0 -3h-1.5v5" />
-                <path d="M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3" />
-                <path d="M9 11h4" />
-              </svg>
-              <p class="focus:outline-none animate-pulse italic text-sm text-gray-800 font-semibold">
-                {{car.gearbox | capitalizeFirst}}
-              </p>
-            </button>
-            <div *ngIf="!setContentEditable" class="flex items-center flex-col gap-3">
-              <svg *ngIf="car.gearbox === 'manual'" xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-manual-gearbox" width="36" height="36" viewBox="0 0 24 24"
-                stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M5 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M12 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M19 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M12 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 8l0 8" />
-                <path d="M12 8l0 8" />
-                <path d="M19 8v2a2 2 0 0 1 -2 2h-12" />
-              </svg>
-              <svg *ngIf="car.gearbox === 'automatic'" xmlns="http://www.w3.org/2000/svg"
-                class="icon icon-tabler icon-tabler-automatic-gearbox" width="36" height="36" viewBox="0 0 24 24"
-                stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M17 17v4h1a2 2 0 1 0 0 -4h-1z" />
-                <path d="M17 11h1.5a1.5 1.5 0 0 0 0 -3h-1.5v5" />
-                <path d="M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3" />
-                <path d="M9 11h4" />
-              </svg>
-              <p class="focus:outline-none text-sm text-gray-800 font-semibold">
-                {{car.gearbox | capitalizeFirst}}
-              </p>
-            </div>
+          <div *ngIf="!setContentEditable" class="flex items-center flex-col gap-3">
+            <svg *ngIf="car.gearbox === 'manual'" xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-manual-gearbox" width="36" height="36" viewBox="0 0 24 24"
+              stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M12 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M19 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M12 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 8l0 8" />
+              <path d="M12 8l0 8" />
+              <path d="M19 8v2a2 2 0 0 1 -2 2h-12" />
+            </svg>
+            <svg *ngIf="car.gearbox === 'automatic'" xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-automatic-gearbox" width="36" height="36" viewBox="0 0 24 24"
+              stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M17 17v4h1a2 2 0 1 0 0 -4h-1z" />
+              <path d="M17 11h1.5a1.5 1.5 0 0 0 0 -3h-1.5v5" />
+              <path d="M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3" />
+              <path d="M9 11h4" />
+            </svg>
+            <p class="text-sm text-gray-800 font-semibold">
+              {{car.gearbox | capitalizeFirst}}
+            </p>
           </div>
+          <button *ngIf="setContentEditable"
+            (click)="isEditingGearbox = !isEditingGearbox; isEditingColor = false; isEditingFuel = false; isEditingOwner = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false"
+            class="flex flex-col gap-3 items-center focus:outline-none">
+            <svg *ngIf="car.gearbox === 'manual'" xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-manual-gearbox" width="36" height="36" viewBox="0 0 24 24"
+              stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M12 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M19 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M12 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 8l0 8" />
+              <path d="M12 8l0 8" />
+              <path d="M19 8v2a2 2 0 0 1 -2 2h-12" />
+            </svg>
+            <svg *ngIf="car.gearbox === 'automatic'" xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-automatic-gearbox" width="36" height="36" viewBox="0 0 24 24"
+              stroke-width="2" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M17 17v4h1a2 2 0 1 0 0 -4h-1z" />
+              <path d="M17 11h1.5a1.5 1.5 0 0 0 0 -3h-1.5v5" />
+              <path d="M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3" />
+              <path d="M9 11h4" />
+            </svg>
+            <p class="animate-pulse italic text-sm text-gray-800 font-semibold">
+              {{car.gearbox | capitalizeFirst}}
+            </p>
+          </button>
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-chair text-3xl text-gray-700"></i>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex items-center gap-1 font-semibold">
@@ -380,10 +401,10 @@
         </div>
       </div>
       <hr
-        *ngIf="car.distance || car.type || car.horsepower || car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
+        *ngIf="car.distance || car.type || car.horsepower || car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive"
         class="border-2 rounded-lg border-gray-600">
       <div
-        *ngIf="car.distance || car.type || car.horsepower || car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive || car.engine"
+        *ngIf="car.distance || car.type || car.horsepower || car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive"
         class="flex">
         <div class="flex justify-evenly space-x-5 w-full overflow-x-scroll scroll-hide">
           <!-- <div *ngIf="car.plate"
@@ -417,13 +438,21 @@
               </p>
             </div>
           </div>
-          <div *ngIf="car.type" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
+          <div *ngIf="car.type && !setContentEditable"
+            class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Type:</p>
-            <p id="type" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
+            <p class="text-sm text-gray-800 p-2 font-bold">
               {{car.type | capitalizeFirst}}
             </p>
           </div>
+          <button *ngIf="car.type && setContentEditable"
+            (click)="isEditingType = !isEditingType; isEditingColor = false; isEditingOwner = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingFuel = false"
+            class="flex focus:outline-none flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
+            <p class="text-sm px-1">Type:</p>
+            <p class="animate-pulse italic text-sm text-gray-800 p-2 font-bold">
+              {{car.type | capitalizeFirst}}
+            </p>
+          </button>
           <div *ngIf="car.horsepower" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Horsepower:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
@@ -435,7 +464,7 @@
               </p>
             </div>
           </div>
-          <div *ngIf="car.consumption" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
+          <div *ngIf="car.lastITV" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Last ITV:</p>
             <p id="lastITV" [ngClass]="{'animate-pulse italic':setContentEditable}"
               class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
@@ -476,20 +505,21 @@
               </p>
             </div>
           </div>
-          <div *ngIf="car.drive" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
+          <div *ngIf="car.drive && !setContentEditable"
+            class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Drive:</p>
-            <p id="drive" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
+            <p class="text-sm text-gray-800 p-2 font-bold">
               {{car.drive.toUpperCase()}}
             </p>
           </div>
-          <div *ngIf="car.engine" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
-            <p class="text-sm px-1">Engine:</p>
-            <p id="engine" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
-              {{car.engine.toUpperCase()}}
+          <button *ngIf="car.drive  && setContentEditable"
+            (click)="isEditingDrive = !isEditingDrive; isEditingColor = false; isEditingOwner = false; isEditingGearbox = false; isEditingBrand = false; isEditingType = false; isEditingModel = false; isEditingFuel = false"
+            class="flex flex-col items-center p-3 bg-gray-100 focus:outline-none rounded-[2.3em] flex-shrink-0">
+            <p class="text-sm px-1">Drive:</p>
+            <p class=" text-sm animate-pulse italic text-gray-800 p-2 font-bold">
+              {{car.drive.toUpperCase()}}
             </p>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -547,68 +577,8 @@
   </div>
 </div>
 
-<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingFuel, 'translate-y-0': isEditingFuel}"
-  class="fixed shadow-inner transition-all duration-500 flex flex-col px-5 pb-5 py-3 justify-between bg-gray-100 bg-opacity-80 backdrop-blur-md bottom-0 w-full">
-  <div class="flex justify-between pb-3 lg:pb-5">
-    <p class="text-base lg:text-xl text-gray-800 font-semibold">Choose your fuel type:</p>
-    <button (click)="isEditingFuel = !isEditingFuel">
-      <i class="fa fa-solid text-xl fa-multiply"></i>
-    </button>
-  </div>
-  <div class="grid grid-cols-2 sm:flex gap-5 lg:gap-10">
-    <div *ngFor="let fuel of fuelTypes; let i = index" [ngClass]="{'bg-gray-300': fuel === car.fuel}"
-      (click)="car.fuel = fuel; isEditingFuel = !isEditingFuel"
-      class="rounded-xl w-full sm::w-1/4 h-24 lg:h-44 flex flex-col justify-center items-center bg-gray-200 text-center transition-all hover:bg-gray-300 cursor-pointer">
-      <i [ngClass]="{'fa-gas-pump': fuel === 'gasoline' || 'diesel', 'fa-bolt': fuel === 'electric', 'fa-charging-station': fuel === 'hybrid'}"
-        class="fas text-4xl lg:text-5xl text-gray-700 py-2"></i>
-      <p class="text-base lg:text-xl text-gray-800 font-semibold pb-2">{{fuel | capitalizeFirst}}</p>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingGearbox, 'translate-y-0': isEditingGearbox}"
-  class="fixed shadow-inner transition-all duration-500 flex flex-col px-5 pb-5 py-3 justify-between bg-gray-100 bg-opacity-80 backdrop-blur-md bottom-0 w-full">
-  <div class="flex justify-between pb-3 lg:pb-5">
-    <p class="text-base lg:text-xl text-gray-800 font-semibold">Choose your gearbox:</p>
-    <button (click)="isEditingGearbox = !isEditingGearbox">
-      <i class="fa fa-solid text-xl fa-multiply"></i>
-    </button>
-  </div>
-  <div class="flex gap-5 lg:gap-10">
-    <div *ngFor="let gearbox of gearboxTypes; let i = index" [ngClass]="{'bg-gray-300': gearbox === car.gearbox}"
-      (click)="car.gearbox = gearbox; isEditingGearbox = !isEditingGearbox"
-      class="rounded-xl w-full lg:w-1/2 h-24 lg:h-44 flex flex-col items-center justify-center bg-gray-200 text-center transition-all hover:bg-gray-300 cursor-pointer">
-      <svg *ngIf="gearbox === 'manual'" xmlns="http://www.w3.org/2000/svg"
-        class="h-14 lg:h-20 py-2 icon icon-tabler icon-tabler-manual-gearbox" width="80" height="80" viewBox="0 0 24 24"
-        stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path d="M5 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M12 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M19 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M5 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M12 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M5 8l0 8" />
-        <path d="M12 8l0 8" />
-        <path d="M19 8v2a2 2 0 0 1 -2 2h-12" />
-      </svg>
-      <svg *ngIf="gearbox === 'automatic'" xmlns="http://www.w3.org/2000/svg"
-        class="h-14 lg:h-20 py-2 icon icon-tabler icon-tabler-automatic-gearbox" width="80" height="80"
-        viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
-        stroke-linejoin="round">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path d="M17 17v4h1a2 2 0 1 0 0 -4h-1z" />
-        <path d="M17 11h1.5a1.5 1.5 0 0 0 0 -3h-1.5v5" />
-        <path d="M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3" />
-        <path d="M9 11h4" />
-      </svg>
-      <p class="text-base lg:text-xl text-gray-800 font-semibold">{{gearbox | capitalizeFirst}}</p>
-    </div>
-  </div>
-</div>
-
 <div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingOwner, 'translate-y-0': isEditingOwner}"
-  class="shadow-inner lg:hidden flex flex-col h-60 p-4 gap-2 w-full bg-gray-100 bg-opacity-80 backdrop-blur-md fixed duration-500 transition-all bottom-0">
+  class="shadow-inner lg:hidden flex flex-col h-60 p-4 gap-2 w-full bg-gray-100 bg-opacity-80 backdrop-blur-md fixed duration-500 transition-all bottom-0 md:m-5 md:rounded-xl md:w-72 md:shadow-xl">
   <div class="flex text-gray-800 justify-between pb-2">
     <p class="text-base font-semibold">Choose the car owner:</p>
     <button (click)="isEditingOwner = !isEditingOwner">
@@ -633,19 +603,149 @@
 </div>
 
 <div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingColor, 'translate-y-0': isEditingColor}"
-  class="shadow-inner lg:hidden flex flex-col h-60 p-4 gap-2 w-full bg-gray-100 bg-opacity-80 backdrop-blur-md fixed duration-500 transition-all bottom-0">
+  class="shadow-inner lg:hidden flex flex-col h-60 p-4 gap-2 w-full bg-gray-100 bg-opacity-80 backdrop-blur-md fixed duration-500 transition-all bottom-0 md:m-5 md:shadow-xl md:w-96 md:rounded-xl">
   <div class="flex text-gray-800 justify-between pb-2">
     <p class="text-base font-semibold">Choose the car color:</p>
     <button (click)="isEditingColor = !isEditingColor">
       <i class="fa fa-solid text-xl fa-multiply"></i>
     </button>
   </div>
-  <div class="overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 scroll-hide rounded-xl">
+  <div class="overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 gap-3 scroll-hide rounded-xl">
     <button *ngFor="let color of colors; let i = index" [ngClass]="{'bg-gray-300': color.hex === car.color}"
       class="bg-gray-200 hover:bg-gray-300 transition-all rounded-xl py-3 px-4 text-base font-semibold flex justify-start gap-4 items-center text-gray-800"
       (click)="car.color = color.hex; isEditingColor = !isEditingColor">
-      <div class="w-7 h-7 rounded-lg" [ngStyle]="{'background-color': color.hex}"></div>
+      <div class="w-10 h-5 rounded-lg" [ngStyle]="{'background-color': color.hex}"></div>
       <p>{{color.color | capitalizeFirst}}</p>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingBrand, 'translate-y-0': isEditingBrand}"
+  class="shadow-inner flex flex-col h-60 p-4 gap-2 w-full bg-gray-100 bg-opacity-80 backdrop-blur-md fixed duration-500 transition-all bottom-0 md:m-5 md:rounded-xl md:w-64 lg:w-80 md:shadow-xl">
+  <div class="flex text-gray-800 justify-between pb-2">
+    <p class="text-base lg:text-xl font-semibold">Choose the car brand:</p>
+    <button (click)="isEditingBrand = !isEditingBrand">
+      <i class="fa fa-solid text-xl fa-multiply"></i>
+    </button>
+  </div>
+  <div class="overflow-y-auto flex flex-col gap-2 scroll-hide rounded-xl">
+    <button *ngFor="let brand of brands; let i = index" [ngClass]="{'bg-gray-300': brand === car.brand}"
+      class="text-center bg-gray-200 hover:bg-gray-300 transition-all rounded-xl py-3 text-base font-semibold flex justify-center gap-4 items-center text-gray-800"
+      (click)="car.brand = brand; isEditingBrand = !isEditingBrand">
+      {{brand}}
+    </button>
+  </div>
+</div>
+
+<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingModel, 'translate-y-0': isEditingModel}"
+  class="shadow-inner flex flex-col h-60 p-4 gap-2 w-full bg-gray-100 bg-opacity-80 backdrop-blur-md fixed duration-500 transition-all bottom-0 md:m-5 md:rounded-xl md:w-72 lg:w-96 md:shadow-xl">
+  <div class="flex text-gray-800 justify-between pb-2">
+    <p class="text-base lg:text-xl font-semibold">Choose the {{car.brand | capitalizeFirst}} model:</p>
+    <button (click)="isEditingModel = !isEditingModel">
+      <i class="fa fa-solid text-xl fa-multiply"></i>
+    </button>
+  </div>
+  <div class="overflow-y-auto flex flex-col gap-2 scroll-hide rounded-xl">
+    <button *ngFor="let model of models; let i = index" [ngClass]="{'bg-gray-300': model === car.model}"
+      class="text-center bg-gray-200 hover:bg-gray-300 transition-all rounded-xl py-3 text-base font-semibold flex justify-center gap-4 items-center text-gray-800"
+      (click)="car.model = model; isEditingModel = !isEditingModel">
+      {{model}}
+    </button>
+  </div>
+</div>
+
+<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingFuel, 'translate-y-0': isEditingFuel}"
+  class="fixed shadow-inner md:shadow-xl transition-all duration-500 flex flex-col px-5 pb-5 py-3 justify-between bg-gray-100 bg-opacity-80 backdrop-blur-md bottom-0 w-full md:m-5 md:w-96 md:rounded-xl">
+  <div class="flex justify-between pb-3 md:pb-5">
+    <p class="text-base lg:text-xl text-gray-800 font-semibold">Choose your fuel type:</p>
+    <button (click)="isEditingFuel = !isEditingFuel">
+      <i class="fa fa-solid text-xl fa-multiply"></i>
+    </button>
+  </div>
+  <div class="grid grid-cols-2 gap-5">
+    <div *ngFor="let fuel of fuelTypes; let i = index" [ngClass]="{'bg-gray-300': fuel === car.fuel}"
+      (click)="car.fuel = fuel; isEditingFuel = !isEditingFuel"
+      class="rounded-xl w-full sm::w-1/4 h-24 flex flex-col justify-center items-center bg-gray-200 text-center transition-all hover:bg-gray-300 cursor-pointer">
+      <i [ngClass]="{'fa-gas-pump': fuel === 'gasoline' || 'diesel', 'fa-bolt': fuel === 'electric', 'fa-charging-station': fuel === 'hybrid'}"
+        class="fas text-4xl text-gray-700 py-2"></i>
+      <p class="text-base text-gray-800 font-semibold pb-2">{{fuel | capitalizeFirst}}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingGearbox, 'translate-y-0': isEditingGearbox}"
+  class="fixed shadow-inner md:shadow-xl transition-all duration-500 flex flex-col px-5 pb-5 py-3 justify-between bg-gray-100 bg-opacity-80 backdrop-blur-md bottom-0 w-full md:w-96 md:m-5 md:rounded-xl">
+  <div class="flex justify-between pb-3 lg:pb-5">
+    <p class="text-base lg:text-xl text-gray-800 font-semibold">Choose your gearbox:</p>
+    <button (click)="isEditingGearbox = !isEditingGearbox">
+      <i class="fa fa-solid text-xl fa-multiply"></i>
+    </button>
+  </div>
+  <div class="flex gap-5 lg:gap-5">
+    <div *ngFor="let gearbox of gearboxTypes; let i = index" [ngClass]="{'bg-gray-300': gearbox === car.gearbox}"
+      (click)="car.gearbox = gearbox; isEditingGearbox = !isEditingGearbox"
+      class="rounded-xl w-full md:w-1/2 h-24 md:h-32 flex flex-col items-center justify-center bg-gray-200 text-center transition-all hover:bg-gray-300 cursor-pointer">
+      <svg *ngIf="gearbox === 'manual'" xmlns="http://www.w3.org/2000/svg"
+        class="h-14 md:h-16 py-2 icon icon-tabler icon-tabler-manual-gearbox" width="80" height="80" viewBox="0 0 24 24"
+        stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M5 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M12 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M19 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M5 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M12 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M5 8l0 8" />
+        <path d="M12 8l0 8" />
+        <path d="M19 8v2a2 2 0 0 1 -2 2h-12" />
+      </svg>
+      <svg *ngIf="gearbox === 'automatic'" xmlns="http://www.w3.org/2000/svg"
+        class="h-14 md:h-16 py-2 icon icon-tabler icon-tabler-automatic-gearbox" width="80" height="80"
+        viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M17 17v4h1a2 2 0 1 0 0 -4h-1z" />
+        <path d="M17 11h1.5a1.5 1.5 0 0 0 0 -3h-1.5v5" />
+        <path d="M5 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+        <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3" />
+        <path d="M9 11h4" />
+      </svg>
+      <p class="text-base text-gray-800 font-semibold">{{gearbox | capitalizeFirst}}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingType, 'translate-y-0': isEditingType}"
+  class="fixed shadow-inner transition-all duration-500 flex flex-col px-5 pb-5 py-3 justify-between bg-gray-100 bg-opacity-80 backdrop-blur-md bottom-0 w-full md:m-5 md:shadow-xl md:rounded-xl h-72 md:w-96">
+  <div class="flex justify-between pb-3 lg:pb-5">
+    <p class="text-base lg:text-xl text-gray-800 font-semibold">Choose your car type:</p>
+    <button (click)="isEditingType = !isEditingType">
+      <i class="fa fa-solid text-xl fa-multiply"></i>
+    </button>
+  </div>
+  <div class="gap-5 grid grid-cols-3 overflow-y-auto scroll-hide rounded-xl">
+    <button *ngFor="let type of carTypes; let i = index" [ngClass]="{'bg-gray-300': type === car.type}"
+      (click)="car.type = type; isEditingType = !isEditingType"
+      class="rounded-xl w-full items-center py-2 justify-center h-28 flex flex-col bg-gray-200 text-center transition-all hover:bg-gray-300 gap-2">
+      <i [ngClass]="{'fa-rocket': type === 'other', 'fa-van-shuttle': type === 'van' || type == 'minivan', 'fa-truck-pickup': type === 'pickup', 'fa-truck': type === 'truck', 'fa-truck-moving': type === 'trailer', 'fa-tractor': type === 'tractor'}"
+        class="fa fa-solid fa-car-side text-gray-800 text-3xl"></i>
+      <p class="text-base text-gray-800 font-semibold">{{type | capitalizeFirst}}</p>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="setContentEditable" [ngClass]="{'translate-y-96': !isEditingDrive, 'translate-y-0': isEditingDrive}"
+  class="fixed shadow-inner transition-all duration-500 flex flex-col px-5 pb-5 py-3 justify-between bg-gray-100 bg-opacity-80 backdrop-blur-md bottom-0 w-full md:m-5 md:shadow-xl md:rounded-xl h-40 md:h-60 md:w-80">
+  <div class="flex justify-between pb-3 lg:pb-5">
+    <p class="text-base lg:text-xl text-gray-800 font-semibold">Choose your car type:</p>
+    <button (click)="isEditingDrive = !isEditingDrive">
+      <i class="fa fa-solid text-xl fa-multiply"></i>
+    </button>
+  </div>
+  <div class="flex gap-5 md:grid md:grid-cols-2 rounded-xl h-full">
+    <button *ngFor="let drive of driveTypes; let i = index" [ngClass]="{'bg-gray-300': drive === car.drive}"
+      (click)="car.drive = drive; isEditingDrive = !isEditingDrive"
+      class="rounded-xl w-full items-center h-full justify-center bg-gray-200 text-center transition-all hover:bg-gray-300">
+      <p class="text-base text-gray-800 font-semibold">{{drive.toUpperCase()}}</p>
     </button>
   </div>
 </div>

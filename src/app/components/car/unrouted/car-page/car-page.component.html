@@ -35,18 +35,14 @@
             <i class="fas fa-broom"></i>
           </button>
         </div>
-
         <p class="text-gray-500 self-center w-full text-sm sm:text-base text-center">Showing {{cars.length}} of
           {{totalElements}} total cars</p>
-
-        <div class="hidden lg:flex space-x-4 self-center w-auto justify-between">
-          <button class="text-xl text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
-            [ngClass]="{'text-gray-400': selectedButtonIndex === 0}" (click)="selectButton(0)">
-            <i class="fa fa-square "></i>
+        <div class="hidden lg:flex space-x-4 self-center w-auto justify-between" >
+          <button class="rounded-sm grid grid-cols-2 gap-[0.1rem] h-5 w-5 focus:outline-none" (click)="selectButton(0)">
+            <div *ngFor="let divIndex of [0, 1, 2, 3]" class="rounded-sm focus:outline-none bg-gray-300 h-full w-full" [ngClass]="{'bg-gray-400': selectedButtonIndex === 0}"></div>
           </button>
-          <button class="text-xl text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
-            [ngClass]="{'text-gray-400': selectedButtonIndex === 1}" (click)="selectButton(1)">
-            <i class="fa fa-square "></i>
+          <button class="rounded-sm flex flex-col gap-[0.1rem] h-5 w-5 focus:outline-none" (click)="selectButton(1)">
+            <div *ngFor="let divIndex of [0, 1]" class="rounded-sm focus:outline-none bg-gray-300 h-full w-full" [ngClass]="{'bg-gray-400': selectedButtonIndex === 1}"></div>
           </button>
         </div>
       </div>

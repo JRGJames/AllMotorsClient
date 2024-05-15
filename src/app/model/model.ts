@@ -105,7 +105,6 @@ export interface ICar extends IEntity {
     boughtIn: string;
     acceleration: number;
     drive: string;
-    engine: string;
     dgtSticker: string;
     lastITV: Date;
     lastUpdate: Date;

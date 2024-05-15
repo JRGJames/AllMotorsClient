@@ -64,7 +64,6 @@ export class CarEditComponent implements OnInit {
       emissions: [car.emissions, [Validators.min(0)]],
       consumption: [car.consumption, [Validators.min(0)]],
       acceleration: [car.acceleration, [Validators.min(0)]],
-      engine: [car.engine],
       drive: [car.drive],
       plate: [car.plate],
       dgtSticker: [car.dgtSticker],

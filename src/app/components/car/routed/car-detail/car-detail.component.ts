@@ -51,6 +51,10 @@ export class CarDetailComponent implements OnInit {
   isEditingColor: boolean = false;
   isEditingFuel: boolean = false;
   isEditingGearbox: boolean = false;
+  isEditingDrive: boolean = false;
+  isEditingType: boolean = false;
+  isEditingBrand: boolean = false;
+  isEditingModel: boolean = false;
 
   colors: { color: string, hex: string }[] = [
     { color: 'black', hex: '#1F2937' },
@@ -76,6 +80,11 @@ export class CarDetailComponent implements OnInit {
   ];
   fuelTypes: string[] = ['gasoline', 'diesel', 'hybrid', 'electric'];
   gearboxTypes: string[] = ['manual', 'automatic'];
+  driveTypes: string[] = ['FWD', 'RWD', '4WD', 'AWD'];
+  brands: string[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+  models: string[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+  carTypes: string[] = ['sedan', 'coupe', 'convertible', 'hatchback', 'SUV', 'pickup', 'van', 'minivan', 'truck', 'quad', 'tractor', 'trailer', 'other'];
+
   chartOptions: Partial<ChartOptions> = {
     series: [
       {
@@ -414,25 +423,28 @@ export class CarDetailComponent implements OnInit {
       this.isEditingOwner = false;
       this.isEditingColor = false;
       this.isEditingGearbox = false;
+      this.isEditingDrive = false;
+      this.isEditingType = false;
+      this.isEditingBrand = false;
+      this.isEditingModel = false;
 
       // Actualizamos los datos del usuario
       this.car.title = document.getElementById('title')?.innerText || '';
-      this.car.brand = document.getElementById('brand')?.innerText?.toLowerCase() || '';
-      this.car.model = document.getElementById('model')?.innerText?.toLowerCase() || '';
+
       const priceText = document.getElementById('price')?.innerText || '';
       this.car.price = Number(priceText.replace('.', ''));
 
       this.car.year = Number(document.getElementById('year')?.innerText);
-
       this.car.seats = Number(document.getElementById('seats')?.innerText);
       this.car.doors = Number(document.getElementById('doors')?.innerText);
       this.car.description = document.getElementById('description')?.innerText || '';
 
       const distanceText = document.getElementById('distance')?.innerText || '';
       this.car.distance = Number(distanceText.replace('.', ''));
-      this.car.type = document.getElementById('type')?.innerText?.toLowerCase() || '';
+
       const horsepowerText = document.getElementById('horsepower')?.innerText || '';
       this.car.horsepower = Number(horsepowerText.replace('.', ''));
+
       // this.car.lastITV = new Date(document.getElementById('lastITV')?.textContent || '');
       this.car.consumption = Number(document.getElementById('consumption')?.innerText);
       this.car.emissions = Number(document.getElementById('emissions')?.innerText);
