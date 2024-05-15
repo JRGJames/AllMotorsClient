@@ -170,7 +170,7 @@
               </div>
               <p (click)="isEditingOwner = !isEditingOwner; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false"
                 [ngClass]="{'animate-pulse italic': setContentEditable}"
-                class="focus:outline-nonetext-sm md:text-base pl-3 lg:text-lg text-gray-600 cursor-pointer self-center">
+                class="focus:outline-none text-sm md:text-base pl-3 lg:text-lg text-gray-600 cursor-pointer self-center">
                 {{ selectedUser }}
               </p>
               <div [ngClass]="{'h-0': !isEditingOwner, 'lg:h-32 xl:h-44 py-3': isEditingOwner}" #userList
