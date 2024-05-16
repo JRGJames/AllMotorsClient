@@ -64,8 +64,7 @@ export interface ISaved {
     car: ICar;
 }
 
-export interface IRating {
-    id: number; // Identificador único de la valoración
+export interface IRating extends IEntity{
     ratedUserId: number; // ID del usuario que recibe la valoración
     ratingUserId: number; // ID del usuario que da la valoración
     score: number; // Puntuación otorgada
@@ -124,7 +123,7 @@ export interface IBrand {
     models: IModel[];
 }
 
-export interface IImage {
+export interface IImage extends IEntity{
     imageUrl: string;
     car: ICar;
 }

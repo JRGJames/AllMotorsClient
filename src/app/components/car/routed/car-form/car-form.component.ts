@@ -121,10 +121,10 @@ export class CarFormComponent implements OnInit {
     this.selectedFiles = Array.from(files);
 
     // Creamos el array de IImage basado en los archivos seleccionados
-    this.images = this.selectedFiles.map(file => ({
-      imageUrl: file.name, // Usamos el nombre del archivo para imageUrl
-      car: this.car // Ponemos el valor de car como null
-    }));
+    // this.images = this.selectedFiles.map(file => ({
+    //   imageUrl: file.name, // Usamos el nombre del archivo para imageUrl
+    //   car: this.car // Ponemos el valor de car como null
+    // }));
 
     console.log('Imagenes seleccionadas:', this.selectedFiles);
     console.log('Imagenes para IImage:', this.images);

@@ -35,7 +35,6 @@ import { CarDetailComponent } from './components/car/routed/car-detail/car-detai
 import { CarPageComponent } from './components/car/unrouted/car-page/car-page.component';
 import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
 import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
-import { CarEditComponent } from './components/car/routed/car-edit/car-edit.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +53,6 @@ import { CarEditComponent } from './components/car/routed/car-edit/car-edit.comp
     CarFormComponent,
     CarDetailComponent,
     CarPageComponent,
-    CarEditComponent,
     UserProfileComponent,
     
   ],

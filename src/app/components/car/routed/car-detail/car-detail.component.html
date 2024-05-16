@@ -31,6 +31,26 @@
         class="absolute -top-1 left-10 text-6xl hover:text-yellow-500 hover:scale-105 transition-all text-gray-800 rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
+      <button *ngIf="isCurrentUserOwner(car) && setContentEditable" (click)="isEditingImages = !isEditingImages"
+        class="absolute top-3 right-3 flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-6 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+        <i class="fa fa-pencil text-xl"></i>
+      </button>
+      <div class="absolute top-2 right-16 flex gap-2 p-2 items-center transition-all duration-500 justify-center"
+        [ngClass]="{'opacity-0 w-0': !isEditingImages, 'opacity-100 w-auto': isEditingImages}">
+        <button *ngIf="isEditingImages" (click)=""
+          class="flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+          
+          <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
+          <label for="imageDesktop"
+            class="absolute flex md:hidden w-full h-full justify-center items-center cursor-pointer rounded-full">
+            <i class="fa fa-plus text-lg"></i>
+          </label>
+        </button>
+        <button *ngIf="isEditingImages"
+          class="flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+          <i class="fa fa-trash text-lg"></i>
+        </button>
+      </div>
     </div>
     <div class="flex flex-col justify-between gap-6 lg:gap-8 md:gap-10 h-auto w-full">
       <div class="flex w-full justify-between order-1">
@@ -126,6 +146,13 @@
             <button (click)="handleFavorites(car)" attr.data-car-id="{{car.id}}"
               class="absolute -top-1 left-10 text-5xl hover:text-yellow-500 hover:scale-105 text-gray-800 transition-all rounded-lg">
               <i class="fas fa-bookmark"></i>
+            </button>
+            <button class="absolute top-5 right-3">
+              <input type="file" hidden id="carImagesMobile" accept="image/*">
+              <label *ngIf="setContentEditable && isCurrentUserOwner(car)" for="carImagesMobile"
+                class="cursor-pointer h-10 w-10 rounded-lg text-white hover:text-gray-800 p-3 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+                <i class="fa fa-pencil text-xl"></i>
+              </label>
             </button>
           </div>
         </div>

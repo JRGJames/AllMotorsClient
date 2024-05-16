@@ -2,13 +2,14 @@ import { UserService } from '../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ICar, IUser } from 'src/app/model/model';
+import { ICar, IImage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
 import { API_URL } from 'src/environment/environment';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexYAxis, ApexStroke, ApexMarkers, ApexFill, ApexTooltip, ApexDataLabels } from "ng-apexcharts";
 import { SavedService } from 'src/app/service/saved.service';
+import { MediaService } from 'src/app/service/media.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -46,6 +47,7 @@ export class CarDetailComponent implements OnInit {
   idToDelete: number | null = null;
   setContentEditable: boolean = false;
   users: IUser[] = [];
+  imageToAdd: IImage = {} as IImage;
   isEditingOwner: boolean = false;
   selectedUser: string = "";
   isEditingColor: boolean = false;
@@ -55,6 +57,7 @@ export class CarDetailComponent implements OnInit {
   isEditingType: boolean = false;
   isEditingBrand: boolean = false;
   isEditingModel: boolean = false;
+  isEditingImages: boolean = false;
 
   colors: { color: string, hex: string }[] = [
     { color: 'black', hex: '#1F2937' },
@@ -186,7 +189,8 @@ export class CarDetailComponent implements OnInit {
     private router: Router,
     private ratingService: RatingService,
     private savedService: SavedService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private mediaService: MediaService
 
   ) { }
 
@@ -235,10 +239,12 @@ export class CarDetailComponent implements OnInit {
 
   prevImage() {
     this.imageIndex--;
+    console.log(this.car.images[this.imageIndex].id);
   }
 
   nextImage() {
     this.imageIndex++;
+    console.log(this.car.images[this.imageIndex].id);
   }
 
   changePage(newPage: number) {
@@ -415,6 +421,7 @@ export class CarDetailComponent implements OnInit {
   }
 
   setEditable(): void {
+    console.log(this.car.images[this.imageIndex].id);
     const editables = document.querySelectorAll('.editable');
 
     this.loadUsers();
@@ -427,6 +434,7 @@ export class CarDetailComponent implements OnInit {
       this.isEditingType = false;
       this.isEditingBrand = false;
       this.isEditingModel = false;
+      this.isEditingImages = false;
 
       // Actualizamos los datos del usuario
       this.car.title = document.getElementById('title')?.innerText || '';
@@ -502,21 +510,58 @@ export class CarDetailComponent implements OnInit {
     this.isEditingColor = !this.isEditingColor;
   }
 
-
-  // @HostListener('document:click', ['$event'])
-  // onClickOutside(event: Event) {
-  //   const clickedElement = event.target as HTMLElement;
-
-  //   if ((clickedElement.contains(this.userList.nativeElement)) || (clickedElement.contains(this.colorPicker.nativeElement))) {
-  //     this.isEditingOwner = false;
-  //     this.isEditingColor = false;
-  //   }
-  // }
-
   getUserInitials(user: IUser): string {
     if (user.name && user.lastname) {
       return `${user.name.charAt(0)}${user.lastname.charAt(0)}`.toUpperCase();
     }
     return '';
   }
+
+  addImage(file: File): void {
+    if (this.car.images.length >= 8) {
+      console.error('No se pueden añadir más de 8 imágenes');
+    } else {
+      const formData = new FormData();
+      formData.append('file', file);
+      this.mediaService.createCarImage(formData, this.imageToAdd).subscribe({
+        next: (image) => {
+          this.car.images.push(image);
+          this.imageIndex = this.car.images.length - 1;
+        },
+        error: (error) => {
+          console.error('Error al añadir imagen:', error);
+        }
+      });
+    }
+  }
+
+  onImageSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (this.checkFileSizeImage(file)) {
+        if (this.checkFileType(file)) {
+          this.addImage(file);
+        } else {
+          //this.toastService.show('El archivo seleccionado no es una imagen.');
+          console.error('El archivo seleccionado no es una imagen.');
+          return;
+        }
+      } else {
+        //this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
+        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        return;
+      }
+    }
+  }
+
+  checkFileSizeImage(file: File): boolean {
+    const maxSizeInBytes = 4 * 1024 * 1024; // Tamaño máximo permitido en bytes (2 MB en este ejemplo)
+    return file.size <= maxSizeInBytes;
+  }
+
+  checkFileType(file: File): boolean {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']; // Tipos MIME permitidos
+    return allowedTypes.includes(file.type);
+  }
+
 }
