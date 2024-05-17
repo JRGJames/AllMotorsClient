@@ -258,9 +258,9 @@
             (click)="isEditingColor = !isEditingColor; isEditingOwner = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false">
             <i [ngClass]="{'animate-bounce sm:animate-none':setContentEditable}"
               class="fa-solid fa-palette text-gray-600"></i>
-            <div [ngClass]="{'animate-pulse':setContentEditable}"
+            <div [ngClass]="{'animate-pulse':setContentEditable, 'border-[1.5px] border-gray-500': car.color === '#FFFFFF'}"
               class="focus:outline-none text-gray-800 h-5 w-16 rounded-xl self-center"
-              [ngStyle]="{'background-color': car.color}" [ngClass]="{'border-[1.5px] border-gray-500': car.color === '#FFFFFF'}">
+              [ngStyle]="{'background-color': car.color}">
             </div>
             <p *ngIf="setContentEditable" class="hidden sm:flex animate-pulse italic text-gray-800">Select a color</p>
           </button>
