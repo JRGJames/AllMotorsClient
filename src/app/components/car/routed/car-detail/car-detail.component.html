@@ -35,19 +35,16 @@
         class="absolute top-3 right-3 flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-6 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
         <i class="fa fa-pencil text-xl"></i>
       </button>
-      <div class="absolute top-2 right-16 flex gap-2 p-2 items-center transition-all duration-500 justify-center"
-        [ngClass]="{'opacity-0 w-0': !isEditingImages, 'opacity-100 w-auto': isEditingImages}">
-        <button *ngIf="isEditingImages" (click)=""
-          class="flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-          
-          <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
-          <label for="imageDesktop"
-            class="absolute flex md:hidden w-full h-full justify-center items-center cursor-pointer rounded-full">
-            <i class="fa fa-plus text-lg"></i>
-          </label>
-        </button>
-        <button *ngIf="isEditingImages"
-          class="flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+      <div class="absolute top-2 right-16 gap-2 p-2 flex items-center transition-all duration-500 justify-center"
+        [ngClass]="{'opacity-0': !isEditingImages, 'opacity-100': isEditingImages}">
+
+        <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
+        <label for="imageDesktop" [ngClass]="{'hidden': !isEditingImages, 'flex': isEditingImages}"
+          class="items-center cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+          <i class="fa fa-plus text-lg"></i>
+        </label>
+        <button [ngClass]="{'hidden': !isEditingImages, 'flex': isEditingImages}"
+          class="items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-trash text-lg"></i>
         </button>
       </div>

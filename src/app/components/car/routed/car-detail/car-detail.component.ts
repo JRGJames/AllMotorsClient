@@ -555,7 +555,7 @@ export class CarDetailComponent implements OnInit {
   }
 
   checkFileSizeImage(file: File): boolean {
-    const maxSizeInBytes = 4 * 1024 * 1024; // Tamaño máximo permitido en bytes (2 MB en este ejemplo)
+    const maxSizeInBytes = 6 * 1024 * 1024; // Tamaño máximo permitido en bytes (2 MB en este ejemplo)
     return file.size <= maxSizeInBytes;
   }
 
