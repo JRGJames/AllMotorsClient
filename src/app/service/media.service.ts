@@ -22,26 +22,11 @@ export class MediaService {
     return this.http.post<any>(this.url + `/upload/background/${userId}`, formData);
   }
 
-  getCarImage(imageId: number): Observable<any> {
-    return this.http.get<any>(this.url + `/get/${imageId}`);
-  }
-  
-  getCarImages(carId: number): Observable<any> {
-    return this.http.get<any>(this.url + `/getByCar/${carId}`);
-  }
-
   deleteCarImage(imageId: number): Observable<any> {
     return this.http.delete<any>(this.url + `/delete/${imageId}`);
   }
 
-  updateCarImage(image: IImage): Observable<IImage> {
-    return this.http.put<IImage>(this.url + '/update', image);
+  createCarImage(formData: FormData, carId: number): Observable<any> {
+    return this.http.post<any>(this.url + `/create/${carId}`, formData);
   }
-
-  createCarImage(formData: FormData, image: IImage): Observable<IImage> {
-    return this.http.post<IImage>(this.url + '/create', formData, { params: new HttpParams().set('image', JSON.stringify(image)) });
-  }
-  
-  
-
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CarService } from 'src/app/service/car.service';
 import { ICar } from 'src/app/model/model';
-import { API_URL } from 'src/environment/environment';
+import { API_URL_MEDIA } from 'src/environment/environment';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +10,7 @@ import { API_URL } from 'src/environment/environment';
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
-  url = API_URL;
+  urlImage = API_URL_MEDIA;
   popularCars: ICar[] = [];
   currentPage: number = 1;
   autoChangePage: any;

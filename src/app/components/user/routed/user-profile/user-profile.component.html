@@ -1,5 +1,5 @@
 <div class="h-[32rem] md:h-[22rem] lg:h-[26rem] relative">
-  <img *ngIf="user.profileBackground" [src]="urlPictureBackground + user.profileBackground"
+  <img *ngIf="user.profileBackground" [src]="urlImage + user.profileBackground"
     class="absolute h-full w-full object-cover object-center">
   <div *ngIf="!user.profileBackground" class="absolute h-full w-full bg-cyan-600"></div>
   <div class="gradient-mobile md:hidden object-cover absolute top-0 w-full h-full"></div>
@@ -13,7 +13,7 @@
           <label *ngIf="isCurrentUserOwner()" for="picture"
             class="absolute flex md:hidden w-full h-full justify-center items-center cursor-pointer rounded-full">
           </label>
-          <img *ngIf="user.profilePicture" [src]="urlPictureBackground + user.profilePicture"
+          <img *ngIf="user.profilePicture" [src]="urlImage + user.profilePicture"
             class="flex h-full object-cover w-full">
 
           <div *ngIf="!user.profilePicture"
@@ -360,7 +360,7 @@
                 </button>
                 <a (click)="goToCar(car.id)" class="w-full h-full cursor-pointer flex flex-col">
                   <div class="p-4 rounded-md h-48 2xl:h-72 w-full">
-                    <img [src]="url + car.images[0]?.imageUrl"
+                    <img [src]="urlImage + car.images[0]?.imageUrl"
                       class="rounded-md h-full w-full object-cover object-center">
                   </div>
                   <div id="texto" class="px-4 pb-4 h-fit flex flex-col gap-1">
@@ -421,7 +421,7 @@
                 </button>
                 <a (click)="goToCar(savedCar.id)" class="w-full h-full cursor-pointer flex flex-col">
                   <div class="p-4 rounded-md h-48 2xl:h-72 w-full">
-                    <img [src]="url + savedCar.images[0]?.imageUrl"
+                    <img [src]="urlImage + savedCar.images[0]?.imageUrl"
                       class="rounded-md h-full w-full object-cover object-center">
                   </div>
                   <div id="texto" class="px-4 pb-4 h-fit flex flex-col gap-1">
@@ -453,7 +453,7 @@
       <div class="flex lg:h-40 2xl:h-52 space-x-8">
         <div class="relative h-full rounded-lg lg:w-5/12 2xl:w-4/12">
           <img class="absolute object-cover h-full w-full hover:shadow-lg rounded-xl"
-            [src]="url + selectedCar.images[imageIndex[selectedCar.id]].imageUrl">
+            [src]="urlImage + selectedCar.images[imageIndex[selectedCar.id]].imageUrl">
 
           <button *ngIf="imageIndex[selectedCar.id] > 0"
             class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-2 left-2 rounded-lg lg:text-xl 2xl:text-2xl text-white transition-colors hover:text-gray-800"
@@ -499,7 +499,7 @@
             <div class="flex space-x-2 items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 lg:h-5 2xl:w-7 lg:w-5 2xl:h-7">
                 <img *ngIf="selectedCar.owner.profilePicture"
-                  [src]='urlPictureBackground + selectedCar.owner.profilePicture'
+                  [src]='urlImage + selectedCar.owner.profilePicture'
                   class="flex h-full object-cover w-full items-center justify-center">
                 <div *ngIf="!selectedCar.owner.profilePicture"
                   class="w-full h-full bg-sky-600 justify-center items-center flex tracking-[-0.1rem] text-[10px] text-white">

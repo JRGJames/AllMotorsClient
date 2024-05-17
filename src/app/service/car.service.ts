@@ -67,9 +67,4 @@ export class CarService {
   byViews(amount: number): Observable<ICar[]> {
     return this.http.get<ICar[]>(this.url + "/get/byViews/" + amount);
   }
-
-  increaseViews(carId: number): Observable<number> {
-    // Pasar un cuerpo de solicitud vacío, representado por `null` o un objeto vacío `{}`
-    return this.http.post<number>(`${this.url}/updateViews/${carId}`, null);
-  }
 }

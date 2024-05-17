@@ -5,7 +5,7 @@ import { CarService } from 'src/app/service/car.service';
 import { SessionService } from 'src/app/service/session.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
-import { API_URL } from 'src/environment/environment';
+import { API_URL_MEDIA } from 'src/environment/environment';
 import { RatingService } from 'src/app/service/rating.service';
 import { SavedService } from 'src/app/service/saved.service';
 import { catchError, Observable, of } from 'rxjs';
@@ -17,8 +17,7 @@ import { catchError, Observable, of } from 'rxjs';
   styleUrls: ['./car-page.component.css']
 })
 export class CarPageComponent implements OnInit {
-  url = API_URL;
-  urlPicture: string = API_URL + "/media/";
+  urlImage = API_URL_MEDIA;
   searchFilter: string = '';
   carsSearch: ICarPage | undefined;
   cars: ICar[] = [];

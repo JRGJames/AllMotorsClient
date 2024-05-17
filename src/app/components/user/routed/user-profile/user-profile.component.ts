@@ -6,7 +6,7 @@ import { SessionService } from 'src/app/service/session.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RatingService } from 'src/app/service/rating.service';
 import { CarService } from 'src/app/service/car.service';
-import { API_URL } from 'src/environment/environment';
+import { API_URL_MEDIA } from 'src/environment/environment';
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
 import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.component';
@@ -22,6 +22,7 @@ import { ToastService } from './../../../../service/toast.service';
 })
 export class UserProfileComponent implements OnInit {
 
+  urlImage = API_URL_MEDIA;
   user: IUser = {} as IUser;
   currentUser: IUser = {} as IUser;
   id!: number;
@@ -31,8 +32,6 @@ export class UserProfileComponent implements OnInit {
   searchFilterSaved: string = '';
   cars: ICar[] = [];
   savedCars: ICar[] = [];
-  urlPictureBackground: string = API_URL + "/media/";
-  url = API_URL;
   imageIndex: { [key: number]: number } = {};
   isViewModalVisible: boolean = false;
   selectedCar: ICar = {} as ICar; // Car seleccionado para mostrar en el modal

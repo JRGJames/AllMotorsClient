@@ -5,7 +5,7 @@
         <a routerLink="/" class="carousel-item h-full w-full focus:outline-none flex">
           <img *ngIf="car && car.images && car.images.length > imageIndex"
             class="absolute object-cover w-full h-full hover:shadow-lg rounded-xl"
-            [src]="url + car.images[imageIndex].imageUrl">
+            [src]="urlImage + car.images[imageIndex].imageUrl">
         </a>
         <button *ngIf="imageIndex > 0"
           class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
@@ -31,20 +31,16 @@
         class="absolute -top-1 left-10 text-6xl hover:text-yellow-500 hover:scale-105 transition-all text-gray-800 rounded-lg">
         <i class="fas fa-bookmark"></i>
       </button>
-      <button *ngIf="isCurrentUserOwner(car) && setContentEditable" (click)="isEditingImages = !isEditingImages"
-        class="absolute top-3 right-3 flex items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-6 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-        <i class="fa fa-pencil text-xl"></i>
-      </button>
-      <div class="absolute top-2 right-16 gap-2 p-2 flex items-center transition-all duration-500 justify-center"
-        [ngClass]="{'opacity-0': !isEditingImages, 'opacity-100': isEditingImages}">
+      <div class="absolute top-2 right-2 gap-2 p-2 items-center transition-all duration-500 justify-center"
+        [ngClass]="{'hidden opacity-0': !setContentEditable, 'flex opacity-100': setContentEditable}">
 
         <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
-        <label for="imageDesktop" [ngClass]="{'hidden': !isEditingImages, 'flex': isEditingImages}"
-          class="items-center cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+        <label for="imageDesktop"
+          class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-plus text-lg"></i>
         </label>
-        <button [ngClass]="{'hidden': !isEditingImages, 'flex': isEditingImages}"
-          class="items-center justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-4 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+        <button (click)="deleteImage(car.images[imageIndex].id)"
+          class="items-center flex justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-trash text-lg"></i>
         </button>
       </div>
@@ -115,7 +111,7 @@
               <a routerLink="/" class="carousel-item h-full w-full focus:outline-none flex">
                 <img *ngIf="car && car.images && car.images.length > imageIndex"
                   class="absolute object-cover w-full h-full hover:shadow-lg rounded-xl"
-                  [src]="url + car.images[imageIndex].imageUrl">
+                  [src]="urlImage + car.images[imageIndex].imageUrl">
               </a>
               <button *ngIf="imageIndex > 0"
                 class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-xl text-white transition-colors hover:text-gray-800"
@@ -144,13 +140,19 @@
               class="absolute -top-1 left-10 text-5xl hover:text-yellow-500 hover:scale-105 text-gray-800 transition-all rounded-lg">
               <i class="fas fa-bookmark"></i>
             </button>
-            <button class="absolute top-5 right-3">
-              <input type="file" hidden id="carImagesMobile" accept="image/*">
-              <label *ngIf="setContentEditable && isCurrentUserOwner(car)" for="carImagesMobile"
-                class="cursor-pointer h-10 w-10 rounded-lg text-white hover:text-gray-800 p-3 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-                <i class="fa fa-pencil text-xl"></i>
+            <div class="absolute top-2 right-2 gap-2 p-2 items-center transition-all duration-500 justify-center"
+              [ngClass]="{'hidden opacity-0': !setContentEditable, 'flex opacity-100': setContentEditable}">
+
+              <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
+              <label for="imageDesktop"
+                class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+                <i class="fa fa-plus text-lg"></i>
               </label>
-            </button>
+              <button (click)="deleteImage(car.images[imageIndex].id)"
+                class="items-center flex justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+                <i class="fa fa-trash text-lg"></i>
+              </button>
+            </div>
           </div>
         </div>
         <div class="lg:flex-col gap-2 hidden text-sm lg:flex">
@@ -171,7 +173,7 @@
             <div *ngIf="!setContentEditable || !currentUser.role" class="flex items-center cursor-pointer"
               [routerLink]="['/user/', car.owner.id]">
               <div class="rounded-full overflow-hidden bg-gray-500 h-7 w-7">
-                <img *ngIf="car.owner.profilePicture" [src]="urlPicture + car.owner.profilePicture" alt=""
+                <img *ngIf="car.owner.profilePicture" [src]="urlImage + car.owner.profilePicture" alt=""
                   class="flex h-full object-cover w-full items-center justify-center">
                 <div *ngIf="!car.owner.profilePicture"
                   class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
@@ -185,7 +187,7 @@
             <div *ngIf="setContentEditable && currentUser.role" class="relative flex items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 h-7 w-7 cursor-pointer"
                 (click)="isEditingOwner = !isEditingOwner; isEditingColor = false; isEditingFuel = false; isEditingGearbox = false; isEditingBrand = false; isEditingDrive = false; isEditingModel = false; isEditingType = false">
-                <img *ngIf="car.owner.profilePicture" [src]="urlPicture + car.owner.profilePicture" alt=""
+                <img *ngIf="car.owner.profilePicture" [src]="urlImage + car.owner.profilePicture" alt=""
                   class="flex h-full object-cover w-full items-center justify-center">
                 <div *ngIf="!car.owner.profilePicture"
                   class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
@@ -203,7 +205,7 @@
                   class="h-8 text-sm md:text-base flex gap-2 items-center w-full cursor-pointer hover:bg-gray-200 transition-colors px-3 py-1 rounded-lg"
                   [ngClass]="{'bg-gray-200': user.id === car.owner.id, 'bg-gray-50': user.id !== car.owner.id}">
                   <div class="rounded-full overflow-hidden h-5 w-5 cursor-pointer">
-                    <img *ngIf="user.profilePicture" [src]="urlPicture + user.profilePicture" alt=""
+                    <img *ngIf="user.profilePicture" [src]="urlImage + user.profilePicture" alt=""
                       class="flex h-full object-cover w-full items-center justify-center">
                     <div *ngIf="!user.profilePicture"
                       class="flex w-full h-full justify-center items-center text-[10px] text-white bg-sky-600">
@@ -258,7 +260,7 @@
               class="fa-solid fa-palette text-gray-600"></i>
             <div [ngClass]="{'animate-pulse':setContentEditable}"
               class="focus:outline-none text-gray-800 h-5 w-16 rounded-xl self-center"
-              [ngStyle]="{'background-color': car.color}">
+              [ngStyle]="{'background-color': car.color}" [ngClass]="{'border-[1.5px] border-gray-500': car.color === '#FFFFFF'}">
             </div>
             <p *ngIf="setContentEditable" class="hidden sm:flex animate-pulse italic text-gray-800">Select a color</p>
           </button>
@@ -614,7 +616,7 @@
       class="text-center bg-gray-200 hover:bg-gray-300 transition-all rounded-xl py-3 text-base font-semibold flex justify-center gap-4 items-center text-gray-800"
       (click)="car.owner = user; selectedUser = user.username; isEditingOwner = !isEditingOwner">
       <div class="rounded-full overflow-hidden bg-gray-500 h-7 w-7">
-        <img *ngIf="user.profilePicture" [src]="urlPicture + user.profilePicture" alt=""
+        <img *ngIf="user.profilePicture" [src]="urlImage + user.profilePicture" alt=""
           class="flex h-full object-cover w-full items-center justify-center">
         <div *ngIf="!user.profilePicture"
           class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">

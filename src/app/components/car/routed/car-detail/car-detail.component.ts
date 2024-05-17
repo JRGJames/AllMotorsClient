@@ -6,10 +6,11 @@ import { ICar, IImage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
-import { API_URL } from 'src/environment/environment';
+import { API_URL_MEDIA } from 'src/environment/environment';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexYAxis, ApexStroke, ApexMarkers, ApexFill, ApexTooltip, ApexDataLabels } from "ng-apexcharts";
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
+import { last } from 'rxjs';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -33,8 +34,7 @@ export class CarDetailComponent implements OnInit {
   @ViewChild('userList') userList!: ElementRef;
   @ViewChild('colorPicker') colorPicker!: ElementRef;
 
-  url = API_URL;
-  urlPicture: string = API_URL + "/media/";
+  urlImage = API_URL_MEDIA;
   showPhoneNumber: boolean = false;
   id!: number;
   imageIndex: number = 0;
@@ -199,7 +199,8 @@ export class CarDetailComponent implements OnInit {
       this.id = +params['id'];
       if (this.id) {
         this.getCurrentUser();
-        this.getOne();
+        this.getOne(this.id);
+        this.increaseViews(this.id);
       } else {
         console.error('ID is undefined');
       }
@@ -220,14 +221,13 @@ export class CarDetailComponent implements OnInit {
     }
   }
 
-  getOne(): void {
-    this.carService.get(this.id).subscribe({
+  getOne(carId: number): void {
+    this.carService.get(carId).subscribe({
       next: (data: ICar) => {
         this.car = data;
         this.getRatingCount(this.car.owner.id);
         this.getRatingAverage(this.car.owner.id);
         this.checkIfCarIsSaved(this.car.id);
-        this.increaseViews(this.car.id);
         this.selectedUser = this.car.owner.username;
 
       },
@@ -240,11 +240,13 @@ export class CarDetailComponent implements OnInit {
   prevImage() {
     this.imageIndex--;
     console.log(this.car.images[this.imageIndex].id);
+    console.log(this.car.images[this.imageIndex].imageUrl);
   }
 
   nextImage() {
     this.imageIndex++;
     console.log(this.car.images[this.imageIndex].id);
+    console.log(this.car.images[this.imageIndex].imageUrl);
   }
 
   changePage(newPage: number) {
@@ -278,11 +280,26 @@ export class CarDetailComponent implements OnInit {
   }
 
   increaseViews(carId: number): void {
-    this.carService.increaseViews(carId).subscribe({
-      error: (error) => {
-        console.error('Error increasing views', error);
+    this.carService.get(carId).subscribe({
+      next: (car: ICar) => {
+        car.views++;
+        this.car = car;
+
+        this.carService.update(car).subscribe({
+          next: (car: ICar) => {
+            this.car = car;
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al aumentar las visitas:', error);
+          }
+        });
       },
-    })
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al aumentar las visitas:', error);
+      }
+    });
+
+
   }
 
   handleFavorites(car: ICar): void {
@@ -315,6 +332,7 @@ export class CarDetailComponent implements OnInit {
             btn.classList.add('text-yellow-500', 'hover:text-yellow-600');
           }
         });
+        this.getOne(carId);
       },
       error: (error: string) => {
         console.error('Error al añadir coche a favoritos:', error);
@@ -334,6 +352,7 @@ export class CarDetailComponent implements OnInit {
             btn.classList.add('text-gray-800', 'hover:text-yellow-500');
           }
         });
+        this.getOne(carId);
       },
       error: (error: string) => {
         console.error('Error al eliminar coche de favoritos:', error);
@@ -517,16 +536,38 @@ export class CarDetailComponent implements OnInit {
     return '';
   }
 
+  deleteImage(imageId: number): void {
+    if (this.car.images.length <= 2) {
+      console.error('Se deben subir minimo 2 imágenes');
+    } else {
+      this.mediaService.deleteCarImage(imageId).subscribe({
+        next: () => {
+          this.getOne(this.car.id);
+          if (this.imageIndex === 0) {
+            this.imageIndex = 0;
+          } else {
+            this.imageIndex--;
+          }
+        },
+        error: (error) => {
+          console.error('Error al eliminar la imagen:', error);
+        }
+      });
+    }
+  }
+
   addImage(file: File): void {
     if (this.car.images.length >= 8) {
       console.error('No se pueden añadir más de 8 imágenes');
+      // toast here
     } else {
       const formData = new FormData();
       formData.append('file', file);
-      this.mediaService.createCarImage(formData, this.imageToAdd).subscribe({
+      this.mediaService.createCarImage(formData, this.car.id).subscribe({
         next: (image) => {
           this.car.images.push(image);
           this.imageIndex = this.car.images.length - 1;
+          this.getOne(this.car.id);
         },
         error: (error) => {
           console.error('Error al añadir imagen:', error);
