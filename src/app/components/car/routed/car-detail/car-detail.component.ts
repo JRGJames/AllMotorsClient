@@ -472,7 +472,6 @@ export class CarDetailComponent implements OnInit {
       const horsepowerText = document.getElementById('horsepower')?.innerText || '';
       this.car.horsepower = Number(horsepowerText.replace('.', ''));
 
-      // this.car.lastITV = new Date(document.getElementById('lastITV')?.textContent || '');
       this.car.consumption = Number(document.getElementById('consumption')?.innerText);
       this.car.emissions = Number(document.getElementById('emissions')?.innerText);
       this.car.acceleration = Number(document.getElementById('acceleration')?.innerText);

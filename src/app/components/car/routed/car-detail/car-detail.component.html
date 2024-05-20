@@ -433,32 +433,12 @@
         </div>
       </div>
       <hr
-        *ngIf="car.distance || car.type || car.horsepower || car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive"
+        *ngIf="car.distance || car.type || car.horsepower || car.consumption || car.emissions || car.acceleration || car.drive"
         class="border-2 rounded-lg border-gray-600">
       <div
-        *ngIf="car.distance || car.type || car.horsepower || car.plate || car.dgtSticker || car.lastITV || car.consumption || car.emissions || car.acceleration || car.drive"
+        *ngIf="car.distance || car.type || car.horsepower || car.consumption || car.emissions || car.acceleration || car.drive"
         class="flex">
         <div class="flex justify-evenly space-x-5 w-full overflow-x-scroll scroll-hide">
-          <!-- <div *ngIf="car.plate"
-            class="flex flex-row bg-gray-200 hover:bg-gray-300 transition-colors rounded-lg hover:shadow-sm">
-            <div class="bg-blue-600 p-5 rounded-l-lg text-white">
-              <p class="text-xl font-bold">E</p>
-            </div>
-            <div class="self-center w-full px-5 text-black">
-              <h1 class="text-3xl font-bold text-center">{{car.plate}}</h1>
-            </div>
-          </div>
-          <div *ngIf="car.dgtSticker" class="flex flex-col items-center gap-2">
-            <p>DGT Sticker:</p>
-            <p class="text-gray-800 py-1 px-3 text-lg font-bold rounded-3xl hover:shadow-sm" [ngClass]="{
-                'bg-green-500': car.dgtSticker === 'C',
-                'bg-yellow-300': car.dgtSticker === 'B',
-                'bg-blue-500': car.dgtSticker === '0',
-                'eco-gradient': car.dgtSticker === 'ECO'
-              }">
-              {{car.dgtSticker}}
-            </p>
-          </div> -->
           <div *ngIf="car.distance" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Distance:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
@@ -495,13 +475,6 @@
                 hp
               </p>
             </div>
-          </div>
-          <div *ngIf="car.lastITV" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
-            <p class="text-sm px-1">Last ITV:</p>
-            <p id="lastITV" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-sm text-gray-800 p-2 font-bold editable">
-              {{ car.lastITV | date: 'MM/yyyy' }}
-            </p>
           </div>
           <div *ngIf="car.consumption" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Consumption:</p>
