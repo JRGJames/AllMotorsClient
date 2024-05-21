@@ -7,6 +7,7 @@ import { UserService } from '../../../../service/user.service';
 import { SessionService } from '../../../../service/session.service';
 import { Router } from '@angular/router';
 import { MediaService } from 'src/app/service/media.service';
+import { API_URL_MEDIA } from 'src/environment/environment';
 
 
 @Component({
@@ -20,13 +21,17 @@ export class CarFormComponent implements OnInit {
   @Input() operation: formOperation = 'NEW'; // new or edit
 
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
-  images: IImage[] = [];
   carForm!: FormGroup;
   car: ICar = { owner: { id: 0 } } as ICar;
+  currentUser: IUser = {} as IUser;
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
   title: string = '';
-  years: string[] = [];
+  urlImage = API_URL_MEDIA;
+  
+  images: IImage[] = [];
+  users: IUser[] = [];
+  years: number[] = [];
   brands: string[] = [
     'Audi', 'BMW', 'Chevrolet', 'Citroen', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Kia', 'Mazda', 'Mercedes-Benz', 'Nissan', 'Opel', 'Peugeot', 'Renault', 'Seat', 'Skoda', 'Toyota', 'Volkswagen', 'Volvo'
   ];
@@ -36,10 +41,36 @@ export class CarFormComponent implements OnInit {
   gearboxTypes: string[] = ['manual', 'automatic'];
   fuelTypes: string[] = ['gasoline', 'diesel', 'electric', 'hybrid'];
   currencies: string[] = ['€', '$', '£', '¥', '₽'];
+  colors: { color: string, hex: string }[] = [
+    { color: 'black', hex: '#1F2937' },
+    { color: 'maroon', hex: '#800000' },
+    { color: 'brown', hex: '#A52A2A' },
+    { color: 'red', hex: '#D92518' },
+    { color: 'orange', hex: '#FFA500' },
+    { color: 'yellow', hex: '#FFC107' },
+    { color: 'olive', hex: '#808000' },
+    { color: 'lime', hex: '#00FF00' },
+    { color: 'green', hex: '#2ECC71' },
+    { color: 'teal', hex: '#008080' },
+    { color: 'cyan', hex: '#00FFFF' },
+    { color: 'blue', hex: '#0284C7' },
+    { color: 'navy', hex: '#000080' },
+    { color: 'indigo', hex: '#4B0082' },
+    { color: 'purple', hex: '#800080' },
+    { color: 'magenta', hex: '#FF00FF' },
+    { color: 'pink', hex: '#FFC0CB' },
+    { color: 'grey', hex: '#8C8C8C' },
+    { color: 'silver', hex: '#C0C0C0' },
+    { color: 'white', hex: '#FFFFFF' }
+  ];
 
   backgroundImage: string = `url(assets/images/image1.webp)`;
+  
   showBrands: boolean = false;
   showModels: boolean = false;
+  showYears: boolean = false;
+  showColors: boolean = false;
+  showUsers: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,9 +93,9 @@ export class CarFormComponent implements OnInit {
       year: [car.year, [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
       seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(8)]],
       doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
-      horsepower: [car.horsepower, [Validators.min(10)]],
+      horsepower: [car.horsepower],
       gearbox: [car.gearbox, [Validators.required]],
-      distance: [car.distance, [Validators.required]],
+      distance: [car.distance],
       fuel: [car.fuel, [Validators.required]],
       price: [car.price, [Validators.required, Validators.min(1)]],
       type: [car.type],
@@ -80,7 +111,9 @@ export class CarFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getCurrentUser()
     this.initializeForm(this.car); // No incluye el campo 'id'
+    this.loadUsers();
     this.loadYears();
     this.loadBrands();
     this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
@@ -94,6 +127,20 @@ export class CarFormComponent implements OnInit {
     });
   }
 
+  getCurrentUser(): void {
+    if (this.sessionService.isSessionActive()) {
+      const username = this.sessionService.getUsername();
+      this.userService.getByUsername(username).subscribe({
+        next: (user: IUser) => {
+          this.currentUser = user;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar los datos del usuario actual:', error);
+        }
+      });
+    }
+  }
+
   changeTitleBrand(event: any) {
     this.title = event.target.value;
     this.carForm.patchValue({
@@ -105,18 +152,6 @@ export class CarFormComponent implements OnInit {
     this.title += ' ' + event.target.value;
     this.carForm.patchValue({
       title: this.title
-    });
-  }
-
-  setGearbox(gearboxType: string) {
-    this.carForm.patchValue({
-      gearbox: gearboxType
-    });
-  }
-
-  setFuel(fuelType: string) {
-    this.carForm.patchValue({
-      fuel: fuelType
     });
   }
 
@@ -139,7 +174,7 @@ export class CarFormComponent implements OnInit {
   loadYears() {
     const currentYear = new Date().getFullYear();
     for (let year = currentYear; year >= 1900; year--) {
-      this.years.push(year.toString());
+      this.years.push(year);
     }
   }
 
@@ -156,6 +191,18 @@ export class CarFormComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
+      }
+    });
+  }
+
+  loadUsers() {
+    this.userService.getAll().subscribe({
+      next: (response) => {
+        console.log('Usuarios:', response);
+        this.users = response;
+      },
+      error: (error) => {
+        console.error('Error al cargar usuarios:', error);
       }
     });
   }
@@ -178,9 +225,9 @@ export class CarFormComponent implements OnInit {
 
   fillFormWithDefaults() {
     this.carForm.patchValue({
-      year: '2001',
+      year: 2001,
       gearbox: 'manual',
-      color: 'blue',
+      color: 'navy',
       seats: 5,
       doors: 2,
       horsepower: 185,
@@ -190,18 +237,21 @@ export class CarFormComponent implements OnInit {
       type: 'sedan',
       location: 'Valencia',
       title: 'BMW 320ci E46 2001',
-      boughtIn: 'Spain',
       currency: '€',
       emissions: 120,
       consumption: 5.5,
       acceleration: 7.2,
       drive: 'rwd',
-      plate: 'ABC123',
-      dgtSticker: 'C',
-      lastITV: new Date(),
       description: 'El BMW Serie 3 E46 no es solo un coche, es una pieza de la historia automovilística que combina a la perfección rendimiento, lujo y fiabilidad. Diseñado para aquellos que aprecian la conducción pura, este modelo se ha convertido en un favorito tanto para entusiastas como para aquellos que buscan un vehículo premium versátil.',
       owner: { id: this.user.id }
     });
+  }
+
+  getUserInitials(user: IUser): string {
+    if (user.name && user.lastname) {
+      return `${user.name.charAt(0)}${user.lastname.charAt(0)}`.toUpperCase();
+    }
+    return '';
   }
 
 

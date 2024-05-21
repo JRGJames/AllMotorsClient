@@ -1,3 +1,14 @@
 .scroll-hide::-webkit-scrollbar {
-    display: none;
-  }
+  display: none;
+}
+
+#description[contenteditable]:empty::before {
+  content: "Perfect condition";
+  color: gray;
+}
+
+.description {
+  word-break: break-all; /* Permite romper palabras largas para evitar desbordamientos */
+  white-space: pre-wrap; /* Mantiene los saltos de línea y espacios en blanco */
+  overflow-wrap: break-word; /* Permite que el texto se ajuste dentro del contenedor */
+}
