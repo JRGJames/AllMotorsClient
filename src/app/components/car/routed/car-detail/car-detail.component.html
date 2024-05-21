@@ -34,12 +34,12 @@
       <div class="absolute top-2 right-2 gap-2 p-2 items-center transition-all duration-500 justify-center"
         [ngClass]="{'hidden opacity-0': !setContentEditable, 'flex opacity-100': setContentEditable}">
 
-        <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
+        <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()" accept="image/*">
         <label for="imageDesktop"
           class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-plus text-lg"></i>
         </label>
-        <button (click)="deleteImage(car.images[imageIndex].id)"
+        <button (click)="deleteImage(car.images[imageIndex].id); closeDropdowns()"
           class="items-center flex justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-trash text-lg"></i>
         </button>
@@ -50,12 +50,12 @@
         <div class="flex flex-col gap-2 w-full">
           <div class="flex gap-5 justify-between">
             <div class="flex flex-col">
-              <h1 id="title" [ngClass]="{'animate-pulse italic':setContentEditable}"
+              <h1 id="title" [ngClass]="{'animate-pulse italic':setContentEditable}" (focus)="closeDropdowns()"
                 class="focus:outline-none font-bold text-2xl md:text-3xl lg:text-4xl text-gray-800 editable">
                 {{car.title}}
               </h1>
               <div class="text-xl md:text-3xl flex gap-2 text-gray-800 lg:pb-0 pb-4">
-                <p id="price" [ngClass]="{'animate-pulse italic':setContentEditable}"
+                <p id="price" [ngClass]="{'animate-pulse italic':setContentEditable}" (focus)="closeDropdowns()"
                   class="font-bold focus:outline-none editable">
                   {{ car.price | thousandSeparator}}
                 </p>
@@ -65,33 +65,33 @@
                 </p>
 
                 <div *ngIf="setContentEditable" [ngClass]="{'animate-pulse': setContentEditable}" class="flex gap-1">
-                  <button class="cursor-pointer"
+                  <button class="cursor-pointer" (focus)="closeDropdowns()"
                     [ngClass]="{'font-bold': car.currency === '€', 'italic': setContentEditable}"
-                    (click)="car.currency = '€'">
+                    (click)="car.currency = '€'; closeDropdowns()">
                     €
                   </button>
                   /
-                  <button class="cursor-pointer"
+                  <button class="cursor-pointer" (focus)="closeDropdowns()"
                     [ngClass]="{'font-bold': car.currency === '$', 'italic': setContentEditable}"
-                    (click)="car.currency = '$'">
+                    (click)="car.currency = '$'; closeDropdowns()">
                     $
                   </button>
                   /
                   <button class="cursor-pointer"
                     [ngClass]="{'font-bold': car.currency === '£', 'italic': setContentEditable}"
-                    (click)="car.currency = '£'">
+                    (click)="car.currency = '£'; closeDropdowns()">
                     £
                   </button>
                   /
-                  <button class="cursor-pointer"
+                  <button class="cursor-pointer" (focus)="closeDropdowns()"
                     [ngClass]="{'font-bold': car.currency === '¥', 'italic': setContentEditable}"
-                    (click)="car.currency = '¥'">
+                    (click)="car.currency = '¥'; closeDropdowns()">
                     ¥
                   </button>
                   /
-                  <button class="cursor-pointer"
+                  <button class="cursor-pointer" (focus)="closeDropdowns()"
                     [ngClass]="{'font-bold': car.currency === '₽', 'italic': setContentEditable}"
-                    (click)="car.currency = '₽'">
+                    (click)="car.currency = '₽'; closeDropdowns()">
                     ₽
                   </button>
                 </div>
@@ -143,12 +143,12 @@
             <div class="absolute top-2 right-2 gap-2 p-2 items-center transition-all duration-500 justify-center"
               [ngClass]="{'hidden opacity-0': !setContentEditable, 'flex opacity-100': setContentEditable}">
 
-              <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" accept="image/*">
+              <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()" accept="image/*">
               <label for="imageDesktop"
                 class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
                 <i class="fa fa-plus text-lg"></i>
               </label>
-              <button (click)="deleteImage(car.images[imageIndex].id)"
+              <button (click)="deleteImage(car.images[imageIndex].id); closeDropdowns()"
                 class="items-center flex justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
                 <i class="fa fa-trash text-lg"></i>
               </button>
@@ -247,7 +247,7 @@
         </div>
         <div class="flex items-center gap-2">
           <i class="fas fa-calendar-alt text-gray-600"></i>
-          <p id="year" [ngClass]="{'animate-pulse italic':setContentEditable}"
+          <p id="year" [ngClass]="{'animate-pulse italic':setContentEditable}" (focus)="closeDropdowns()"
             class="focus:outline-none text-gray-800 editable">
             {{car.year}}
           </p>
@@ -294,7 +294,7 @@
           class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg text-white transition-all w-2/12 sm:w-1/12 lg:w-2/12 xl:w-1/12">
           <i [ngClass]="{'fa-check': setContentEditable, 'fa-pencil': !setContentEditable}" class="fa px-2"></i>
         </button>
-        <button *ngIf="isCurrentUserOwner(car)"
+        <button *ngIf="isCurrentUserOwner(car)" (click)="closeDropdowns()"
           class="justify-center text-md font-medium focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 h-11 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors w-2/12 sm:w-1/12 lg:w-2/12 xl:w-1/12"
           (click)="openDeleteModal(car.id)">
           <i class="fa fa-trash px-2"></i>
@@ -411,7 +411,7 @@
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-chair text-3xl text-gray-700"></i>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex items-center gap-1 font-semibold">
-              <p id="seats" class="focus:outline-none text-sm text-gray-800 editable">
+              <p id="seats" class="focus:outline-none text-sm text-gray-800 editable" (focus)="closeDropdowns()">
                 {{car.seats}}
               </p>
               <p class="text-sm text-gray-800">
@@ -422,7 +422,7 @@
           <div class="flex flex-col items-center gap-3">
             <i class="fas fa-door-open text-3xl text-gray-700"></i>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex items-center gap-1 font-semibold">
-              <p id="doors" class="focus:outline-none text-sm text-gray-800 editable">
+              <p id="doors" class="focus:outline-none text-sm text-gray-800 editable" (focus)="closeDropdowns()">
                 {{car.doors}}
               </p>
               <p class="text-sm text-gray-800">
@@ -442,7 +442,7 @@
           <div *ngIf="car.distance" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Distance:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="distance" class="focus:outline-none text-sm text-gray-800 font-bold editable">
+              <p id="distance" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
                 {{ car.distance | roundToThousandth }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -468,7 +468,7 @@
           <div *ngIf="car.horsepower" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Horsepower:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="horsepower" class="focus:outline-none text-sm text-gray-800 font-bold editable">
+              <p id="horsepower" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
                 {{ car.horsepower | thousandSeparator }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -479,7 +479,7 @@
           <div *ngIf="car.consumption" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Consumption:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="consumption" class="focus:outline-none text-sm text-gray-800 font-bold editable">
+              <p id="consumption" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
                 {{ car.consumption }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -490,7 +490,7 @@
           <div *ngIf="car.emissions" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Emissions:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="emissions" class="focus:outline-none text-sm text-gray-800 font-bold editable">
+              <p id="emissions" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
                 {{ car.emissions }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -502,7 +502,7 @@
             class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">0-100km/h:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="acceleration" class="focus:outline-none text-sm text-gray-800 font-bold editable">
+              <p id="acceleration" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
                 {{ car.acceleration }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -532,7 +532,7 @@
         <div class="flex flex-col lg:flex-row h-full gap-10">
           <div class="w-full lg:w-1/2 max-h-64 min-h-10 lg:max-h-96 overflow-y-auto rounded-scrollbar">
             <p id="description" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-gray-700 h-full overflow-y-auto pr-5 rounded-scrollbar px-3 lg:px-0 editable">
+              class="focus:outline-none text-gray-700 h-full overflow-y-auto pr-5 rounded-scrollbar px-3 lg:px-0 editable" (focus)="closeDropdowns()">
               {{car.description}}
             </p>
           </div>
@@ -551,7 +551,7 @@
 
 
   <div *ngIf="isDeleteModalVisible" (click)="closeDeleteModal()"
-    class="fixed inset-0 bg-gray-400 backdrop-blur-md bg-opacity-50 h-full w-full flex items-center justify-center"
+    class="fixed z-30 inset-0 bg-gray-400 backdrop-blur-md bg-opacity-50 h-full w-full flex items-center justify-center"
     id="my-modal">
     <div (click)="$event.stopPropagation()"
       class="p-5 border w-96 shadow-lg rounded-xl bg-white bg-opacity-75 backdrop-blur-lg">

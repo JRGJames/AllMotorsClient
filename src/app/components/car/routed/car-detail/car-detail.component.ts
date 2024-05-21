@@ -304,6 +304,7 @@ export class CarDetailComponent implements OnInit {
 
   handleFavorites(car: ICar): void {
     if (this.sessionService.isSessionActive()) {
+      this.closeDropdowns();
       this.savedService.isSaved(this.currentUser.id, car.id).subscribe({
         next: (response: boolean) => {
           if (response) {
@@ -604,4 +605,15 @@ export class CarDetailComponent implements OnInit {
     return allowedTypes.includes(file.type);
   }
 
+  closeDropdowns(): void {
+    this.isEditingFuel = false;
+    this.isEditingOwner = false;
+    this.isEditingColor = false;
+    this.isEditingGearbox = false;
+    this.isEditingDrive = false;
+    this.isEditingType = false;
+    this.isEditingBrand = false;
+    this.isEditingModel = false;
+    this.isEditingImages = false;
+  }
 }

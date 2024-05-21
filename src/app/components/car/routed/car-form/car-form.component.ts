@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IBrand, ICar, IImage, IModel, IUser, formOperation } from 'src/app/model/model';
 import { CarService } from '../../../../service/car.service';
@@ -19,6 +19,9 @@ export class CarFormComponent implements OnInit {
 
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
+
+  @ViewChild('descriptionSpan') descriptionSpan: ElementRef = {} as ElementRef;
+  @ViewChild('ownerInput') ownerInput: ElementRef = {} as ElementRef;
 
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
   carForm!: FormGroup;
@@ -65,6 +68,7 @@ export class CarFormComponent implements OnInit {
   ];
 
   backgroundImage: string = `url(assets/images/image1.webp)`;
+  inputImage: string = `url(assets/images/car_default.webp)`;
   
   showBrands: boolean = false;
   showModels: boolean = false;
@@ -77,36 +81,36 @@ export class CarFormComponent implements OnInit {
     private carService: CarService,
     private userService: UserService,
     private sessionService: SessionService,
-    private mediaService: MediaService,
-    private router: Router
+    private renderer: Renderer2
   ) {
     this.initializeForm(this.car);
   }
 
   initializeForm(car: ICar) {
     this.carForm = this.formBuilder.group({
+      owner: [car.owner, [Validators.required]],
+      title: [car.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       brand: [car.brand, [Validators.required]],
       model: [car.model, [Validators.required]],
-      title: [car.title, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      images: [car.images], // La validación de archivos puede requerir un enfoque personalizado
-      color: [car.color, [Validators.required]],
+      price: [car.price, [Validators.required, Validators.min(1)]],
+      currency: [car.currency, [Validators.required]],
       year: [car.year, [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
+      color: [car.color, [Validators.required]],
       seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(8)]],
       doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
-      horsepower: [car.horsepower],
-      gearbox: [car.gearbox, [Validators.required]],
-      distance: [car.distance],
-      fuel: [car.fuel, [Validators.required]],
-      price: [car.price, [Validators.required, Validators.min(1)]],
-      type: [car.type],
+      description: [car.description, [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       location: [car.location, [Validators.required]],
-      currency: [car.currency, [Validators.required]],
+      gearbox: [car.gearbox, [Validators.required]],
+      fuel: [car.fuel, [Validators.required]],
+
+      images: [car.images], // La validación de archivos puede requerir un enfoque personalizado
+      horsepower: [car.horsepower],
+      distance: [car.distance],
+      type: [car.type],
       emissions: [car.emissions, [Validators.min(0)]],
       consumption: [car.consumption, [Validators.min(0)]],
       acceleration: [car.acceleration, [Validators.min(0)]],
       drive: [car.drive],
-      description: [car.description],
-      owner: [car.owner.id, [Validators.required]],
     });
   }
 
@@ -139,6 +143,14 @@ export class CarFormComponent implements OnInit {
         }
       });
     }
+  }
+
+  closeDropdowns() {
+    this.showBrands = false;
+    this.showModels = false;
+    this.showYears = false;
+    this.showColors = false;
+    this.showUsers = false;
   }
 
   changeTitleBrand(event: any) {
@@ -225,26 +237,32 @@ export class CarFormComponent implements OnInit {
 
   fillFormWithDefaults() {
     this.carForm.patchValue({
+      owner: this.user.username,
+      title: 'BMW 320ci E46 2001',
+      price: 33000,
+      currency: '€',
+      brand: 'BMW',
+      model: 'E46',
       year: 2001,
-      gearbox: 'manual',
       color: 'navy',
       seats: 5,
       doors: 2,
+      description: 'El BMW Serie 3 E46 no es solo un coche, es una pieza de la historia automovilística que combina a la perfección rendimiento, lujo y fiabilidad. Diseñado para aquellos que aprecian la conducción pura, este modelo se ha convertido en un favorito tanto para entusiastas como para aquellos que buscan un vehículo premium versátil.',
+      location: 'Valencia',
+      gearbox: 'manual',
+      fuel: 'gasoline',
+
       horsepower: 185,
       distance: 100000,
-      fuel: 'gasoline',
-      price: 33000,
       type: 'sedan',
-      location: 'Valencia',
-      title: 'BMW 320ci E46 2001',
-      currency: '€',
       emissions: 120,
       consumption: 5.5,
       acceleration: 7.2,
       drive: 'rwd',
-      description: 'El BMW Serie 3 E46 no es solo un coche, es una pieza de la historia automovilística que combina a la perfección rendimiento, lujo y fiabilidad. Diseñado para aquellos que aprecian la conducción pura, este modelo se ha convertido en un favorito tanto para entusiastas como para aquellos que buscan un vehículo premium versátil.',
-      owner: { id: this.user.id }
     });
+
+    // Actualizar el contenido del span
+    this.renderer.setProperty(this.descriptionSpan.nativeElement, 'innerHTML', this.carForm.get('description')?.value);
   }
 
   getUserInitials(user: IUser): string {
