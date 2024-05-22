@@ -29,17 +29,21 @@ export class CarFormComponent implements OnInit {
   currentUser: IUser = {} as IUser;
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
-  title: string = '';
+  
+  titleBrand: string = '';
+  titleModel: string = '';
+  title: string = this.titleBrand + ' ' + this.titleModel;
+
   urlImage = API_URL_MEDIA;
   
   images: IImage[] = [];
   users: IUser[] = [];
   years: number[] = [];
   brands: string[] = [
-    'Audi', 'BMW', 'Chevrolet', 'Citroen', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Kia', 'Mazda', 'Mercedes-Benz', 'Nissan', 'Opel', 'Peugeot', 'Renault', 'Seat', 'Skoda', 'Toyota', 'Volkswagen', 'Volvo'
+    'Audi', 'Rolls Royce', 'BMW', 'Chevrolet', 'Citroen', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Kia', 'Mazda', 'Mercedes-Benz', 'Nissan', 'Opel', 'Peugeot', 'Renault', 'Seat', 'Skoda', 'Toyota', 'Volkswagen', 'Volvo'
   ];
   models: string[] = [
-    'E46', 'E90', 'E92', 'F30', 'F32', 'F80', 'F82', 'F87', 'G20', 'G22', 'G80', 'G82', 'G87', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q3', 'Q5', 'Q7', 'Q8', 'TT', 'R8', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7', 'RSQ3', 'RSQ8', 'RSQ5', 'RSQ7'
+    'E46 X', 'E90', 'E92', 'F30', 'F32', 'F80', 'F82', 'F87', 'G20', 'G22', 'G80', 'G82', 'G87', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q3', 'Q5', 'Q7', 'Q8', 'TT', 'R8', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7', 'RSQ3', 'RSQ8', 'RSQ5', 'RSQ7'
   ];
   gearboxTypes: string[] = ['manual', 'automatic'];
   fuelTypes: string[] = ['gasoline', 'diesel', 'electric', 'hybrid'];
@@ -120,6 +124,8 @@ export class CarFormComponent implements OnInit {
     this.loadUsers();
     this.loadYears();
     this.loadBrands();
+    this.title = this.titleBrand + ' ' + this.titleModel;
+
     this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
       next: (data: IUser) => {
         this.user = data;
