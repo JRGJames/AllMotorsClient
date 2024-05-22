@@ -37,6 +37,7 @@ export interface IUser extends IEntity {
     username: string;
     gender: boolean;
     birthdate: Date;
+    location: string;
     country: string;
     city: string;
     description: string;
@@ -96,6 +97,7 @@ export interface ICar extends IEntity {
     price: number;
     type: string;
     location: string;
+    city: string;
     emissions: number;
     description: string;
     consumption: number;

@@ -114,6 +114,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
       description: [car.description, [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       location: [car.location, [Validators.required]],
+      city: [car.city, [Validators.required]],
       gearbox: [car.gearbox, [Validators.required]],
       fuel: [car.fuel, [Validators.required]],
 
@@ -323,6 +324,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       doors: 2,
       description: 'El BMW Serie 3 E46 no es solo un coche, es una pieza de la historia automovilística que combina a la perfección rendimiento, lujo y fiabilidad. Diseñado para aquellos que aprecian la conducción pura, este modelo se ha convertido en un favorito tanto para entusiastas como para aquellos que buscan un vehículo premium versátil.',
       location: '-0.376398131838944 39.47331748845821',
+      city: 'Valencia',
       gearbox: 'manual',
       fuel: 'gasoline',
 
