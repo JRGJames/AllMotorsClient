@@ -34,7 +34,8 @@
       <div class="absolute top-2 right-2 gap-2 p-2 items-center transition-all duration-500 justify-center"
         [ngClass]="{'hidden opacity-0': !setContentEditable, 'flex opacity-100': setContentEditable}">
 
-        <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()" accept="image/*">
+        <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()"
+          accept="image/*">
         <label for="imageDesktop"
           class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
           <i class="fa fa-plus text-lg"></i>
@@ -143,7 +144,8 @@
             <div class="absolute top-2 right-2 gap-2 p-2 items-center transition-all duration-500 justify-center"
               [ngClass]="{'hidden opacity-0': !setContentEditable, 'flex opacity-100': setContentEditable}">
 
-              <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()" accept="image/*">
+              <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()"
+                accept="image/*">
               <label for="imageDesktop"
                 class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
                 <i class="fa fa-plus text-lg"></i>
@@ -442,7 +444,8 @@
           <div *ngIf="car.distance" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Distance:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="distance" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
+              <p id="distance" class="focus:outline-none text-sm text-gray-800 font-bold editable"
+                (focus)="closeDropdowns()">
                 {{ car.distance | roundToThousandth }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -468,7 +471,8 @@
           <div *ngIf="car.horsepower" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Horsepower:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="horsepower" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
+              <p id="horsepower" class="focus:outline-none text-sm text-gray-800 font-bold editable"
+                (focus)="closeDropdowns()">
                 {{ car.horsepower | thousandSeparator }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -479,7 +483,8 @@
           <div *ngIf="car.consumption" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Consumption:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="consumption" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
+              <p id="consumption" class="focus:outline-none text-sm text-gray-800 font-bold editable"
+                (focus)="closeDropdowns()">
                 {{ car.consumption }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -490,7 +495,8 @@
           <div *ngIf="car.emissions" class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">Emissions:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="emissions" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
+              <p id="emissions" class="focus:outline-none text-sm text-gray-800 font-bold editable"
+                (focus)="closeDropdowns()">
                 {{ car.emissions }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -502,7 +508,8 @@
             class="flex flex-col items-center p-3 bg-gray-100 rounded-[2.3em] flex-shrink-0">
             <p class="text-sm px-1">0-100km/h:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
-              <p id="acceleration" class="focus:outline-none text-sm text-gray-800 font-bold editable" (focus)="closeDropdowns()">
+              <p id="acceleration" class="focus:outline-none text-sm text-gray-800 font-bold editable"
+                (focus)="closeDropdowns()">
                 {{ car.acceleration }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -532,11 +539,13 @@
         <div class="flex flex-col lg:flex-row h-full gap-10">
           <div class="w-full lg:w-1/2 max-h-64 min-h-10 lg:max-h-96 overflow-y-auto rounded-scrollbar">
             <p id="description" [ngClass]="{'animate-pulse italic':setContentEditable}"
-              class="focus:outline-none text-gray-700 h-full overflow-y-auto pr-5 rounded-scrollbar px-3 lg:px-0 editable" (focus)="closeDropdowns()">
+              class="focus:outline-none text-gray-700 h-full overflow-y-auto pr-5 rounded-scrollbar px-3 lg:px-0 editable"
+              (focus)="closeDropdowns()">
               {{car.description}}
             </p>
           </div>
-          <div id="map" class="bg-sky-500 rounded-xl w-full h-64 lg:h-96">
+          <div class="bg-gray-200 overflow-hidden rounded-xl w-full h-64 lg:h-96">
+            <div id="map" #map class="h-full w-full"></div>
           </div>
         </div>
         <div>

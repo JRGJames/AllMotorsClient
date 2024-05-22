@@ -8,7 +8,17 @@
 }
 
 .description {
-  word-break: break-all; /* Permite romper palabras largas para evitar desbordamientos */
-  white-space: pre-wrap; /* Mantiene los saltos de línea y espacios en blanco */
-  overflow-wrap: break-word; /* Permite que el texto se ajuste dentro del contenedor */
+  word-break: normal;
+  white-space: wrap;
+}
+
+.coordinates {
+  color: #fff;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 18px;
+  display: none;
 }

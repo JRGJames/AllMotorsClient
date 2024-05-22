@@ -1,6 +1,6 @@
 import { UserService } from '../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, Input, OnInit, Renderer2, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IImage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
@@ -10,7 +10,7 @@ import { API_URL_MEDIA } from 'src/environment/environment';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexYAxis, ApexStroke, ApexMarkers, ApexFill, ApexTooltip, ApexDataLabels } from "ng-apexcharts";
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
-import { last } from 'rxjs';
+import { Map, MapStyle, config, Marker, NavigationControl, MaptilerNavigationControl, GeolocationType } from '@maptiler/sdk';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -33,6 +33,10 @@ export type ChartOptions = {
 export class CarDetailComponent implements OnInit {
   @ViewChild('userList') userList!: ElementRef;
   @ViewChild('colorPicker') colorPicker!: ElementRef;
+  @ViewChild('map')
+  private mapContainer!: ElementRef;
+  map: Map | undefined;
+  marker: Marker | undefined;
 
   urlImage = API_URL_MEDIA;
   showPhoneNumber: boolean = false;
@@ -48,6 +52,8 @@ export class CarDetailComponent implements OnInit {
   setContentEditable: boolean = false;
   users: IUser[] = [];
   imageToAdd: IImage = {} as IImage;
+  coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
+
   isEditingOwner: boolean = false;
   selectedUser: string = "";
   isEditingColor: boolean = false;
@@ -201,10 +207,38 @@ export class CarDetailComponent implements OnInit {
         this.getCurrentUser();
         this.getOne(this.id);
         this.increaseViews(this.id);
+        config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
       } else {
         console.error('ID is undefined');
       }
     });
+  }
+  
+  ngAfterViewInit() {
+    console.log(this.coords);
+
+   
+    
+    // this.marker = new Marker({
+    //   color: 'red',
+    //   draggable: true
+    // });
+    
+    // this.marker.setLngLat([this.map.getCenter().lng, this.map.getCenter().lat]).addTo(this.map);
+    
+    // this.marker.on('dragend', () => {
+    //   const lngLat = this.marker?.getLngLat();
+      
+    // });
+
+    // this.map.on('click', (e) => {
+    //   const lngLat = e.lngLat;
+    //   this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
+    // });
+  }
+
+  ngOnDestroy() {
+    this.map?.remove();
   }
 
   getCurrentUser(): void {
@@ -229,7 +263,25 @@ export class CarDetailComponent implements OnInit {
         this.getRatingAverage(this.car.owner.id);
         this.checkIfCarIsSaved(this.car.id);
         this.selectedUser = this.car.owner.username;
+        this.coords = {
+          lng: parseFloat(this.car.location.split(' ')[0]),
+          lat: parseFloat(this.car.location.split(' ')[1])
+        };
 
+        const initialState = {
+          lat: this.coords.lat,
+          lng: this.coords.lng,
+          zoom: 14
+        };
+        
+        this.map = new Map({
+          container: this.mapContainer.nativeElement,
+          center: [initialState.lng, initialState.lat],
+          zoom: initialState.zoom,
+          style: MapStyle.STREETS,
+          fullscreenControl: true,
+          geolocateControl: false
+        });
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;

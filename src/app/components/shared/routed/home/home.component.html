@@ -10,7 +10,7 @@
     </div> -->
     <div id="slider" class="flex h-full w-[500%] flex-shrink-0">
       <a *ngFor="let car of popularCars" (click)="resetBehavior()" [routerLink]="'/car/' + car.id" class="h-full relative basis-[20%] w-[20%]">
-        <img [src]='urlImage + car.images[0].imageUrl' alt="slide" class="h-full w-full object-cover object-center">
+        <img [src]='urlImage + car.images[0]?.imageUrl' alt="slide" class="h-full w-full object-cover object-center">
         <div class="gradient object-cover absolute top-0 w-full h-full"></div>
         <div class="gradient-lateral object-cover absolute top-0 w-full h-full"></div>
         <div class="absolute mt-12 top-0 left-0 w-full">

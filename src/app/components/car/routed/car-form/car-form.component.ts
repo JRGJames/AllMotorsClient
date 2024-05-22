@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, Input, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, Input, OnInit, Renderer2, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IBrand, ICar, IImage, IModel, IUser, formOperation } from 'src/app/model/model';
+import { ICar, IImage, IUser, formOperation } from 'src/app/model/model';
 import { CarService } from '../../../../service/car.service';
 import { UserService } from '../../../../service/user.service';
 import { SessionService } from '../../../../service/session.service';
 import { Router } from '@angular/router';
 import { MediaService } from 'src/app/service/media.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
+import { Map, MapStyle, config, Marker, NavigationControl, MaptilerNavigationControl, GeolocationType } from '@maptiler/sdk';
 
 
 @Component({
@@ -15,27 +16,31 @@ import { API_URL_MEDIA } from 'src/environment/environment';
   templateUrl: './car-form.component.html',
   styleUrls: ['./car-form.component.css']
 })
-export class CarFormComponent implements OnInit {
+export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
 
   @ViewChild('descriptionSpan') descriptionSpan: ElementRef = {} as ElementRef;
   @ViewChild('ownerInput') ownerInput: ElementRef = {} as ElementRef;
+  @ViewChild('map')
+  private mapContainer!: ElementRef;
+  map: Map | undefined;
+  marker: Marker | undefined;
 
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
   carForm!: FormGroup;
-  car: ICar = { owner: { id: 0 } } as ICar;
+  car: ICar = { owner: { } } as ICar;
   currentUser: IUser = {} as IUser;
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
-  
+
   titleBrand: string = '';
   titleModel: string = '';
   title: string = this.titleBrand + ' ' + this.titleModel;
 
   urlImage = API_URL_MEDIA;
-  
+
   images: IImage[] = [];
   users: IUser[] = [];
   years: number[] = [];
@@ -72,8 +77,8 @@ export class CarFormComponent implements OnInit {
   ];
 
   backgroundImage: string = `url(assets/images/image1.webp)`;
-  inputImage: string = `url(assets/images/car_default.webp)`;
-  
+  inputImage: string = `url(assets/images/image4.webp)`;
+
   showBrands: boolean = false;
   showModels: boolean = false;
   showYears: boolean = false;
@@ -85,7 +90,9 @@ export class CarFormComponent implements OnInit {
     private carService: CarService,
     private userService: UserService,
     private sessionService: SessionService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private router: Router,
+    private mediaService: MediaService
   ) {
     this.initializeForm(this.car);
   }
@@ -120,21 +127,61 @@ export class CarFormComponent implements OnInit {
 
   ngOnInit() {
     this.getCurrentUser()
-    this.initializeForm(this.car); // No incluye el campo 'id'
+    this.initializeForm(this.car);
     this.loadUsers();
     this.loadYears();
     this.loadBrands();
+
+    config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
+
+
     this.title = this.titleBrand + ' ' + this.titleModel;
 
     this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
       next: (data: IUser) => {
         this.user = data;
-        this.carForm.get('owner')?.setValue({ id: this.user.id });
+        this.carForm.patchValue({ owner: this.currentUser.username });
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this.map = new Map({
+      container: this.mapContainer.nativeElement,
+      // center: [initialState.lng, initialState.lat],
+      // zoom: initialState.zoom,
+      style: MapStyle.STREETS,
+      geolocateControl: true,
+      geolocate: GeolocationType.POINT,
+      fullscreenControl: true,
+    });
+    
+    this.marker = new Marker({
+      color: 'red',
+      draggable: true
+    });
+    
+    this.marker.setLngLat([this.map.getCenter().lng, this.map.getCenter().lat]).addTo(this.map);
+    
+    this.marker.on('dragend', () => {
+      const lngLat = this.marker?.getLngLat();
+      
+      this.carForm.patchValue({ location: lngLat?.lng.toString() + ' ' + lngLat?.lat.toString()});
+    });
+
+    this.map.on('click', (e) => {
+      const lngLat = e.lngLat;
+      this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
+
+      this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString()});
+    });
+  }
+
+  ngOnDestroy() {
+    this.map?.remove();
   }
 
   getCurrentUser(): void {
@@ -243,7 +290,7 @@ export class CarFormComponent implements OnInit {
 
   fillFormWithDefaults() {
     this.carForm.patchValue({
-      owner: this.user.username,
+      owner: this.currentUser.username,
       title: 'BMW 320ci E46 2001',
       price: 33000,
       currency: '€',
@@ -254,7 +301,7 @@ export class CarFormComponent implements OnInit {
       seats: 5,
       doors: 2,
       description: 'El BMW Serie 3 E46 no es solo un coche, es una pieza de la historia automovilística que combina a la perfección rendimiento, lujo y fiabilidad. Diseñado para aquellos que aprecian la conducción pura, este modelo se ha convertido en un favorito tanto para entusiastas como para aquellos que buscan un vehículo premium versátil.',
-      location: 'Valencia',
+      location: '-0.376398131838944 39.47331748845821',
       gearbox: 'manual',
       fuel: 'gasoline',
 
@@ -269,6 +316,9 @@ export class CarFormComponent implements OnInit {
 
     // Actualizar el contenido del span
     this.renderer.setProperty(this.descriptionSpan.nativeElement, 'innerHTML', this.carForm.get('description')?.value);
+
+    this.map?.setCenter([-0.376398131838944, 39.47331748845821]);
+    this.marker?.setLngLat([-0.376398131838944, 39.47331748845821]);
   }
 
   getUserInitials(user: IUser): string {
@@ -278,43 +328,60 @@ export class CarFormComponent implements OnInit {
     return '';
   }
 
+  findUserByUsername(username: string, callback: (user: IUser) => void): void {
+    this.userService.getByUsername(username).subscribe({
+      next: (user: IUser) => {
+        this.carForm.patchValue({ owner: user });
+        console.log('Usuario encontrado por nombre:', user);
+        callback(user);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar los datos del usuario:', error);
+      }
+    });
+  }
 
-  // onSubmit() {
-  //   console.log('Formulario:', this.carForm.value);
-  //   if (this.carForm.valid) {
-  //     // Convertir datos del formulario a JSON para incluirlos en FormData
-  //     const formData = new FormData();
-
-  //     if (this.operation === 'NEW') {
-  //       this.carService.create(this.carForm.value).subscribe({
-  //         next: (car: ICar) => {
-  //           console.log('Coche creado:', car);
-
-  //           if (this.images && this.images.length > 2) {
-  //             // Array.from(this.images).forEach((image) => {
-  //             //   formData.append('images', image.imageUrl, car.id.toString());
-  //             // });
-
-  //             this.mediaService.uploadMultipleFiles(formData).subscribe({
-  //               next: (response) => {
-  //                 console.log('Imágenes subidas:', response);
-  //                 this.router.navigate(['/car', car.id]);
-  //               },
-  //               error: (uploadError) => {
-  //                 console.error('Error subiendo imágenes:', uploadError);
-  //                 this.status = uploadError;
-  //               }
-  //             });
-  //           } else {
-  //             this.router.navigate(['/car', car]);
-  //           }
-  //         },
-  //         error: (createError) => {
-  //           console.error('Error creando el coche:', createError);
-  //           this.status = createError;
-  //         }
-  //       });
-  //     }
-  //   }
-  // }
+  onSubmit() {
+    if (this.carForm.valid) {
+      console.log('Formulario:', this.carForm.value);
+  
+      const username = this.carForm.get('owner')?.value;
+      console.log('Propietario:', username);
+  
+      // Ahora pasa la lógica de creación del coche como un callback
+      this.findUserByUsername(username, (user: IUser) => {
+        if (this.operation === 'NEW') {
+          this.carService.create(this.carForm.value).subscribe({
+            next: (car: ICar) => {
+              console.log('Coche creado:', car);
+  
+              // if (this.images && this.images.length > 2) {
+              //   Array.from(this.images).forEach((image) => {
+              //     formData.append('images', image.imageUrl, car.id.toString());
+              //   });
+  
+              //   this.mediaService.uploadMultipleFiles(formData).subscribe({
+              //     next: (response) => {
+              //       console.log('Imágenes subidas:', response);
+              //       this.router.navigate(['/car', car.id]);
+              //     },
+              //     error: (uploadError) => {
+              //       console.error('Error subiendo imágenes:', uploadError);
+              //       this.status = uploadError;
+              //     }
+              //   });
+              // } else {
+              //   this.router.navigate(['/car', car]);
+              // }
+              this.router.navigate(['/car', car]);
+            },
+            error: (createError) => {
+              console.error('Error creando el coche:', createError);
+              this.status = createError;
+            }
+          });
+        }
+      });
+    }
+  }
 }
