@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, AfterViewInit, Input, OnInit, Renderer2, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ICar, IImage, IUser, formOperation } from 'src/app/model/model';
@@ -8,7 +8,7 @@ import { SessionService } from '../../../../service/session.service';
 import { Router } from '@angular/router';
 import { MediaService } from 'src/app/service/media.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
-import { Map, MapStyle, config, Marker, NavigationControl, MaptilerNavigationControl, GeolocationType } from '@maptiler/sdk';
+import { Map, MapStyle, config, Marker, NavigationControl, MaptilerNavigationControl, GeolocationType, LngLat } from '@maptiler/sdk';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
   carForm!: FormGroup;
-  car: ICar = { owner: { } } as ICar;
+  car: ICar = { owner: {} } as ICar;
   currentUser: IUser = {} as IUser;
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
@@ -38,6 +38,8 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   titleBrand: string = '';
   titleModel: string = '';
   title: string = this.titleBrand + ' ' + this.titleModel;
+  city: string = '';
+  mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
 
   urlImage = API_URL_MEDIA;
 
@@ -92,7 +94,8 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private sessionService: SessionService,
     private renderer: Renderer2,
     private router: Router,
-    private mediaService: MediaService
+    private mediaService: MediaService,
+    private http: HttpClient
   ) {
     this.initializeForm(this.car);
   }
@@ -134,7 +137,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
 
-
     this.title = this.titleBrand + ' ' + this.titleModel;
 
     this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
@@ -158,30 +160,50 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       geolocate: GeolocationType.POINT,
       fullscreenControl: true,
     });
-    
+
     this.marker = new Marker({
       color: 'red',
       draggable: true
     });
-    
+
     this.marker.setLngLat([this.map.getCenter().lng, this.map.getCenter().lat]).addTo(this.map);
-    
+
     this.marker.on('dragend', () => {
       const lngLat = this.marker?.getLngLat();
-      
-      this.carForm.patchValue({ location: lngLat?.lng.toString() + ' ' + lngLat?.lat.toString()});
+
+      this.carForm.patchValue({ location: lngLat?.lng.toString() + ' ' + lngLat?.lat.toString() });
     });
 
     this.map.on('click', (e) => {
       const lngLat = e.lngLat;
       this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
 
-      this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString()});
+      this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString() });
     });
+
+    this.reverseGeocode(this.marker.getLngLat().lat, this.marker.getLngLat().lng);
   }
 
   ngOnDestroy() {
     this.map?.remove();
+  }
+
+  reverseGeocode(lng: number, lat: number) {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${this.mapboxApiKey}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.features && data.features.length > 0) {
+          var fullAddress = data.features[0].place_name;
+          var addressComponents = fullAddress.split(',');
+          const cityName = addressComponents[1].trim();
+          this.city = cityName;
+        } else {
+          console.log('No features in data');
+        }
+      })
+      .catch(error => console.log('Error:', error));
   }
 
   getCurrentUser(): void {
@@ -263,7 +285,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   loadUsers() {
     this.userService.getAll().subscribe({
       next: (response) => {
-        console.log('Usuarios:', response);
         this.users = response;
       },
       error: (error) => {
@@ -344,22 +365,22 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   onSubmit() {
     if (this.carForm.valid) {
       console.log('Formulario:', this.carForm.value);
-  
+
       const username = this.carForm.get('owner')?.value;
       console.log('Propietario:', username);
-  
+
       // Ahora pasa la lógica de creación del coche como un callback
       this.findUserByUsername(username, (user: IUser) => {
         if (this.operation === 'NEW') {
           this.carService.create(this.carForm.value).subscribe({
             next: (car: ICar) => {
               console.log('Coche creado:', car);
-  
+
               // if (this.images && this.images.length > 2) {
               //   Array.from(this.images).forEach((image) => {
               //     formData.append('images', image.imageUrl, car.id.toString());
               //   });
-  
+
               //   this.mediaService.uploadMultipleFiles(formData).subscribe({
               //     next: (response) => {
               //       console.log('Imágenes subidas:', response);
