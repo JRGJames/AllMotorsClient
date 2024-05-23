@@ -172,17 +172,27 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.marker.on('dragend', () => {
       const lngLat = this.marker?.getLngLat();
 
-      this.carForm.patchValue({ location: lngLat?.lng.toString() + ' ' + lngLat?.lat.toString() });
+      if (lngLat) {
+        this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString() });
+        this.reverseGeocode(lngLat.lng, lngLat.lat);
+      }
     });
 
     this.map.on('click', (e) => {
       const lngLat = e.lngLat;
       this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
-
       this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString() });
+      this.reverseGeocode(lngLat.lng, lngLat.lat);
     });
 
-    this.reverseGeocode(this.marker.getLngLat().lat, this.marker.getLngLat().lng);
+    // Inicializar el reverse geocode en la posición inicial del marcador
+    const initialLngLat = this.marker.getLngLat();
+    if (initialLngLat) {
+      console.log('Longitude:', initialLngLat.lng);
+      console.log('Latitude:', initialLngLat.lat);
+      this.reverseGeocode(initialLngLat.lng, initialLngLat.lat);
+    }
+
   }
 
   ngOnDestroy() {
@@ -196,10 +206,18 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       .then(response => response.json())
       .then(data => {
         if (data.features && data.features.length > 0) {
-          var fullAddress = data.features[0].place_name;
-          var addressComponents = fullAddress.split(',');
-          const cityName = addressComponents[1].trim();
-          this.city = cityName;
+
+          this.city = data.features[2].place_name.split(',')[0].trim();
+
+
+          if (isNaN(parseInt(this.city))) {
+            this.city = data.features[2].place_name.split(',')[0].trim();
+          } else {
+            this.city = data.features[2].place_name.split(',')[1].trim();
+          }
+
+          this.carForm.patchValue({ city: this.city });
+          console.log('Ciudad:', this.city);
         } else {
           console.log('No features in data');
         }
