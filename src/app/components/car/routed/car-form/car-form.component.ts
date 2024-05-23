@@ -167,6 +167,22 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       draggable: true
     });
 
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const userLngLat = new LngLat(position.coords.longitude, position.coords.latitude);
+
+        if (this.map) {
+          this.marker?.setLngLat(userLngLat).addTo(this.map);
+        }
+
+        this.reverseGeocode(position.coords.longitude, position.coords.latitude);
+      }, (error) => {
+        console.error('Error al obtener la geolocalización:', error);
+      });
+    } else {
+      console.error('Geolocalización no soportada por el navegador.');
+    }
+
     this.marker.setLngLat([this.map.getCenter().lng, this.map.getCenter().lat]).addTo(this.map);
 
     this.marker.on('dragend', () => {
@@ -184,15 +200,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString() });
       this.reverseGeocode(lngLat.lng, lngLat.lat);
     });
-
-    // Inicializar el reverse geocode en la posición inicial del marcador
-    const initialLngLat = this.marker.getLngLat();
-    if (initialLngLat) {
-      console.log('Longitude:', initialLngLat.lng);
-      console.log('Latitude:', initialLngLat.lat);
-      this.reverseGeocode(initialLngLat.lng, initialLngLat.lat);
-    }
-
   }
 
   ngOnDestroy() {

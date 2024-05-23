@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from 'src/app/service/user.service';
 import { ICar, IUser } from 'src/app/model/model';
@@ -10,10 +10,10 @@ import { API_URL_MEDIA } from 'src/environment/environment';
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
 import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.component';
-import { query } from '@angular/animations';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { catchError, concatMap } from 'rxjs';
 import { ToastService } from './../../../../service/toast.service';
+import { config, Map, MapStyle, Marker } from '@maptiler/sdk';
+import { last } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,6 +21,11 @@ import { ToastService } from './../../../../service/toast.service';
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
+
+  @ViewChild('map')
+  private mapContainer!: ElementRef;
+  map: Map | undefined;
+  marker: Marker | undefined;
 
   urlImage = API_URL_MEDIA;
   user: IUser = {} as IUser;
@@ -44,6 +49,8 @@ export class UserProfileComponent implements OnInit {
   ratingAverage: { [key: number]: number } = {};
   setContentEditable: boolean = false;
   usernameIsTaken: boolean = false;
+  coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
+  mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
 
   constructor(
     private userService: UserService,
@@ -64,6 +71,7 @@ export class UserProfileComponent implements OnInit {
         this.getUser();
         this.getCurrentUser();
         this.showPosts();
+        config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
       } else {
         console.error('ID is undefined');
       }
@@ -79,6 +87,34 @@ export class UserProfileComponent implements OnInit {
         this.loadCars();
         this.getSavedCars();
         this.fillSavedCars();
+
+        this.coords = {
+          lng: parseFloat(this.user.location.split(' ')[0]),
+          lat: parseFloat(this.user.location.split(' ')[1])
+        };
+
+        const initialState = {
+          lat: this.coords.lat,
+          lng: this.coords.lng,
+          zoom: 14
+        };
+
+        this.map = new Map({
+          container: this.mapContainer.nativeElement,
+          center: [initialState.lng, initialState.lat],
+          zoom: initialState.zoom,
+          style: MapStyle.STREETS,
+          fullscreenControl: true,
+          geolocateControl: false
+        });
+
+        this.marker = new Marker({
+          color: 'red',
+          draggable: false
+        });
+
+        this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
+        this.marker.addClassName('hidden');
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al cargar los datos del usuario:', error);
@@ -532,7 +568,7 @@ export class UserProfileComponent implements OnInit {
       this.userService.update(this.user).subscribe({
         next: (user: IUser) => {
           this.user = user;
-          
+
           if (user.id === this.currentUser.id) {
             const token = localStorage.getItem('token');
 
@@ -547,11 +583,47 @@ export class UserProfileComponent implements OnInit {
       });
 
     } else {
-      console.error('Aun no se ha actualizado la información');
+      this.toastService.show('Aun no se ha actualizado la información');
     }
 
     this.setContentEditable = !this.setContentEditable;
     this.showInfo();
+
+    // Update the user location, country and city
+
+    if (this.marker) {
+
+      // Mostramos el marcador en el mapa y lo hacemos draggable
+      this.marker.setDraggable(this.setContentEditable);
+
+      if (this.setContentEditable) {
+        this.marker.removeClassName('hidden');
+      } else {
+        this.marker.addClassName('hidden');
+      }
+
+      this.marker.on('dragend', () => {
+        const lngLat = this.marker?.getLngLat();
+
+        if (lngLat) {
+          this.user.location = `${lngLat.lng} ${lngLat.lat}`;
+          this.reverseGeocode(lngLat.lng, lngLat.lat);
+        }
+      });
+
+      if (this.map) {
+        this.map.on('click', (e) => {
+
+          if (this.setContentEditable) {
+            const lngLat = e.lngLat;
+
+            this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
+            this.user.location = `${lngLat.lng} ${lngLat.lat}`;
+            this.reverseGeocode(lngLat.lng, lngLat.lat);
+          }
+        });
+      }
+    }
 
     editables.forEach((editable) => {
       if (this.setContentEditable) {
@@ -562,12 +634,35 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  reverseGeocode(lng: number, lat: number) {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${this.mapboxApiKey}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.features && data.features.length > 0) {
+
+          this.user.city = data.features[2].place_name.split(',')[0].trim();
+          this.user.country = data.features[data.features.length - 1].place_name.trim();
+
+          if (isNaN(parseInt(this.user.city))) {
+            this.user.city = data.features[2].place_name.split(',')[0].trim();
+          } else {
+            this.user.city = data.features[2].place_name.split(',')[1].trim();
+          }
+        } else {
+          console.log('No features in data');
+        }
+      })
+      .catch(error => console.log('Error:', error));
+  }
+
   checkUsername(username: string): boolean {
     this.userService.getByUsername(username).subscribe({
       next: (user: IUser) => {
-        if(user) {
+        if (user) {
           this.usernameIsTaken = true;
-        } else{
+        } else {
           this.usernameIsTaken = false;
         }
       },

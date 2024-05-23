@@ -1,6 +1,6 @@
 import { UserService } from '../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, AfterViewInit, Input, OnInit, Renderer2, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICar, IImage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
@@ -10,7 +10,7 @@ import { API_URL_MEDIA } from 'src/environment/environment';
 import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexYAxis, ApexStroke, ApexMarkers, ApexFill, ApexTooltip, ApexDataLabels } from "ng-apexcharts";
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
-import { Map, MapStyle, config, Marker, NavigationControl, MaptilerNavigationControl, GeolocationType } from '@maptiler/sdk';
+import { Map, MapStyle, config, Marker } from '@maptiler/sdk';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -53,6 +53,7 @@ export class CarDetailComponent implements OnInit {
   users: IUser[] = [];
   imageToAdd: IImage = {} as IImage;
   coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
+  mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
 
   isEditingOwner: boolean = false;
   selectedUser: string = "";
@@ -195,9 +196,7 @@ export class CarDetailComponent implements OnInit {
     private router: Router,
     private ratingService: RatingService,
     private savedService: SavedService,
-    private elementRef: ElementRef,
     private mediaService: MediaService
-
   ) { }
 
   ngOnInit() {
@@ -212,29 +211,6 @@ export class CarDetailComponent implements OnInit {
         console.error('ID is undefined');
       }
     });
-  }
-  
-  ngAfterViewInit() {
-    console.log(this.coords);
-
-   
-    
-    // this.marker = new Marker({
-    //   color: 'red',
-    //   draggable: true
-    // });
-    
-    // this.marker.setLngLat([this.map.getCenter().lng, this.map.getCenter().lat]).addTo(this.map);
-    
-    // this.marker.on('dragend', () => {
-    //   const lngLat = this.marker?.getLngLat();
-      
-    // });
-
-    // this.map.on('click', (e) => {
-    //   const lngLat = e.lngLat;
-    //   this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
-    // });
   }
 
   ngOnDestroy() {
@@ -271,9 +247,9 @@ export class CarDetailComponent implements OnInit {
         const initialState = {
           lat: this.coords.lat,
           lng: this.coords.lng,
-          zoom: 14
+          zoom: 15
         };
-        
+
         this.map = new Map({
           container: this.mapContainer.nativeElement,
           center: [initialState.lng, initialState.lat],
@@ -282,6 +258,13 @@ export class CarDetailComponent implements OnInit {
           fullscreenControl: true,
           geolocateControl: false
         });
+
+        this.marker = new Marker({
+          color: 'red',
+          draggable: false
+        });
+
+        this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
       },
       error: (error: HttpErrorResponse) => {
         this.status = error;
@@ -291,14 +274,10 @@ export class CarDetailComponent implements OnInit {
 
   prevImage() {
     this.imageIndex--;
-    console.log(this.car.images[this.imageIndex].id);
-    console.log(this.car.images[this.imageIndex].imageUrl);
   }
 
   nextImage() {
     this.imageIndex++;
-    console.log(this.car.images[this.imageIndex].id);
-    console.log(this.car.images[this.imageIndex].imageUrl);
   }
 
   changePage(newPage: number) {
@@ -378,7 +357,6 @@ export class CarDetailComponent implements OnInit {
 
     this.savedService.addToSaved(this.currentUser.id, carId).subscribe({
       next: () => {
-        console.log('Coche añadido a favoritos: +', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
             btn.classList.remove('text-gray-800', 'hover:text-yellow-500');
@@ -398,7 +376,6 @@ export class CarDetailComponent implements OnInit {
 
     this.savedService.removeFromSaved(this.currentUser.id, carId).subscribe({
       next: () => {
-        console.log('Coche eliminado de favoritos: -', carId);
         saveBtn.forEach((btn) => {
           if (btn) {
             btn.classList.remove('text-yellow-500', 'hover:text-yellow-600');
@@ -493,7 +470,6 @@ export class CarDetailComponent implements OnInit {
   }
 
   setEditable(): void {
-    console.log(this.car.images[this.imageIndex].id);
     const editables = document.querySelectorAll('.editable');
 
     this.loadUsers();
@@ -507,6 +483,8 @@ export class CarDetailComponent implements OnInit {
       this.isEditingBrand = false;
       this.isEditingModel = false;
       this.isEditingImages = false;
+
+
 
       // Actualizamos los datos del usuario
       this.car.title = document.getElementById('title')?.innerText || '';
@@ -545,6 +523,33 @@ export class CarDetailComponent implements OnInit {
 
     this.setContentEditable = !this.setContentEditable;
 
+    // Update the car location and city
+
+    if (this.marker) {
+      this.marker.setDraggable(this.setContentEditable);
+
+      this.marker.on('dragend', () => {
+        const lngLat = this.marker?.getLngLat();
+
+        if (lngLat) {
+          this.car.location = `${lngLat.lng} ${lngLat.lat}`;
+          this.reverseGeocode(lngLat.lng, lngLat.lat);
+        }
+      });
+
+      if (this.map) {
+        this.map.on('click', (e) => {
+
+          if (this.setContentEditable) {
+            const lngLat = e.lngLat;
+
+            this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
+            this.car.location = `${lngLat.lng} ${lngLat.lat}`;
+            this.reverseGeocode(lngLat.lng, lngLat.lat);
+          }
+        });
+      }
+    }
 
     editables.forEach((editable) => {
       if (this.setContentEditable) {
@@ -553,6 +558,29 @@ export class CarDetailComponent implements OnInit {
         editable.setAttribute('contenteditable', 'false');
       }
     });
+  }
+
+  reverseGeocode(lng: number, lat: number) {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${this.mapboxApiKey}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.features && data.features.length > 0) {
+
+          this.car.city = data.features[2].place_name.split(',')[0].trim();
+
+
+          if (isNaN(parseInt(this.car.city))) {
+            this.car.city = data.features[2].place_name.split(',')[0].trim();
+          } else {
+            this.car.city = data.features[2].place_name.split(',')[1].trim();
+          }
+        } else {
+          console.log('No features in data');
+        }
+      })
+      .catch(error => console.log('Error:', error));
   }
 
   loadUsers(): void {
