@@ -135,10 +135,14 @@ export class CarPageComponent implements OnInit {
 
     this.carService.getPage(this.pageSize, pageNumber, orderField, orderDirection, id_user, filter).subscribe({
       next: (data: ICarPage) => {
+        data.content.forEach((car) => {
+          this.imageIndex[car.id] = 0;
+        });
         this.cars = data.content;
         this.totalPageCount = data.totalPages;
         this.totalElements = data.totalElements; // Asegúrate de que esta propiedad está disponible
         this.currentPage = pageNumber;
+        this.getAllRatings();
         this.fillSavedCars();
       },
       error: (error: HttpErrorResponse) => {
@@ -198,6 +202,7 @@ export class CarPageComponent implements OnInit {
 
   public changePage(pageNumber: number) {
     this.isExpanded = {};
+    
     this.getPage(pageNumber);
     if (window.innerWidth < 640) {
       this.scrollToTopSm();
@@ -395,7 +400,7 @@ export class CarPageComponent implements OnInit {
   deleteCar(carId: number): void {
     this.carService.remove(carId).subscribe({
       next: () => {
-        this.goToHome();
+        this.getPage(this.currentPage);
         this.closeViewModal();
       },
       error: (error) => {
@@ -403,10 +408,5 @@ export class CarPageComponent implements OnInit {
       }
     });
   }
-
-  goToHome() {
-    window.location.href = '/home';
-  }
-
 }
 

@@ -77,6 +77,9 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     { color: 'silver', hex: '#C0C0C0' },
     { color: 'white', hex: '#FFFFFF' }
   ];
+  driveTypes: string[] = ['fwd', 'rwd', '4wd', 'awd'];
+  carTypes: string[] = ['sedan', 'coupe', 'convertible', 'hatchback', 'SUV', 'pickup', 'van', 'truck', 'other'];
+
 
   backgroundImage: string = `url(assets/images/image1.webp)`;
   inputImage: string = `url(assets/images/image4.webp)`;
@@ -86,6 +89,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   showYears: boolean = false;
   showColors: boolean = false;
   showUsers: boolean = false;
+  showCarTypes: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -224,7 +228,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
           }
 
           this.carForm.patchValue({ city: this.city });
-          console.log('Ciudad:', this.city);
         } else {
           console.log('No features in data');
         }
@@ -252,6 +255,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showYears = false;
     this.showColors = false;
     this.showUsers = false;
+    this.showCarTypes = false;
   }
 
   changeTitleBrand(event: any) {
