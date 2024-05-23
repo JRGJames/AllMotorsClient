@@ -384,7 +384,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userService.getByUsername(username).subscribe({
       next: (user: IUser) => {
         this.carForm.patchValue({ owner: user });
-        console.log('Usuario encontrado por nombre:', user);
         callback(user);
       },
       error: (error: HttpErrorResponse) => {
@@ -398,7 +397,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('Formulario:', this.carForm.value);
 
       const username = this.carForm.get('owner')?.value;
-      console.log('Propietario:', username);
 
       // Ahora pasa la lógica de creación del coche como un callback
       this.findUserByUsername(username, (user: IUser) => {

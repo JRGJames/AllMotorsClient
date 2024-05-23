@@ -66,7 +66,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.carService.byViews(amount).subscribe({
       next: (data: ICar[]) => {
         this.popularCars = data;
-        console.log(this.popularCars);
       },
       error: (error) => {
         console.error('Error al cargar coches populares:', error);
