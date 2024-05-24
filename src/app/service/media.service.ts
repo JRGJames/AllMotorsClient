@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from 'src/environment/environment';
-import { IImage } from '../model/model';
+import { ICar, IImage } from '../model/model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,18 @@ export class MediaService {
     return this.http.delete<any>(this.url + `/delete/${imageId}`);
   }
 
-  createCarImage(formData: FormData, carId: number): Observable<any> {
-    return this.http.post<any>(this.url + `/create/${carId}`, formData);
-  }
+  createCarImage(formData: FormData, car?: ICar, carId?: number): Observable<any> {
+    let url: string;
+
+    if (car) {
+        url = `${this.url}/create/${car}`;
+    } else if (carId) {
+        url = `${this.url}/create/${carId}`;
+    } else {
+        throw new Error('Neither car nor carId was provided.');
+    }
+
+    return this.http.post<any>(url, formData);
+}
+
 }

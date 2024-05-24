@@ -93,7 +93,7 @@ export class CarDetailComponent implements OnInit {
   driveTypes: string[] = ['FWD', 'RWD', '4WD', 'AWD'];
   brands: string[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
   models: string[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-  carTypes: string[] = ['sedan', 'coupe', 'convertible', 'hatchback', 'SUV', 'pickup', 'van', 'minivan', 'truck', 'quad', 'tractor', 'trailer', 'other'];
+  carTypes: string[] = ['sedan', 'coupe', 'convertible', 'hatchback', 'SUV', 'pickup', 'van', 'truck', 'other'];
 
   chartOptions: Partial<ChartOptions> = {
     series: [
@@ -643,7 +643,7 @@ export class CarDetailComponent implements OnInit {
     } else {
       const formData = new FormData();
       formData.append('file', file);
-      this.mediaService.createCarImage(formData, this.car.id).subscribe({
+      this.mediaService.createCarImage(formData, undefined, this.car.id).subscribe({
         next: (image) => {
           this.car.images.push(image);
           this.imageIndex = this.car.images.length - 1;

@@ -67,4 +67,8 @@ export class CarService {
   byViews(amount: number): Observable<ICar[]> {
     return this.http.get<ICar[]>(this.url + "/get/byViews/" + amount);
   }
+
+  getLast(): Observable<ICar> {
+    return this.http.get<ICar>(this.url + "/getLast");
+  }
 }

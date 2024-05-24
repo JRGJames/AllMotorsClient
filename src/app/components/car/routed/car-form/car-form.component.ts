@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { MediaService } from 'src/app/service/media.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
 import { Map, MapStyle, config, Marker, NavigationControl, MaptilerNavigationControl, GeolocationType, LngLat } from '@maptiler/sdk';
+import { last, Observable, of, switchMap } from 'rxjs';
 
 
 @Component({
@@ -28,12 +29,14 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   map: Map | undefined;
   marker: Marker | undefined;
 
+  imageIndex: number = 0;
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
   carForm!: FormGroup;
-  car: ICar = { owner: {} } as ICar;
+  car: ICar = {} as ICar;
   currentUser: IUser = {} as IUser;
   status: HttpErrorResponse | null = null;
   user: IUser = {} as IUser;
+  temporaryCar: ICar = {} as ICar;
 
   titleBrand: string = '';
   titleModel: string = '';
@@ -339,7 +342,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  fillFormWithDefaults() {
+  async fillFormWithDefaults() {
     this.carForm.patchValue({
       owner: this.currentUser.username,
       title: 'BMW 320ci E46 2001',
@@ -366,6 +369,28 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       drive: 'rwd',
     });
 
+    this.images = [];
+    this.selectedFiles = [];
+
+    // Add two images to the images array and selectedFiles array
+    this.images.push({ imageUrl: 'assets/images/image1.webp', car: this.car, id: 0 });
+    this.images.push({ imageUrl: 'assets/images/image2.webp', car: this.car, id: 1 });
+    this.imageIndex = this.images.length - 1;
+
+    // Helper function to fetch the image and convert it to a File object
+    const imageToFile = async (url, fileName) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new File([blob], fileName, { type: blob.type });
+    };
+
+    // Select the two images as files and add them to the array
+    const file1 = await imageToFile('assets/images/image1.webp', 'image1.webp');
+    const file2 = await imageToFile('assets/images/image2.webp', 'image2.webp');
+
+    this.selectedFiles.push(file1);
+    this.selectedFiles.push(file2);
+
     // Actualizar el contenido del span
     this.renderer.setProperty(this.descriptionSpan.nativeElement, 'innerHTML', this.carForm.get('description')?.value);
 
@@ -380,58 +405,158 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return '';
   }
 
-  findUserByUsername(username: string, callback: (user: IUser) => void): void {
-    this.userService.getByUsername(username).subscribe({
-      next: (user: IUser) => {
+  setFormUser(username: string): Observable<FormGroup> {
+    return this.userService.getByUsername(username).pipe(
+      switchMap((user: IUser) => {
         this.carForm.patchValue({ owner: user });
-        callback(user);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al cargar los datos del usuario:', error);
-      }
-    });
+        return of(this.carForm);
+      })
+    );
   }
 
   onSubmit() {
-    if (this.carForm.valid) {
-      console.log('Formulario:', this.carForm.value);
-
-      const username = this.carForm.get('owner')?.value;
-
-      // Ahora pasa la lógica de creación del coche como un callback
-      this.findUserByUsername(username, (user: IUser) => {
+    if (this.selectedFiles.length < 2 && this.images.length < 2) {
+      // this.toastService.show('Debes subir 2 fotos como minimo');
+      console.error('Debes subir 2 fotos como minimo');
+    } else {
+      if (this.carForm.valid) {
         if (this.operation === 'NEW') {
-          this.carService.create(this.carForm.value).subscribe({
-            next: (car: ICar) => {
-              console.log('Coche creado:', car);
+          this.setFormUser(this.carForm.get('owner')?.value)
+            .pipe(
+              switchMap(() => this.carService.create(this.carForm.value)),
+              switchMap((car: ICar) => {
+                this.car = car;
 
-              // if (this.images && this.images.length > 2) {
-              //   Array.from(this.images).forEach((image) => {
-              //     formData.append('images', image.imageUrl, car.id.toString());
-              //   });
+                return of(this.uploadImages(this.car));
+              })
+            )
+            .subscribe({
+              next: () => {
+                // Aquí puedes redirigir si es necesario
+                this.router.navigate(['/car', this.car]);
+              },
+              error: (error) => {
+                console.error('Error en el proceso de creación:', error);
+                this.status = error;
+              }
+            });
+        }
+      }
+    }
+  }
 
-              //   this.mediaService.uploadMultipleFiles(formData).subscribe({
-              //     next: (response) => {
-              //       console.log('Imágenes subidas:', response);
-              //       this.router.navigate(['/car', car.id]);
-              //     },
-              //     error: (uploadError) => {
-              //       console.error('Error subiendo imágenes:', uploadError);
-              //       this.status = uploadError;
-              //     }
-              //   });
-              // } else {
-              //   this.router.navigate(['/car', car]);
-              // }
-              this.router.navigate(['/car', car]);
-            },
-            error: (createError) => {
-              console.error('Error creando el coche:', createError);
-              this.status = createError;
-            }
-          });
+  uploadImages(car: ICar) {
+    this.selectedFiles.forEach(file => {
+      const formData = new FormData();
+      formData.append('file', file);
+      this.mediaService.createCarImage(formData, car, undefined).subscribe({
+        next: (image) => {
+          console.log('Imagen subida:', image);
+        },
+        error: (error) => {
+          console.error('Error al subir la imagen:', error);
         }
       });
+    });
+  }
+
+  prevImage() {
+    this.imageIndex--;
+  }
+
+  nextImage() {
+    this.imageIndex++;
+  }
+
+  changePage(newPage: number) {
+    this.imageIndex = newPage;
+  }
+
+  addFiles(event: any): void {
+    const files = event.target.files;
+
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (this.checkFileSizeImage(file)) {
+          if (this.checkFileType(file)) {
+            // add the image to the preview
+            this.addImage(file);
+
+
+            console.log('Archivo añadido:', file);
+          } else {
+            //this.toastService.show('El archivo seleccionado no es una imagen.');
+            console.error('El archivo seleccionado no es una imagen.');
+          }
+        } else {
+          //this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
+          console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        }
+      }
+    }
+  }
+
+
+  addImage(file: File): void {
+    if (this.images.length >= 8) {
+      // this.toastService.show('No puedes añadir más de 8 imágenes.');
+      console.error('No puedes añadir más de 8 imágenes.');
+    } else {
+      const image: IImage = {
+        imageUrl: URL.createObjectURL(file),
+        car: this.car,
+        id: this.images.length
+      };
+      this.images.push(image);
+      this.selectedFiles.push(file);
+
+      if (this.images.length === 1) {
+        this.imageIndex = 0;
+      } else {
+        this.imageIndex++;
+      }
+    }
+  }
+
+  onImageSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (this.checkFileSizeImage(file)) {
+        if (this.checkFileType(file)) {
+          this.addImage(file);
+        } else {
+          //this.toastService.show('El archivo seleccionado no es una imagen.');
+          console.error('El archivo seleccionado no es una imagen.');
+          return;
+        }
+      } else {
+        //this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
+        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        return;
+      }
+    }
+  }
+
+  checkFileSizeImage(file: File): boolean {
+    const maxSizeInBytes = 6 * 1024 * 1024; // Tamaño máximo permitido en bytes (2 MB en este ejemplo)
+    return file.size <= maxSizeInBytes;
+  }
+
+  checkFileType(file: File): boolean {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']; // Tipos MIME permitidos
+    return allowedTypes.includes(file.type);
+  }
+
+  deleteImage(imageId: number): void {
+    // take out the image from the images array
+    this.images = this.images.filter(image => image.id !== imageId);
+    this.selectedFiles = this.selectedFiles.filter((file, index) => index !== imageId);
+
+    if (this.images.length === 0) {
+      this.imageIndex = 0;
+    } else {
+      this.imageIndex = this.images.length - 1;
     }
   }
 }
