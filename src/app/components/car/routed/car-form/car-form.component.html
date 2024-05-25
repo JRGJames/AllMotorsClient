@@ -27,38 +27,39 @@
             <img *ngIf="images && images.length > imageIndex"
               class="absolute object-cover w-full h-full hover:shadow-lg rounded-xl"
               [src]="images[imageIndex].imageUrl">
-              <button *ngIf="imageIndex > 0"
-                class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
-                (click)="prevImage()">
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              <div class="flex justify-center w-full absolute bottom-0">
-                <div class="space-x-2 bg-white bg-opacity-20 backdrop-blur-sm py-2 px-3 rounded-t-lg">
-                  <button *ngFor="let image of images; let i = index"
-                    class="w-5 h-2 rounded-md hover:bg-gray-300 transition-colors cursor-pointer"
-                    [ngClass]="{'bg-gray-700': imageIndex === i, 'bg-gray-100': imageIndex !== i}" (click)="changePage(i)">
-                  </button>
-                </div>
-              </div>
-    
-              <button *ngIf="images && imageIndex < images.length - 1"
-                class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 right-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
-                (click)="nextImage()">
-                <i class="fas fa-chevron-right"></i>
-              </button>
-              <div
-                class="absolute top-2 right-2 flex opacity-100 gap-2 p-2 items-center transition-all duration-500 justify-center">
-                <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()"
-                  accept="image/*">
-                <label for="imageDesktop"
-                  class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-                  <i class="fa fa-plus text-lg"></i>
-                </label>
-                <button (click)="deleteImage(images[imageIndex].id); closeDropdowns()"
-                  class="items-center flex justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
-                  <i class="fa fa-trash text-lg"></i>
+            <button *ngIf="imageIndex > 0"
+              class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 left-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
+              (click)="prevImage()">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="flex justify-center w-full absolute bottom-0">
+              <div class="space-x-2 bg-white bg-opacity-20 backdrop-blur-sm py-2 px-3 rounded-t-lg">
+                <button *ngFor="let image of images; let i = index"
+                  class="w-5 h-2 rounded-md hover:bg-gray-300 transition-colors cursor-pointer"
+                  [ngClass]="{'bg-gray-700': imageIndex === i, 'bg-gray-100': imageIndex !== i}"
+                  (click)="changePage(i)">
                 </button>
               </div>
+            </div>
+
+            <button *ngIf="images && imageIndex < images.length - 1"
+              class="absolute focus:outline-none top-1/2 -translate-y-1/2 hover:bg-white hover:bg-opacity-25 hover:backdrop-blur-sm p-3 right-2 rounded-lg text-3xl text-white transition-colors hover:text-gray-800"
+              (click)="nextImage()">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+            <div
+              class="absolute top-2 right-2 flex opacity-100 gap-2 p-2 items-center transition-all duration-500 justify-center">
+              <input type="file" hidden id="imageDesktop" (change)="onImageSelected($event)" (click)="closeDropdowns()"
+                accept="image/*">
+              <label for="imageDesktop"
+                class=" items-center flex cursor-pointer justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+                <i class="fa fa-plus text-lg"></i>
+              </label>
+              <button (click)="deleteImage(images[imageIndex].id); closeDropdowns()"
+                class="items-center flex justify-center h-10 w-10 rounded-lg text-white hover:text-gray-800 p-5 hover:bg-gray-200 hover:bg-opacity-40 hover:backdrop-blur-md transition-colors">
+                <i class="fa fa-trash text-lg"></i>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -69,16 +70,16 @@
             <div [ngClass]="{'sm:w-full': !currentUser.role, 'sm:w-3/5': currentUser.role}"
               class=" w-full order-2 sm:order-1">
               <label for="title" class="font-base">Title *</label>
-              <input type="text" id="title" formControlName="title" (focus)="closeDropdowns()"
+              <input type="text" id="title" formControlName="title" (focus)="closeDropdowns()" [(ngModel)]="title" autocomplete="off"
                 placeholder="Example: Fiat 500 Cabrio"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
-                value="{{title}}">
+                >
             </div>
 
             <!--Owner-->
             <div *ngIf="currentUser.role" class="w-full sm:w-2/5 order-1 sm:order-2 relative">
               <label for="owner" class="font-base">Owner</label>
-              <input type="text" id="owner" formControlName="owner"
+              <input type="text" id="owner" formControlName="owner" autocomplete="off"
                 (click)="showUsers = !showUsers; showCarTypes = false; showBrands = false; showModels = false; showYears = false; showColors = false"
                 #ownerInput
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
@@ -107,7 +108,7 @@
             <!--Price-->
             <div class="flex flex-col w-full sm:w-3/5">
               <label for="price" class="font-base text-gray-700">Price *</label>
-              <input type="number" id="price" formControlName="price" (focus)="closeDropdowns()"
+              <input type="number" id="price" formControlName="price" (focus)="closeDropdowns()" autocomplete="off"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
                 placeholder="Choose price">
             </div>
@@ -131,7 +132,7 @@
             <!-- Brand -->
             <div class="flex flex-col w-full md:w-1/2 relative">
               <label for="brand" class=" font-base text-gray-700">Brand *</label>
-              <input type="text" id="brand" formControlName="brand" placeholder="Search a brand"
+              <input type="text" id="brand" formControlName="brand" placeholder="Search a brand" autocomplete="off"
                 (click)="showBrands = !showBrands; showCarTypes = false; showUsers = false; showModels = false; showYears = false; showColors = false"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               <div (change)="changeTitleBrand($event); onBrandChange($event)"
@@ -149,7 +150,7 @@
             <!-- Model -->
             <div class="flex flex-col w-full md:w-1/2 relative">
               <label for="model" class=" font-base text-gray-700">Model *</label>
-              <input type="text" id="model" formControlName="model" placeholder="Search a model"
+              <input type="text" id="model" formControlName="model" placeholder="Search a model" autocomplete="off"
                 (click)="showModels = !showModels; showCarTypes = false; showUsers = false; showBrands = false; showYears = false; showColors = false"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               <div (change)="changeTitleModel($event)" [ngClass]="{'h-0': !showModels, 'h-36 py-2': showModels}"
@@ -172,7 +173,7 @@
             <!--Year-->
             <div class="flex flex-col w-full lg:w-1/2 relative">
               <label for="year" class=" font-base text-gray-700">Year *</label>
-              <input type="text" id="year" formControlName="year" placeholder="Select a year"
+              <input type="text" id="year" formControlName="year" placeholder="Select a year" autocomplete="off"
                 (click)="showYears = !showYears; showCarTypes = false; showUsers = false; showBrands = false; showModels = false; showColors = false"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               <div [ngClass]="{'h-0': !showYears, 'h-36 py-2': showYears}"
@@ -189,7 +190,7 @@
             <div class="flex flex-col w-full lg:w-1/2 relative">
               <label for="color" class=" font-base text-gray-700">Color *</label>
               <input type="text" id="color" formControlName="color"
-                [value]="carForm.get('color')?.value | capitalizeFirst" placeholder="Select a color"
+                [value]="carForm.get('color')?.value | capitalizeFirst" placeholder="Select a color" autocomplete="off"
                 (click)="showColors = !showColors; showCarTypes = false; showUsers = false; showBrands = false; showModels = false; showYears = false"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               <div [ngClass]="{'h-0': !showColors, 'h-36 py-2': showColors}"
@@ -211,7 +212,7 @@
             <div class="flex flex-col w-full lg:w-1/2 relative">
               <label for="seats" class="font-base text-gray-700">Seats *</label>
               <input type="number" id="seats" formControlName="seats" (focus)="closeDropdowns()"
-                placeholder="Number of seats"
+                placeholder="Number of seats" autocomplete="off"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
             </div>
 
@@ -219,7 +220,7 @@
             <div class="flex flex-col w-full lg:w-1/2 relative">
               <label for="doors" class="font-base text-gray-700">Doors *</label>
               <input type="number" id="doors" formControlName="doors" (focus)="closeDropdowns()"
-                placeholder="Number of doors"
+                placeholder="Number of doors" autocomplete="off"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
             </div>
           </div>
@@ -230,9 +231,7 @@
           <!-- Description -->
           <div class="h-full flex flex-col w-full md:w-2/5 order-2 md:order-1">
             <label for="description">Description *</label>
-            <span name="description" id="description" formControlName="description" #descriptionSpan
-              class="description mt-2 block rounded-lg p-3 w-full resize-none box-border scroll-hide overflow-y-auto bg-gray-200 min-h-20 max-h-72 md:min-h-72 md:max-h-72 leading-6 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
-              contenteditable (focus)="closeDropdowns()"></span>
+            <textarea name="description" id="description" placeholder="Perfect condition" formControlName="description" class="mt-2 p-3 scroll-hide description w-full h-32 md:h-full rounded-lg placeholder:text-xs placeholder:xl:text-base bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 resize-none"></textarea>
           </div>
 
           <!-- Location -->
@@ -312,14 +311,14 @@
               <div class="flex flex-col w-full sm:w-1/3 lg:hidden order-2 sm:order-1">
                 <label for="distance" class="font-base text-gray-700">Distance</label>
                 <input type="number" id="distance" formControlName="distance" (focus)="closeDropdowns()"
-                  placeholder="Distance in km"
+                  placeholder="Distance in km" autocomplete="off"
                   class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               </div>
 
               <!--Car Type-->
               <div class=" sm:w-2/3 w-full relative lg:hidden order-1 sm:order-2">
                 <label for="type" class="font-base">Car type</label>
-                <input type="text" id="type" formControlName="type"
+                <input type="text" id="type" formControlName="type" autocomplete="off"
                   (click)="showCarTypes = !showCarTypes; showUsers = false; showBrands = false; showModels = false; showYears = false; showColors = false"
                   class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
                   placeholder="Select your car body" [value]="carForm.get('type')?.value | capitalizeFirst">
@@ -342,7 +341,7 @@
               <div class="hidden lg:flex flex-col w-1/3">
                 <label for="distance" class="font-base text-gray-700">Distance</label>
                 <input type="number" id="distance" formControlName="distance" (focus)="closeDropdowns()"
-                  placeholder="Distance in km"
+                  placeholder="Distance in km" autocomplete="off"
                   class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               </div>
 
@@ -350,7 +349,7 @@
               <div class="flex flex-col w-1/2 lg:w-1/3">
                 <label for="horsepower" class="font-base text-gray-700">Horsepower</label>
                 <input type="number" id="horsepower" formControlName="horsepower" (focus)="closeDropdowns()"
-                  placeholder="Write your car hp"
+                  placeholder="Write your car hp" autocomplete="off"
                   class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               </div>
 
@@ -359,7 +358,7 @@
               <div class="hidden lg:flex flex-col w-1/2 lg:w-1/3 relative">
                 <label for="type" class="font-base">Car type</label>
                 <input type="text" id="type" formControlName="type"
-                  (click)="showCarTypes = !showCarTypes; showUsers = false; showBrands = false; showModels = false; showYears = false; showColors = false"
+                  (click)="showCarTypes = !showCarTypes; showUsers = false; showBrands = false; showModels = false; showYears = false; showColors = false" autocomplete="off"
                   class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
                   placeholder="Select your car body" [value]="carForm.get('type')?.value | capitalizeFirst">
                 <div [ngClass]="{'h-0': !showCarTypes, 'h-36 py-2': showCarTypes}"
@@ -379,7 +378,7 @@
               <div class="w-1/2 relative lg:hidden">
                 <label for="acceleration" class="font-base text-gray-700">Acceleration</label>
                 <input type="number" id="acceleration" formControlName="acceleration" (focus)="closeDropdowns()"
-                  placeholder="0-100 km/h in seconds"
+                  placeholder="0-100 km/h in seconds" autocomplete="off"
                   class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
               </div>
             </div>
@@ -390,7 +389,7 @@
             <div class="lg:w-1/3 relative hidden lg:block ">
               <label for="acceleration" class="font-base text-gray-700">Acceleration</label>
               <input type="number" id="acceleration" formControlName="acceleration" (focus)="closeDropdowns()"
-                placeholder="0-100 km/h in seconds"
+                placeholder="0-100 km/h in seconds" autocomplete="off"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
             </div>
 
@@ -398,7 +397,7 @@
             <div class="flex flex-col w-1/2 lg:w-1/3">
               <label for="consumption" class="font-base text-gray-700">Consumption</label>
               <input type="number" id="consumption" formControlName="consumption" (focus)="closeDropdowns()"
-                placeholder="Consumption in l/100km"
+                placeholder="Consumption in l/100km" autocomplete="off"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
             </div>
 
@@ -406,7 +405,7 @@
             <div class="flex flex-col w-1/2 lg:w-1/3">
               <label for="emissions" class="font-base text-gray-700">Emissions</label>
               <input type="number" id="emissions" formControlName="emissions" (focus)="closeDropdowns()"
-                placeholder="Emissions in g CO2/km"
+                placeholder="Emissions in g CO2/km" autocomplete="off"
                 class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
             </div>
           </div>

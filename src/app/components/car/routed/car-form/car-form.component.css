@@ -2,11 +2,6 @@
   display: none;
 }
 
-#description[contenteditable]:empty::before {
-  content: "Perfect condition";
-  color: gray;
-}
-
 .description {
   word-break: normal;
   white-space: wrap;

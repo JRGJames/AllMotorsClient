@@ -22,12 +22,14 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() id: number = 1;
   @Input() operation: formOperation = 'NEW'; // new or edit
 
-  @ViewChild('descriptionSpan') descriptionSpan: ElementRef = {} as ElementRef;
+  @ViewChild('descriptionSpan', { static: true }) descriptionSpan: ElementRef = {} as ElementRef;
   @ViewChild('ownerInput') ownerInput: ElementRef = {} as ElementRef;
   @ViewChild('map')
   private mapContainer!: ElementRef;
   map: Map | undefined;
   marker: Marker | undefined;
+
+  description: string = '';
 
   imageIndex: number = 0;
   selectedFiles: File[] = []; // Este array solo contendrá objetos File
@@ -40,7 +42,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   titleBrand: string = '';
   titleModel: string = '';
-  title: string = this.titleBrand + ' ' + this.titleModel;
+  title: string = this.titleBrand + this.titleModel;
   city: string = '';
   mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
 
@@ -119,13 +121,12 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       color: [car.color, [Validators.required]],
       seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(8)]],
       doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
-      description: [car.description, [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
+      description: [car.description, [Validators.required, Validators.minLength(5), Validators.maxLength(2000)]],
       location: [car.location, [Validators.required]],
       city: [car.city, [Validators.required]],
       gearbox: [car.gearbox, [Validators.required]],
       fuel: [car.fuel, [Validators.required]],
 
-      images: [car.images], // La validación de archivos puede requerir un enfoque personalizado
       horsepower: [car.horsepower],
       distance: [car.distance],
       type: [car.type],
@@ -145,7 +146,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
 
-    this.title = this.titleBrand + ' ' + this.titleModel;
+    this.title = this.titleBrand + this.titleModel;
 
     this.userService.getByUsername(this.sessionService.getUsername()).subscribe({
       next: (data: IUser) => {
@@ -230,6 +231,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
             this.city = data.features[2].place_name.split(',')[1].trim();
           }
 
+          this.carForm.patchValue({ location: lng.toString() + ' ' + lat.toString() });
           this.carForm.patchValue({ city: this.city });
         } else {
           console.log('No features in data');
@@ -263,6 +265,9 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   changeTitleBrand(event: any) {
     this.title = event.target.value;
+    this.titleBrand = event.target.value;
+    document.getElementById('title')?.setAttribute('value', this.title);
+    document.getElementById('model')?.focus();
     this.carForm.patchValue({
       title: this.title
     });
@@ -273,22 +278,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.carForm.patchValue({
       title: this.title
     });
-  }
-
-  handleFileInput(event: any) {
-    const files: FileList = event.target.files;
-
-    // Llenamos selectedFiles con objetos File
-    this.selectedFiles = Array.from(files);
-
-    // Creamos el array de IImage basado en los archivos seleccionados
-    // this.images = this.selectedFiles.map(file => ({
-    //   imageUrl: file.name, // Usamos el nombre del archivo para imageUrl
-    //   car: this.car // Ponemos el valor de car como null
-    // }));
-
-    console.log('Imagenes seleccionadas:', this.selectedFiles);
-    console.log('Imagenes para IImage:', this.images);
   }
 
   loadYears() {
@@ -406,40 +395,55 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setFormUser(username: string): Observable<FormGroup> {
-    return this.userService.getByUsername(username).pipe(
-      switchMap((user: IUser) => {
-        this.carForm.patchValue({ owner: user });
-        return of(this.carForm);
-      })
-    );
+    if (username === '' || username === null) {
+      console.error('Please login');
+      this.router.navigate(['/login']);
+      return of(this.carForm);
+    } else {
+      return this.userService.getByUsername(username).pipe(
+        switchMap((user: IUser) => {
+          this.carForm.patchValue({ owner: user });
+          return of(this.carForm);
+        })
+      );
+    }
   }
 
   onSubmit() {
-    if (this.selectedFiles.length < 2 && this.images.length < 2) {
-      // this.toastService.show('Debes subir 2 fotos como minimo');
-      console.error('Debes subir 2 fotos como minimo');
+    if (this.carForm.get('owner')?.value === null) {
+      console.error('Please login');
+      this.router.navigate(['/login']);
     } else {
-      if (this.carForm.valid) {
-        if (this.operation === 'NEW') {
-          this.setFormUser(this.carForm.get('owner')?.value)
-            .pipe(
-              switchMap(() => this.carService.create(this.carForm.value)),
-              switchMap((car: ICar) => {
-                this.car = car;
+      if (this.selectedFiles.length < 2 && this.images.length < 2) {
+        // this.toastService.show('Debes subir 2 fotos como minimo');
+        console.error('Debes subir 2 fotos como minimo');
+      } else {
 
-                return of(this.uploadImages(this.car));
-              })
-            )
-            .subscribe({
-              next: () => {
-                // Aquí puedes redirigir si es necesario
-                this.router.navigate(['/car', this.car]);
-              },
-              error: (error) => {
-                console.error('Error en el proceso de creación:', error);
-                this.status = error;
-              }
-            });
+        if (this.carForm.valid) {
+          if (this.operation === 'NEW') {
+            this.setFormUser(this.carForm.get('owner')?.value)
+              .pipe(
+                switchMap(() => this.carService.create(this.carForm.value)),
+                switchMap((car: ICar) => {
+                  this.car = car;
+
+                  return of(this.uploadImages(this.car));
+                })
+              )
+              .subscribe({
+                next: () => {
+                  // Aquí puedes redirigir si es necesario
+                  this.router.navigate(['/car', this.car]);
+                },
+                error: (error) => {
+                  console.error('Error en el proceso de creación:', error);
+                  this.status = error;
+                }
+              });
+          }
+        } else {
+          console.error('Formulario no válido');
+
         }
       }
     }
@@ -451,7 +455,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       formData.append('file', file);
       this.mediaService.createCarImage(formData, car, undefined).subscribe({
         next: (image) => {
-          console.log('Imagen subida:', image);
         },
         error: (error) => {
           console.error('Error al subir la imagen:', error);
@@ -483,8 +486,6 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
             // add the image to the preview
             this.addImage(file);
 
-
-            console.log('Archivo añadido:', file);
           } else {
             //this.toastService.show('El archivo seleccionado no es una imagen.');
             console.error('El archivo seleccionado no es una imagen.');

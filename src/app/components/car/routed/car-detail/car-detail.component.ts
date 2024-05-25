@@ -495,7 +495,7 @@ export class CarDetailComponent implements OnInit {
       this.car.year = Number(document.getElementById('year')?.innerText);
       this.car.seats = Number(document.getElementById('seats')?.innerText);
       this.car.doors = Number(document.getElementById('doors')?.innerText);
-      this.car.description = document.getElementById('description')?.innerText || '';
+      this.car.description = (document.getElementById('description') as HTMLTextAreaElement)?.value;
 
       const distanceText = document.getElementById('distance')?.innerText || '';
       this.car.distance = Number(distanceText.replace('.', ''));
