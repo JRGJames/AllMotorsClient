@@ -75,8 +75,8 @@ export class UserProfileComponent implements OnInit {
           }
           this.getCurrentUser();
           this.showPosts();
-          config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
         });
+        config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
       } else {
         console.error('ID is undefined');
         this.router.navigate(['/']); // Redirige a la página de inicio si no hay ID
