@@ -126,6 +126,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       city: [car.city, [Validators.required]],
       gearbox: [car.gearbox, [Validators.required]],
       fuel: [car.fuel, [Validators.required]],
+      dateUploaded: [car.dateUploaded],
 
       horsepower: [car.horsepower],
       distance: [car.distance],
@@ -348,6 +349,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       city: 'Valencia',
       gearbox: 'manual',
       fuel: 'gasoline',
+      dateUploaded: new Date(),
 
       horsepower: 185,
       distance: 100000,
@@ -402,6 +404,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       return this.userService.getByUsername(username).pipe(
         switchMap((user: IUser) => {
+          this.carForm.patchValue({ dateUploaded: new Date()});
           this.carForm.patchValue({ owner: user });
           return of(this.carForm);
         })

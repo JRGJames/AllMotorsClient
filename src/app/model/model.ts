@@ -81,7 +81,7 @@ export interface ICar extends IEntity {
     brand: string;
     model: string;
     title: string;
-    dateUpload: Date;
+    dateUploaded: Date;
     images: IImage[];
     views: number;
     saves: number;
