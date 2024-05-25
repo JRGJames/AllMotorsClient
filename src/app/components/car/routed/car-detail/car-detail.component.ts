@@ -204,11 +204,17 @@ export class CarDetailComponent implements OnInit {
       this.id = +params['id'];
       if (this.id) {
         this.getCurrentUser();
-        this.getOne(this.id);
-        this.increaseViews(this.id);
+        this.getOne(this.id).then(isValidId => {
+          if (!isValidId) {
+            this.router.navigate(['/']); // Redirige a la página de inicio si el ID no es válido
+          } else {
+            this.increaseViews(this.id);
+          }
+        });
         config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
       } else {
         console.error('ID is undefined');
+        this.router.navigate(['/']); // Redirige a la página de inicio si no hay ID
       }
     });
   }
@@ -231,46 +237,52 @@ export class CarDetailComponent implements OnInit {
     }
   }
 
-  getOne(carId: number): void {
-    this.carService.get(carId).subscribe({
-      next: (data: ICar) => {
-        this.car = data;
-        this.getRatingCount(this.car.owner.id);
-        this.getRatingAverage(this.car.owner.id);
-        this.checkIfCarIsSaved(this.car.id);
-        this.selectedUser = this.car.owner.username;
-        this.coords = {
-          lng: parseFloat(this.car.location.split(' ')[0]),
-          lat: parseFloat(this.car.location.split(' ')[1])
-        };
-
-        const initialState = {
-          lat: this.coords.lat,
-          lng: this.coords.lng,
-          zoom: 15
-        };
-
-        this.map = new Map({
-          container: this.mapContainer.nativeElement,
-          center: [initialState.lng, initialState.lat],
-          zoom: initialState.zoom,
-          style: MapStyle.STREETS,
-          fullscreenControl: true,
-          geolocateControl: false
-        });
-
-        this.marker = new Marker({
-          color: 'red',
-          draggable: false
-        });
-
-        this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.status = error;
-      }
+  getOne(carId: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.carService.get(carId).subscribe({
+        next: (data: ICar) => {
+          this.car = data;
+          this.getRatingCount(this.car.owner.id);
+          this.getRatingAverage(this.car.owner.id);
+          this.checkIfCarIsSaved(this.car.id);
+          this.selectedUser = this.car.owner.username;
+          this.coords = {
+            lng: parseFloat(this.car.location.split(' ')[0]),
+            lat: parseFloat(this.car.location.split(' ')[1])
+          };
+  
+          const initialState = {
+            lat: this.coords.lat,
+            lng: this.coords.lng,
+            zoom: 15
+          };
+  
+          this.map = new Map({
+            container: this.mapContainer.nativeElement,
+            center: [initialState.lng, initialState.lat],
+            zoom: initialState.zoom,
+            style: MapStyle.STREETS,
+            fullscreenControl: true,
+            geolocateControl: false
+          });
+  
+          this.marker = new Marker({
+            color: 'red',
+            draggable: false
+          });
+  
+          this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
+  
+          resolve(true); // El ID es válido
+        },
+        error: (error: HttpErrorResponse) => {
+          this.status = error;
+          resolve(false); // El ID no es válido
+        }
+      });
     });
   }
+  
 
   prevImage() {
     this.imageIndex--;

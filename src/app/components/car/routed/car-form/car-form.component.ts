@@ -252,6 +252,8 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
           console.error('Error al cargar los datos del usuario actual:', error);
         }
       });
+    } else {
+      this.router.navigate(['/login']); // Redirige al login si no hay sesión activa
     }
   }
 

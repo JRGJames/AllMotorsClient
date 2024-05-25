@@ -68,57 +68,67 @@ export class UserProfileComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
       if (this.id) {
-        this.getUser();
-        this.getCurrentUser();
-        this.showPosts();
-        config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
+        this.getUser().then(userExists => {
+          if (!userExists) {
+            this.router.navigate(['/']); // Redirige a la página de inicio si el usuario no existe
+            return;
+          }
+          this.getCurrentUser();
+          this.showPosts();
+          config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
+        });
       } else {
         console.error('ID is undefined');
+        this.router.navigate(['/']); // Redirige a la página de inicio si no hay ID
       }
     });
   }
 
-  getUser(): void {
-    this.userService.get(this.id).subscribe({
-      next: (user: IUser) => {
-        this.user = user;
-        this.getUserRatingCount(this.id);
-        this.getUserRatingAverage(this.id);
-        this.loadCars();
-        this.getSavedCars();
-        this.fillSavedCars();
+  getUser(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.userService.get(this.id).subscribe({
+        next: (user: IUser) => {
+          this.user = user;
+          this.getUserRatingCount(this.id);
+          this.getUserRatingAverage(this.id);
+          this.loadCars();
+          this.getSavedCars();
+          this.fillSavedCars();
 
-        this.coords = {
-          lng: parseFloat(this.user.location.split(' ')[0]),
-          lat: parseFloat(this.user.location.split(' ')[1])
-        };
+          this.coords = {
+            lng: parseFloat(this.user.location.split(' ')[0]),
+            lat: parseFloat(this.user.location.split(' ')[1])
+          };
 
-        const initialState = {
-          lat: this.coords.lat,
-          lng: this.coords.lng,
-          zoom: 14
-        };
+          const initialState = {
+            lat: this.coords.lat,
+            lng: this.coords.lng,
+            zoom: 14
+          };
 
-        this.map = new Map({
-          container: this.mapContainer.nativeElement,
-          center: [initialState.lng, initialState.lat],
-          zoom: initialState.zoom,
-          style: MapStyle.STREETS,
-          fullscreenControl: true,
-          geolocateControl: false
-        });
+          this.map = new Map({
+            container: this.mapContainer.nativeElement,
+            center: [initialState.lng, initialState.lat],
+            zoom: initialState.zoom,
+            style: MapStyle.STREETS,
+            fullscreenControl: true,
+            geolocateControl: false
+          });
 
-        this.marker = new Marker({
-          color: 'red',
-          draggable: false
-        });
+          this.marker = new Marker({
+            color: 'red',
+            draggable: false
+          });
 
-        this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
-        this.marker.addClassName('hidden');
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al cargar los datos del usuario:', error);
-      }
+          this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
+          this.marker.addClassName('hidden');
+          resolve(true); // El usuario existe
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar los datos del usuario:', error);
+          resolve(false); // El usuario no existe
+        }
+      });
     });
   }
 
