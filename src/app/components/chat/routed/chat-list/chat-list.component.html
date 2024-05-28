@@ -37,7 +37,6 @@
     <div *ngIf="selectedChat === undefined">
       hola
     </div>
-
     <div *ngIf="selectedChat.id !== undefined" class="w-full h-full flex flex-col bg-white bg-opacity-5 bg-cover bg-center"
       [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
       <div class="h-[9.5rem] pt-16 bg-gray-100 bg-opacity-70 backdrop-blur-md px-4">
@@ -54,7 +53,7 @@
                 </div>
               </div>
               <div class="flex flex-col justify-between">
-                <div class="flex items-end gap-2">
+                <div class="flex items-end gap-1">
                   <p>{{ receiver.username }}</p>
                   <p *ngIf="selectedChat.car" class="text-gray-800"> - {{ selectedChat.car.title }}</p>
                 </div>
