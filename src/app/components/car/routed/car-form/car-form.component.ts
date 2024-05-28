@@ -406,7 +406,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       return this.userService.getByUsername(username).pipe(
         switchMap((user: IUser) => {
-          this.carForm.patchValue({ dateUploaded: new Date()});
+          this.carForm.patchValue({ dateUploaded: new Date() });
           this.carForm.patchValue({ owner: user });
           return of(this.carForm);
         })

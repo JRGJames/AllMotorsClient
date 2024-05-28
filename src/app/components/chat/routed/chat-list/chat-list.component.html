@@ -1,0 +1,86 @@
+<div class="flex w-full h-screen bg-cover bg-center" [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
+  <div class="w-1/5 h-full bg-transparent bg-gray-50 bg-opacity-50">
+    <div class="flex h-full bg-gray-50 bg-opacity-60 backdrop-blur-lg overflow-y-auto chat-scrollbar flex-col pt-16">
+      <button *ngFor="let chat of chats; let i = index" (click)="checkIfUserIsMember(chat); setBackground(chat); selectedChat = chat"
+        [ngClass]="{'shadow-md bg-gray-50 bg-opacity-45': selectedChat === chat, 'bg-opacity-0 bg-gray-100 hover:bg-opacity-30 hover:bg-gray-50 hover:shadow-sm': selectedChat !== chat}"
+        class="p-3 h-16 transition-all items-center flex gap-3 focus:outline-none">
+        <div class="flex gap-3 h-full w-full">
+          <div class="rounded-full overflow-hidden bg-gray-500 h-full w-10 aspect-square">
+            <ng-container *ngIf="chat.memberTwo.id === currentUser.id; else memberTwoTemplate">
+              <img *ngIf="chat.memberOne.profilePicture" [src]="urlImage + chat.memberOne.profilePicture"
+                alt="chat memberOne image" class="flex h-full object-cover w-full items-center justify-center">
+              <div *ngIf="!chat.memberOne.profilePicture"
+                class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
+                {{ getUserInitials(chat.memberOne) }}
+              </div>
+            </ng-container>
+            <ng-template #memberTwoTemplate>
+              <img *ngIf="chat.memberTwo.profilePicture" [src]="urlImage + chat.memberTwo.profilePicture"
+                alt="chat memberTwo image" class="flex h-full object-cover w-full items-center justify-center">
+              <div *ngIf="!chat.memberTwo.profilePicture"
+                class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
+                {{ getUserInitials(chat.memberTwo) }}
+              </div>
+            </ng-template>
+          </div>
+          <div [ngClass]="{'justify-between': chat.car, 'justify-start': !chat.car }"
+            class="flex flex-col h-full items-start">
+            <p>{{ chat.memberOne.id === currentUser.id ? chat.memberTwo.username : chat.memberOne.username }}</p>
+            <p *ngIf="chat.car" class="text-xs text-gray-800">{{ chat.car.title }}</p>
+            <p *ngIf="!chat.car" class="text-xs text-gray-800">Example message...</p>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+  <div class="w-4/5 backdrop-blur-sm bg-cover bg-center" [ngStyle]="{'background-image': backgroundImage}" loading="lazy">
+    <div *ngIf="selectedChat === undefined">
+      hola
+    </div>
+
+    <div *ngIf="selectedChat.id !== undefined" class="w-full h-full flex flex-col bg-white bg-opacity-5 bg-cover bg-center"
+      [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
+      <div class="h-[9.5rem] pt-16 bg-gray-100 bg-opacity-70 backdrop-blur-md px-4">
+        <div class="flex items-center justify-between h-full px-4">
+          <div class="flex items-center gap-4 justify-between w-full">
+            <div class="flex gap-3">
+              <div class="rounded-full overflow-hidden bg-gray-500 h-full w-10 aspect-square">
+                <img *ngIf="receiver.profilePicture"
+                  [src]="urlImage + receiver.profilePicture" alt="chat receiver image"
+                  class="flex h-full object-cover w-full items-center justify-center">
+                <div *ngIf="!receiver.profilePicture"
+                  class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
+                  {{ getUserInitials(receiver) }}
+                </div>
+              </div>
+              <div class="flex flex-col justify-between">
+                <div class="flex items-end gap-2">
+                  <p>{{ receiver.username }}</p>
+                  <p *ngIf="selectedChat.car" class="text-gray-800"> - {{ selectedChat.car.title }}</p>
+                </div>
+                <p class="italic text-xs text-gray-600">{{ receiver.status ? 'Online' : 'Offline' }}</p>
+              </div>
+            </div>
+            <button class="w-auto h-10 flex gap-2 items-center">
+              <p>Options</p>
+              <i class="fa fa-ellipsis-vertical"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="w-full h-full">
+
+      </div>
+      <div class="h-20 w-full flex px-4">
+        <input type="text" name="message" id="message" placeholder="Type a message..."
+          class="w-full items-center m-3 rounded-xl px-3 bg-white h-10 focus:outline-none bg-opacity-85 backdrop-blur-md">
+        <button
+          class="bg-sky-600 m-3 py-2 h-auto rounded-xl flex gap-2 items-center text-white px-4 hover:bg-sky-700 transition-all duration-300">
+          Send
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

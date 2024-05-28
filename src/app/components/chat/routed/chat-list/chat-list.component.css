@@ -1,0 +1,23 @@
+.scroll-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.chat-scrollbar::-webkit-scrollbar {
+    height: 7px;
+    /* Hace el scrollbar más fino */
+    width: 7px;
+    /* Hace el scrollbar más fino */
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+    background: #a7a7a73f;
+    /* Bordes redondeados para el track */
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+    background: #0EA5E9;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #0284C7;
+}

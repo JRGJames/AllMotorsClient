@@ -35,6 +35,8 @@ import { CarDetailComponent } from './components/car/routed/car-detail/car-detai
 import { CarPageComponent } from './components/car/unrouted/car-page/car-page.component';
 import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
 import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
+import { ChatListComponent } from './components/chat/routed/chat-list/chat-list.component';
+import { ChatComponent } from './components/chat/unrouted/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { CarFormComponent } from './components/car/routed/car-form/car-form.comp
     CarDetailComponent,
     CarPageComponent,
     UserProfileComponent,
-    
+    ChatListComponent,
+    ChatComponent
   ],
   imports: [
     HttpClientModule,

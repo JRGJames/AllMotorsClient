@@ -7,6 +7,7 @@ import { SignupComponent } from './components/shared/routed/signup/signup.compon
 import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 import { CarDetailComponent } from './components/car/routed/car-detail/car-detail.component';
 import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
+import { ChatListComponent } from './components/chat/routed/chat-list/chat-list.component';
 
 const routes: Routes = [
 
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'upload', component: CarFormComponent },
   { path: 'car/:id' , component: CarDetailComponent },
-  { path: 'user/:id', component: UserProfileComponent }
+  { path: 'user/:id', component: UserProfileComponent },
+  { path: 'chats', component: ChatListComponent }
 ];
 
 @NgModule({
