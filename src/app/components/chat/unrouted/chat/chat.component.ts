@@ -1,10 +1,11 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { IChat, IUser, ICar } from 'src/app/model/model';
+import { IChat, IUser, ICar, IMessage } from 'src/app/model/model';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/service/session.service';
 import { UserService } from 'src/app/service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { API_URL_MEDIA } from 'src/environment/environment';
+import { MessageService } from 'src/app/service/message.service';
 
 @Component({
   selector: 'app-chat',
@@ -19,11 +20,13 @@ export class ChatComponent implements OnInit {
   currentUser: IUser = {} as IUser;
   urlImage: string = API_URL_MEDIA;
   selectedBackgroundImage: string = '';
+  message: IMessage = {} as IMessage;
 
   constructor(
     private userService: UserService,
     private router: Router,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {
@@ -61,18 +64,59 @@ export class ChatComponent implements OnInit {
   }
 
   checkIfUserIsMember(chat: IChat): void {
-    if (chat.memberOne.id === this.currentUser.id) {
-      this.receiver = chat.memberTwo;
-    } else {
-      this.receiver = chat.memberOne;
+    try {
+      if (chat.memberOne.id === this.currentUser.id) {
+        this.receiver = chat.memberTwo;
+        this.sender = chat.memberOne;
+      } else {
+        this.receiver = chat.memberOne;
+        this.sender = chat.memberTwo;
+      }
+    } catch (error) {
+      console.log('Chat sin valor, no se puede comparar los miembros del chat');
+      this.chat = {} as IChat;
     }
   }
 
+
   setBackground(chat: IChat): void {
-    if (chat.car === null) {
-      this.selectedBackgroundImage = this.backgroundImage;
+    try {
+      if (chat.car === null) {
+        this.selectedBackgroundImage = this.backgroundImage;
+      } else {
+        this.selectedBackgroundImage = `url('${this.urlImage + chat.car.images[0].imageUrl}')`;
+      }
+    } catch (error) {
+      console.log('Chat sin valor, no se puede cargar la imagen de fondo');
+    }
+  }
+
+  sendMessage(): void {
+    const messageContent = (document.getElementById('message') as HTMLInputElement).value;
+    if (messageContent === '') {
+      return;
     } else {
-      this.selectedBackgroundImage = `url('${this.urlImage + chat.car.images[0].imageUrl}')`;
+      console.log('Mensaje enviado:', messageContent);
+
+      this.message.content = messageContent;
+      this.message.sender = this.sender;
+      this.message.receiver = this.receiver;
+      this.message.chat = this.chat;
+      this.message.sentTime = new Date();
+
+      // Enviar mensaje
+      console.log('Enviando mensaje:', this.message, this.chat.car?.id);
+      this.messageService.send(this.message, this.chat.car?.id).subscribe({
+        next: (message: IMessage) => {
+          console.log('Mensaje enviado:', message);
+          // this.message = {} as IMessage;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al enviar el mensaje:', error);
+        }
+      });
+
+      (document.getElementById('message') as HTMLInputElement).value = '';
     }
   }
 }

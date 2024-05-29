@@ -253,13 +253,13 @@ export class CarDetailComponent implements OnInit {
             lng: parseFloat(this.car.location.split(' ')[0]),
             lat: parseFloat(this.car.location.split(' ')[1])
           };
-  
+
           const initialState = {
             lat: this.coords.lat,
             lng: this.coords.lng,
             zoom: 15
           };
-  
+
           this.map = new Map({
             container: this.mapContainer.nativeElement,
             center: [initialState.lng, initialState.lat],
@@ -268,14 +268,14 @@ export class CarDetailComponent implements OnInit {
             fullscreenControl: true,
             geolocateControl: false
           });
-  
+
           this.marker = new Marker({
             color: 'red',
             draggable: false
           });
-  
+
           this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
-  
+
           resolve(true); // El ID es válido
         },
         error: (error: HttpErrorResponse) => {
@@ -285,7 +285,7 @@ export class CarDetailComponent implements OnInit {
       });
     });
   }
-  
+
 
   prevImage() {
     this.imageIndex--;
@@ -710,5 +710,25 @@ export class CarDetailComponent implements OnInit {
     this.isEditingBrand = false;
     this.isEditingModel = false;
     this.isEditingImages = false;
+  }
+
+  //navigate to chat page with the information of the car and members on the chat attached
+  loadChat(): void {
+    if (this.car.owner.id === this.currentUser.id) {
+      console.error('No puedes chatear contigo mismo');
+      //toast here
+      return;
+    } else {
+      const chat = {
+        memberOne: this.car.owner,
+        memberTwo: this.currentUser,
+        car: this.car,
+        notifications: 0,
+        creationDate: new Date()
+      };
+
+      const chatData = encodeURIComponent(JSON.stringify(chat));
+      this.router.navigate(['/chats', { chat: chatData }]);
+    }
   }
 }

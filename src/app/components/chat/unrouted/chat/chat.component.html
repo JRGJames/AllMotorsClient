@@ -1,9 +1,9 @@
-<div *ngIf="chat === undefined">
+<div *ngIf="chat.memberOne === undefined">
     hola
 </div>
-<div *ngIf="chat.id !== undefined" class="w-full h-full flex flex-col bg-white bg-opacity-5 bg-cover bg-center"
+<div *ngIf="chat.memberOne !== undefined" class="w-full h-full flex flex-col bg-white bg-opacity-5 bg-cover bg-center"
     [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
-    <div class="h-[9.5rem] pt-16 bg-gray-100 bg-opacity-70 backdrop-blur-md px-4">
+    <div class="h-[9.5rem] pt-16 bg-gray-50 bg-opacity-[0.63] backdrop-blur-lg px-4">
         <div class="flex items-center justify-between h-full px-4">
             <div class="flex items-center gap-4 justify-between w-full">
                 <div class="flex gap-3">
@@ -35,12 +35,16 @@
 
     </div>
     <div class="h-20 w-full flex px-4">
-        <input type="text" name="message" id="message" placeholder="Type a message..."
+        <input type="text" name="message" id="message" placeholder="Type a message..." autocomplete="off"
             class="w-full items-center m-3 placeholder:italic rounded-md px-3 bg-white h-10 focus:outline-none bg-opacity-75 backdrop-blur-md">
-        <button
+        <button (click)="sendMessage()"
             class="bg-sky-600 m-3 py-2 h-auto rounded-md flex gap-2 items-center text-white px-4 hover:bg-sky-700 transition-all duration-300">
             Send
-            <i class="fa fa-arrow-right"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
+                <path d="M6.5 12h14.5" />
+              </svg>
         </button>
     </div>
 

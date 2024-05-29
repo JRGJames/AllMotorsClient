@@ -3,7 +3,7 @@ import { IChat, IUser } from 'src/app/model/model';
 import { ChatService } from 'src/app/service/chat.service';
 import { SessionService } from './../../../../service/session.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
 
@@ -28,12 +28,29 @@ export class ChatListComponent implements OnInit {
     private chatService: ChatService,
     private sessionService: SessionService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private route: ActivatedRoute
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getCurrentUser();
     this.selectedBackgroundImage = this.backgroundImage;
+
+    // Subscribe to route parameters
+    this.route.params.subscribe(params => {
+      const chat = params['chat'];
+      if (chat) {
+        // Parse chat data if necessary
+        try {
+          const chatData = JSON.parse(decodeURIComponent(chat));
+          this.selectedChat = chatData;
+          this.checkIfUserIsMember(this.selectedChat);
+          this.setBackground(this.selectedChat);
+        } catch (error) {
+          console.error('Error parsing chat data:', error);
+        }
+      }
+    });
   }
 
   getCurrentUser(): void {

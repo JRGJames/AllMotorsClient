@@ -388,7 +388,8 @@ export class UserProfileComponent implements OnInit {
   deleteCar(carId: number): void {
     this.carService.remove(carId).subscribe({
       next: () => {
-        this.goToProfile();
+        this.loadCars();
+        this.getSavedCars();
         this.closeViewModal();
       },
       error: (error) => {
@@ -694,5 +695,25 @@ export class UserProfileComponent implements OnInit {
 
       }
     });
+  }
+
+  //navigate to chat page with the information of the car and members on the chat attached
+  loadChat(): void {
+    if (this.user.id === this.currentUser.id) {
+      console.error('No puedes chatear contigo mismo');
+      //toast here
+      return;
+    } else {
+      const chat = {
+        memberOne: this.user,
+        memberTwo: this.currentUser,
+        car: null,
+        notifications: 0,
+        creationDate: new Date()
+      };
+
+      const chatData = encodeURIComponent(JSON.stringify(chat));
+      this.router.navigate(['/chats', { chat: chatData }]);
+    }
   }
 }

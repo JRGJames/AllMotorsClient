@@ -19,9 +19,17 @@ export class MessageService {
     return this.http.get<IMessage[]>(this.url + '/getAll/' + id);
   }
 
-  send(message: IMessage, carId: number): Observable<IMessage> {
-    return this.http.post<IMessage>(this.url + '/send/' + message, carId);
+  send(message: IMessage, carId?: number): Observable<IMessage> {
+    // Construimos la URL con el parámetro opcional carId
+    let url = this.url + '/send';
+    if (carId !== undefined && carId !== null) {
+      url += `?carId=${carId}`;
+    }
+
+    // Enviamos el mensaje en el cuerpo de la solicitud
+    return this.http.post<IMessage>(url, message);
   }
+
 
   delete(id: number): Observable<number> {
     return this.http.delete<number>(this.url + '/delete/' + id);
