@@ -2,7 +2,7 @@ import { UserService } from '../../../../service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ICar, IImage, IUser } from 'src/app/model/model';
+import { ICar, IImage, IMessage, IUser } from 'src/app/model/model';
 import { CarService } from 'src/app/service/car.service';
 import { RatingService } from 'src/app/service/rating.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -11,6 +11,7 @@ import { ChartComponent, ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSub
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
 import { Map, MapStyle, config, Marker } from '@maptiler/sdk';
+import { MessageService } from 'src/app/service/message.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -54,6 +55,7 @@ export class CarDetailComponent implements OnInit {
   imageToAdd: IImage = {} as IImage;
   coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
   mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
+  seller: IUser = {} as IUser;
 
   isEditingOwner: boolean = false;
   selectedUser: string = "";
@@ -196,7 +198,8 @@ export class CarDetailComponent implements OnInit {
     private router: Router,
     private ratingService: RatingService,
     private savedService: SavedService,
-    private mediaService: MediaService
+    private mediaService: MediaService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {

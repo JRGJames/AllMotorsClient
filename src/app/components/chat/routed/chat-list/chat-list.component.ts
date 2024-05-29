@@ -21,6 +21,7 @@ export class ChatListComponent implements OnInit {
   urlImage = API_URL_MEDIA;
   selectedChat: IChat = {} as IChat;
   receiver: IUser = {} as IUser;
+  seller: IUser = {} as IUser;
 
 
   constructor(
@@ -87,5 +88,5 @@ export class ChatListComponent implements OnInit {
       this.selectedBackgroundImage = `url('${this.urlImage + chat.car.images[0].imageUrl}')`;
     }
   }
-  
+
 }
