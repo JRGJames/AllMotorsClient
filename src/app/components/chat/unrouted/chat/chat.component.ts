@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IChat, IUser, ICar, IMessage } from 'src/app/model/model';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/service/session.service';
@@ -14,6 +14,7 @@ import { MessageService } from 'src/app/service/message.service';
 })
 export class ChatComponent implements OnInit {
   @Input() chat!: IChat;
+  @Output() chatUpdated: EventEmitter<void> = new EventEmitter<void>();
   backgroundImage: string = `url(assets/images/image4.webp)`;
   receiver: IUser = {} as IUser;
   sender: IUser = {} as IUser;
@@ -26,11 +27,17 @@ export class ChatComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private sessionService: SessionService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private elementRef: ElementRef
   ) { }
 
   ngOnInit() {
     this.getCurrentUser();
+  }
+
+  ngAfterViewInit(): void {
+    // Enfocar en el input del mensaje después de que la vista se inicialice
+    (this.elementRef.nativeElement.querySelector('#message') as HTMLInputElement).focus();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -109,7 +116,7 @@ export class ChatComponent implements OnInit {
       this.messageService.send(this.message, this.chat.car?.id).subscribe({
         next: (message: IMessage) => {
           console.log('Mensaje enviado:', message);
-          // this.message = {} as IMessage;
+          this.chatUpdated.emit();
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al enviar el mensaje:', error);

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { API_URL } from 'src/environment/environment';
 import { IMessage } from '../model/model';
 
@@ -9,6 +9,7 @@ import { IMessage } from '../model/model';
 })
 export class MessageService {
 
+  messageSent: EventEmitter<void> = new EventEmitter<void>();
   url: string = API_URL + '/message';
 
   constructor(
@@ -27,7 +28,10 @@ export class MessageService {
     }
 
     // Enviamos el mensaje en el cuerpo de la solicitud
-    return this.http.post<IMessage>(url, message);
+    return this.http.post<IMessage>(url, message).pipe(tap(() => {
+      this.messageSent.emit();
+    }
+    ));
   }
 
 

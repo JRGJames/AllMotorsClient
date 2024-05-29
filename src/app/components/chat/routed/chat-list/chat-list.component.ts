@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
+import { MessageService } from 'src/app/service/message.service';
 
 @Component({
   selector: 'app-chat-list',
@@ -29,11 +30,13 @@ export class ChatListComponent implements OnInit {
     private sessionService: SessionService,
     private router: Router,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.getCurrentUser();
+    this.subscribeToChatUpdates();
     this.selectedBackgroundImage = this.backgroundImage;
 
     // Subscribe to route parameters
@@ -68,6 +71,12 @@ export class ChatListComponent implements OnInit {
     } else {
       this.router.navigate(['/login']); // Redirige al login si no hay sesión activa
     }
+  }
+
+  subscribeToChatUpdates(): void {
+    this.messageService.messageSent.subscribe(() => {
+      this.getChats(this.currentUser.id); // Actualizar la lista de chats después de enviar un mensaje
+    });
   }
 
   getChats(userId: number) {
