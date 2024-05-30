@@ -20,3 +20,11 @@
 .scroll-chat::-webkit-scrollbar-thumb:hover {
     background: #0284C7;
 }
+
+.autogrow-textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 40px; /* Altura mínima */
+    transform-origin: top; /* Establece el origen de la transformación en la parte superior */
+  }
+  

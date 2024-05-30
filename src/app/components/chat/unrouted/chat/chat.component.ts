@@ -25,6 +25,7 @@ export class ChatComponent implements OnInit {
   message: IMessage = {} as IMessage;
   messages: IMessage[] = [];
   maxWidth: number = 30;
+  messageContent: string = '';
 
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
 
@@ -121,7 +122,6 @@ export class ChatComponent implements OnInit {
       next: (message: IMessage) => {
         console.log('Mensaje enviado:', message);
         this.messages.push(message);
-        this.scrollToBottom();
         this.chatUpdated.emit();
       },
       error: (error: HttpErrorResponse) => {
@@ -136,7 +136,6 @@ export class ChatComponent implements OnInit {
     try {
       this.chatService.getMessages(this.chat.id).subscribe({
         next: (messages: IMessage[]) => {
-          this.scrollToBottom();
           this.messages = messages;
 
         },
@@ -149,26 +148,18 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  scrollToBottom(): void {
-    try {
-      this.messageContainer.nativeElement.scrollBottom = this.messageContainer.nativeElement.scrollHeight;
-    } catch (error) {
-      console.error('Error al hacer scroll al fondo:', error);
-    }
-  }
-
-  handleKeyPress(event: KeyboardEvent): void {
+  handleKey(event: KeyboardEvent): void {
+    // Si la tecla presionada es Enter y Shift también está presionado
     if (event.key === 'Enter' && event.shiftKey) {
-      const textarea = event.target as HTMLTextAreaElement;
-      const cursorPosition = textarea.selectionStart;
-      const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-      const textAfterCursor = textarea.value.substring(cursorPosition);
-      textarea.value = textBeforeCursor + '\n' + textAfterCursor;
-      textarea.selectionStart = cursorPosition + 1;
-      textarea.selectionEnd = cursorPosition + 1;
+      // Agrega un salto de línea al contenido del mensaje
+      this.messageContent += '\n';
+      // Previene el comportamiento predeterminado (salto de línea)
+      event.preventDefault();
+    } else if (event.key === 'Enter') {
+      // Si solo se presionó Enter, envía el mensaje
+      this.sendMessage();
+      // Previene el comportamiento predeterminado (salto de línea)
       event.preventDefault();
     }
   }
-
-
 }
