@@ -3,9 +3,11 @@
   <div [ngClass]="{'h-56 duration-500': showMenu, 'h-[6.5em] duration-300': showMenu && !strUserName,'h-[21.5em] duration-500':showMenu && showAccountDropdown, 'h-56 duration-200':showMenu && !showAccountDropdown,'h-16 duration-300': !showMenu}"
     class="logo-container flex-col transition-all sm:h-16 items-center self-center overflow-y-hidden">
     <div class="flex items-center self-center h-16 justify-between w-full sm:px-0 px-6">
-      <a (click)="goToHome()" class="flex text-white font-bold text-2xl sm:text-3xl focus:outline-none cursor-pointer">
-        <i class="fas fa-cog text-white text-xl sm:text-2xl self-center mr-1"></i>
-        AllMotors
+      <a (click)="goToHome()" class="flex items-center space-x-1 text-white font-bold text-2xl sm:text-3xl focus:outline-none cursor-pointer">
+        <img src="../../../../../assets/images/wheel-icon.png" class="h-7" alt="AllMotors logo">
+        <p>
+          AllMotors
+        </p>
       </a>
       <button (click)="toggleMenu()" #menuButton class="text-white focus:outline-none block sm:hidden">
         <i class="fas fa-bars text-xl"></i>

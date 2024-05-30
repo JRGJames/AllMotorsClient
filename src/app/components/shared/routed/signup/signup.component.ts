@@ -121,18 +121,36 @@ export class SignupComponent implements OnInit {
   uniqueUsernameValidator(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return userService.checkUsernameNotTaken(control.value).pipe(
-        map(isUsernameAvailable => (isUsernameAvailable ? null : { usernameTaken: true })),
-        catchError(() => of(null))
+        map(isUsernameAvailable => {
+          if (!isUsernameAvailable) {
+            console.log('El nombre de usuario ya está en uso.');
+            return { usernameTaken: true };
+          }
+          return null;
+        }),
+        catchError(() => {
+          console.log('Error al comprobar el nombre de usuario.');
+          return of(null);
+        })
       );
     };
   }
-
+  
   // Validador para el correo electrónico
   uniqueEmailValidator(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return userService.checkEmailNotTaken(control.value).pipe(
-        map(isEmailAvailable => (isEmailAvailable ? null : { emailTaken: true })),
-        catchError(() => of(null))
+        map(isEmailAvailable => {
+          if (!isEmailAvailable) {
+            console.log('El correo electrónico ya está en uso.');
+            return { emailTaken: true };
+          }
+          return null;
+        }),
+        catchError(() => {
+          console.log('Error al comprobar el correo electrónico.');
+          return of(null);
+        })
       );
     };
   }

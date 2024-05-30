@@ -1,38 +1,27 @@
-<footer class="bg-gray-800 text-white">
-  <div class="w-full py-8 px-20 md:flex md:items-center md:justify-between">
-    <div class="mt-6 md:mt-0 items-center">
-      <h6 class="font-bold text-3xl">About AllMotors</h6>
-      <p class="mt-2 text-sm">Our service provide the easiest way to buy or sell cars</p>
+<footer class="bg-sky-800 shadow">
+  <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+    <div class="sm:flex sm:items-center sm:justify-between">
+      <a routerLink="/" class="flex items-center mb-4 sm:mb-0 space-x-1 rtl:space-x-reverse">
+        <img src="../../../../../assets/images/wheel-icon.png" class="h-7 self-center" alt="AllMotors Logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">AllMotors</span>
+      </a>
+      <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-300 sm:mb-0">
+        <li>
+          <a routerLink="/" class="hover:underline me-4 md:me-6">About</a>
+        </li>
+        <li>
+          <a routerLink="/" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+        </li>
+        <li>
+          <a routerLink="/" class="hover:underline me-4 md:me-6">Licensing</a>
+        </li>
+        <li>
+          <a routerLink="/" class="hover:underline">Contact</a>
+        </li>
+      </ul>
     </div>
-    <div class="flex flex-col space-y-10">
-      <div class="flex mt-2 space-x-5">
-        <a class="text-sm hover:text-sky-700 transition-colors" href="/">Home</a>
-        <a class="text-sm hover:text-sky-700 transition-colors" href="#">Cars for Sale</a>
-        <a class="text-sm hover:text-sky-700 transition-colors" href="#">Services</a>
-        <a class="text-sm hover:text-sky-700 transition-colors" href="#">About Us</a>
-        <a class="text-sm hover:text-sky-700 transition-colors" href="#">Contact Us</a>
-      </div>
-      <div class="flex mt-6 md:mt-0 space-x-10 w-full">
-        <h6 class="font-bold text-lg w-2/5">Follow Us</h6>
-        <div class="flex justify-between w-full">
-          <a href="#" class="mx-2 text-sm hover:text-sky-700 transition-colors" aria-label="Facebook">
-            <i class="fa fa-facebook-f"></i>
-          </a>
-          <a href="#" class="mx-2 text-sm hover:text-sky-700 transition-colors" aria-label="Twitter">
-            <i class="fa fa-twitter"></i>
-          </a>
-          <a href="#" class="mx-2 text-sm hover:text-sky-700 transition-colors" aria-label="Instagram">
-            <i class="fa fa-instagram"></i>
-          </a>
-          <a href="#" class="mx-2 text-sm hover:text-sky-700 transition-colors" aria-label="Instagram">
-            <i class="fa fa-instagram"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-  <div class="border-t-2 border-sky-900 mt-4 py-4 text-center text-sm mx-20">
-    &copy; 2024 AllMotors. All rights reserved.
+    <hr class="my-6 border-gray-200 sm:mx-auto lg:my-8" />
+    <span class="block text-sm text-gray-300 sm:text-center">© 2024 <a routerLink="/"
+        class="hover:underline">AllMotors™</a>. All Rights Reserved.</span>
   </div>
 </footer>
