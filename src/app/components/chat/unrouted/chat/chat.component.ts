@@ -106,6 +106,11 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  //scroll to bottom of the chat
+  scrollToBottom(): void {
+    this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight + 100;
+  }
+
   sendMessage(): void {
     let messageContent = (document.getElementById('message') as HTMLInputElement).value.trim();
     if (messageContent === '') {
@@ -123,6 +128,7 @@ export class ChatComponent implements OnInit {
         console.log('Mensaje enviado:', message);
         this.messages.push(message);
         this.chatUpdated.emit();
+        this.scrollToBottom();
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al enviar el mensaje:', error);
@@ -137,7 +143,7 @@ export class ChatComponent implements OnInit {
       this.chatService.getMessages(this.chat.id).subscribe({
         next: (messages: IMessage[]) => {
           this.messages = messages;
-
+          this.scrollToBottom();
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los mensajes:', error);
