@@ -6,14 +6,3 @@
   word-break: normal;
   white-space: wrap;
 }
-
-.coordinates {
-  color: #fff;
-  top: 10px;
-  left: 10px;
-  padding: 5px 10px;
-  margin: 0;
-  font-size: 11px;
-  line-height: 18px;
-  display: none;
-}

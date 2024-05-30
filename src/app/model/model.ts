@@ -131,6 +131,7 @@ export interface IChat extends IEntity {
     memberOne: IUser;
     memberTwo: IUser;
     car: ICar;
+    messages: IMessage[];
 }
 
 export interface IChatPage extends IPage<IChat> {

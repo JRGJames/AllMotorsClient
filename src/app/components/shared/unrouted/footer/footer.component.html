@@ -1,6 +1,6 @@
-<footer class="bg-sky-800 shadow">
+<footer [ngClass]="{'hidden': hideFooter}" class="bg-sky-800 shadow">
   <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-    <div class="sm:flex sm:items-center sm:justify-between">
+    <div class="sm:flex sm:items-center sm:justify-between lg:px-8">
       <a routerLink="/" class="flex items-center mb-4 sm:mb-0 space-x-1 rtl:space-x-reverse">
         <img src="../../../../../assets/images/wheel-icon.png" class="h-7 self-center" alt="AllMotors Logo" />
         <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">AllMotors</span>

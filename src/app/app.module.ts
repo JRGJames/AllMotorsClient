@@ -37,6 +37,8 @@ import { UserProfileComponent } from './components/user/routed/user-profile/user
 import { CarFormComponent } from './components/car/routed/car-form/car-form.component';
 import { ChatListComponent } from './components/chat/routed/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/unrouted/chat/chat.component';
+import { DatePipe } from '@angular/common';
+import { TimeOnlyPipe } from './pipes/timeOnly.pipe';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import { ChatComponent } from './components/chat/unrouted/chat/chat.component';
     ThousandSeparatorPipe,
     RoundToThousandthPipe,
     CapitalizeFirstPipe,
+    TimeOnlyPipe,
     DateFormatPipe,
     BirthdatePipe,
     LoginComponent,
@@ -57,7 +60,7 @@ import { ChatComponent } from './components/chat/unrouted/chat/chat.component';
     CarPageComponent,
     UserProfileComponent,
     ChatListComponent,
-    ChatComponent
+    ChatComponent,
   ],
   imports: [
     HttpClientModule,
@@ -76,7 +79,16 @@ import { ChatComponent } from './components/chat/unrouted/chat/chat.component';
     CryptoService,
     RatingService,
     ToastService,
+    DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
+  exports: [
+    TrimPipe,
+    ThousandSeparatorPipe,
+    RoundToThousandthPipe,
+    CapitalizeFirstPipe,
+    DateFormatPipe,
+    BirthdatePipe
   ],
   bootstrap: [AppComponent]
 })

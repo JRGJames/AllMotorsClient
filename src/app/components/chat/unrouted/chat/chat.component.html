@@ -1,7 +1,7 @@
 <div *ngIf="chat.memberOne === undefined">
     hola
 </div>
-<div *ngIf="chat.memberOne !== undefined" class="w-full h-full flex flex-col bg-white bg-opacity-5 bg-cover bg-center"
+<div *ngIf="chat.memberOne !== undefined" class="w-full h-full flex flex-col bg-cover bg-center"
     [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
     <div class="h-[9.5rem] pt-16 bg-gray-50 bg-opacity-[0.63] backdrop-blur-lg px-4">
         <div class="flex items-center justify-between h-full px-4">
@@ -31,20 +31,44 @@
             </div>
         </div>
     </div>
-    <div class="w-full h-full">
-
+    <div class="w-full h-full flex flex-col p-3 px-4 overflow-y-auto scroll-chat" #messageContainer>
+        <div *ngFor="let message of messages; let i = index" class="w-full flex flex-col py-1">
+            <div [ngClass]="{
+                'bg-sky-500 text-white self-end': message.sender.id === currentUser.id,
+                'bg-white self-start': message.sender.id !== currentUser.id,
+                'rounded-tr-none': (i !== 0 && messages[i].sender.id !== messages[i - 1].sender.id && message.sender.id === currentUser.id) || (i === 0 && message.sender.id === currentUser.id),
+                'rounded-tl-none': (i !== 0 && messages[i].sender.id !== messages[i - 1].sender.id && message.sender.id !== currentUser.id) || (i === 0 && message.sender.id !== currentUser.id)
+              }"
+                class="bg-opacity-90 rounded-lg backdrop-blur-md p-1 px-3 w-auto flex flex-col justify-between items-end max-w-[60%] relative">
+                <span class="text-[15px] relative min-w-full justify-between">
+                    <span *ngFor="let word of message.content.split(' ')" class="w-full inline"
+                        [ngClass]="{'break-all': word.length > maxWidth}">
+                        {{word}}
+                    </span>
+                    <span *ngIf="!message.content.includes('\n')"
+                        class="inline-block">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <span class="text-[9px] absolute right-0 bottom-[2px] text-end self-end">{{message.sentTime |
+                        timeOnly}}</span>
+                </span>
+            </div>
+        </div>
     </div>
     <div class="h-20 w-full flex px-4">
-        <input type="text" name="message" id="message" placeholder="Type a message..." autocomplete="off"
-            class="w-full items-center m-3 placeholder:italic placeholder:text-sm flex text rounded-md px-3 bg-white h-10 focus:outline-none bg-opacity-75 backdrop-blur-md">
+        <textarea type="text" name="message" id="message" placeholder="Type a message..." autocomplete="off"
+            (keypress)="handleKeyPress($event)"
+            class="w-full items-center m-3 placeholder:italic resize-none placeholder:text-sm py-2 flex text rounded-md px-3 bg-white h-10 focus:outline-none bg-opacity-80 backdrop-blur-md"></textarea>
+
         <button (click)="sendMessage()"
             class="bg-sky-600 m-3 py-2 h-auto rounded-md flex gap-2 items-center text-white px-4 hover:bg-sky-700 transition-all duration-300">
             Send
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send-2" width="24" height="24"
+                viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                    d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
                 <path d="M6.5 12h14.5" />
-              </svg>
+            </svg>
         </button>
     </div>
 

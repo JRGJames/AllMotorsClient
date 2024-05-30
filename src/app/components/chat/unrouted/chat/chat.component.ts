@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { IChat, IUser, ICar, IMessage } from 'src/app/model/model';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/service/session.service';
@@ -6,6 +6,7 @@ import { UserService } from 'src/app/service/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { API_URL_MEDIA } from 'src/environment/environment';
 import { MessageService } from 'src/app/service/message.service';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -22,13 +23,18 @@ export class ChatComponent implements OnInit {
   urlImage: string = API_URL_MEDIA;
   selectedBackgroundImage: string = '';
   message: IMessage = {} as IMessage;
+  messages: IMessage[] = [];
+  maxWidth: number = 30;
+
+  @ViewChild('messageContainer') private messageContainer!: ElementRef;
 
   constructor(
     private userService: UserService,
     private router: Router,
     private sessionService: SessionService,
     private messageService: MessageService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private chatService: ChatService
   ) { }
 
   ngOnInit() {
@@ -36,7 +42,6 @@ export class ChatComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    // Enfocar en el input del mensaje después de que la vista se inicialice
     (this.elementRef.nativeElement.querySelector('#message') as HTMLInputElement).focus();
   }
 
@@ -44,6 +49,9 @@ export class ChatComponent implements OnInit {
     if (changes['chat'] && this.chat) {
       this.checkIfUserIsMember(this.chat);
       this.setBackground(this.chat);
+      if (this.chat.id) {
+        this.fillMessages();
+      }
     }
   }
 
@@ -59,7 +67,7 @@ export class ChatComponent implements OnInit {
         }
       });
     } else {
-      this.router.navigate(['/login']); // Redirige al login si no hay sesión activa
+      this.router.navigate(['/login']);
     }
   }
 
@@ -85,7 +93,6 @@ export class ChatComponent implements OnInit {
     }
   }
 
-
   setBackground(chat: IChat): void {
     try {
       if (chat.car === null) {
@@ -99,31 +106,69 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage(): void {
-    const messageContent = (document.getElementById('message') as HTMLInputElement).value;
+    let messageContent = (document.getElementById('message') as HTMLInputElement).value.trim();
     if (messageContent === '') {
       return;
-    } else {
-      console.log('Mensaje enviado:', messageContent);
+    }
 
-      this.message.content = messageContent;
-      this.message.sender = this.sender;
-      this.message.receiver = this.receiver;
-      this.message.chat = this.chat;
-      this.message.sentTime = new Date();
+    this.message.content = messageContent;
+    this.message.sender = this.sender;
+    this.message.receiver = this.receiver;
+    this.message.chat = this.chat;
+    this.message.sentTime = new Date();
 
-      // Enviar mensaje
-      console.log('Enviando mensaje:', this.message, this.chat.car?.id);
-      this.messageService.send(this.message, this.chat.car?.id).subscribe({
-        next: (message: IMessage) => {
-          console.log('Mensaje enviado:', message);
-          this.chatUpdated.emit();
+    this.messageService.send(this.message, this.chat.car?.id).subscribe({
+      next: (message: IMessage) => {
+        console.log('Mensaje enviado:', message);
+        this.messages.push(message);
+        this.scrollToBottom();
+        this.chatUpdated.emit();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al enviar el mensaje:', error);
+      }
+    });
+
+    (document.getElementById('message') as HTMLInputElement).value = '';
+  }
+
+  fillMessages(): void {
+    try {
+      this.chatService.getMessages(this.chat.id).subscribe({
+        next: (messages: IMessage[]) => {
+          this.scrollToBottom();
+          this.messages = messages;
+
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Error al enviar el mensaje:', error);
+          console.error('Error al cargar los mensajes:', error);
         }
       });
-
-      (document.getElementById('message') as HTMLInputElement).value = '';
+    } catch (error) {
+      console.log('Chat sin valor, no se pueden cargar los mensajes');
     }
   }
+
+  scrollToBottom(): void {
+    try {
+      this.messageContainer.nativeElement.scrollBottom = this.messageContainer.nativeElement.scrollHeight;
+    } catch (error) {
+      console.error('Error al hacer scroll al fondo:', error);
+    }
+  }
+
+  handleKeyPress(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && event.shiftKey) {
+      const textarea = event.target as HTMLTextAreaElement;
+      const cursorPosition = textarea.selectionStart;
+      const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+      const textAfterCursor = textarea.value.substring(cursorPosition);
+      textarea.value = textBeforeCursor + '\n' + textAfterCursor;
+      textarea.selectionStart = cursorPosition + 1;
+      textarea.selectionEnd = cursorPosition + 1;
+      event.preventDefault();
+    }
+  }
+
+
 }
