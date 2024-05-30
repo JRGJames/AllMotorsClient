@@ -34,6 +34,12 @@ export class MessageService {
     ));
   }
 
+  like(id: number, liked: boolean): Observable<void> {
+    return this.http.put<void>(`${this.url}/like/${id}?liked=${liked}`, {});
+  }
+  
+
+
 
   delete(id: number): Observable<number> {
     return this.http.delete<number>(this.url + '/delete/' + id);

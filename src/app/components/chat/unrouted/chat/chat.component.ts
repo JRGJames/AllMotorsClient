@@ -138,21 +138,39 @@ export class ChatComponent implements OnInit {
     (document.getElementById('message') as HTMLInputElement).value = '';
   }
 
+  likeMessage(message: IMessage): void {
+    const liked = !message.isLiked;
+    this.messageService.like(message.id, liked).subscribe(
+        () => {
+            message.isLiked = liked;
+        },
+        error => {
+            console.error('Error liking message', error);
+        }
+    );
+}
+
+
   fillMessages(): void {
     try {
-      this.chatService.getMessages(this.chat.id).subscribe({
-        next: (messages: IMessage[]) => {
-          this.messages = messages;
-          this.scrollToBottom();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error al cargar los mensajes:', error);
-        }
-      });
+        this.chatService.getMessages(this.chat.id).subscribe({
+            next: (messages: IMessage[]) => {
+                this.messages = messages.map(message => ({
+                    ...message,
+                    isLiked: message.isLiked || false // Asegura que isLiked tenga un valor booleano
+                }));
+                console.log('Mensajes cargados:', messages);
+                this.scrollToBottom();
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error('Error al cargar los mensajes:', error);
+            }
+        });
     } catch (error) {
-      console.log('Chat sin valor, no se pueden cargar los mensajes');
+        console.log('Chat sin valor, no se pueden cargar los mensajes');
     }
-  }
+}
+
 
   handleKey(event: KeyboardEvent): void {
     // Si la tecla presionada es Enter y Shift también está presionado
@@ -167,5 +185,12 @@ export class ChatComponent implements OnInit {
       // Previene el comportamiento predeterminado (salto de línea)
       event.preventDefault();
     }
+  }
+
+  shouldShowDate(index: number): boolean {
+    if (index === 0) return true;
+    const currentMessageDate = new Date(this.messages[index].sentTime).toDateString();
+    const previousMessageDate = new Date(this.messages[index - 1].sentTime).toDateString();
+    return currentMessageDate !== previousMessageDate;
   }
 }
