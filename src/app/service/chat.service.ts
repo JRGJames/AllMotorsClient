@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { API_URL } from '../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { ICar, IChat, IUser } from '../model/model';
+import { ICar, IChat, IMessage, IUser } from '../model/model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -18,6 +18,10 @@ export class ChatService {
 
     getAll(userId: number): Observable<IChat[]> {
         return this.http.get<IChat[]>(`${this.url}/get/${userId}`);
+    }
+
+    getMessages(chatId: number): Observable<IMessage[]> {
+        return this.http.get<IMessage[]>(`${this.url}/messages/${chatId}`);
     }
 
     create(memberOne: IUser, memberTwo: IUser, car: ICar) {

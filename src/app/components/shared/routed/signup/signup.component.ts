@@ -64,11 +64,11 @@ export class SignupComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.userForm.markAllAsTouched();  // Marca todos los controles como tocados
-  
+
     if (this.userForm.valid && this.operation === 'NEW') {
       const formData = { ...this.userForm.value };
       formData.password = this.cryptoService.getSHA256(formData.password); // Hashea la contraseña directamente
-  
+
       this.userService.create(formData).pipe(
         switchMap(() => this.sessionService.login(formData.username, formData.password)), // Encadena el inicio de sesión después de la creación
         tap((data: string) => {
@@ -85,7 +85,7 @@ export class SignupComponent implements OnInit {
       });
     }
   }
-  
+
 
   togglePasswordVisibility(field: string) {
     this.passwordVisible[field] = !this.passwordVisible[field];
@@ -121,8 +121,17 @@ export class SignupComponent implements OnInit {
   uniqueUsernameValidator(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return userService.checkUsernameNotTaken(control.value).pipe(
-        map(isUsernameAvailable => (isUsernameAvailable ? null : { usernameTaken: true })),
-        catchError(() => of(null))
+        map(isUsernameAvailable => {
+          if (!isUsernameAvailable) {
+            console.log('El nombre de usuario ya está en uso.');
+            return { usernameTaken: true };
+          }
+          return null;
+        }),
+        catchError(() => {
+          console.log('Error al comprobar el nombre de usuario.');
+          return of(null);
+        })
       );
     };
   }
@@ -131,11 +140,19 @@ export class SignupComponent implements OnInit {
   uniqueEmailValidator(userService: UserService): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return userService.checkEmailNotTaken(control.value).pipe(
-        map(isEmailAvailable => (isEmailAvailable ? null : { emailTaken: true })),
-        catchError(() => of(null))
+        map(isEmailAvailable => {
+          if (!isEmailAvailable) {
+            console.log('El correo electrónico ya está en uso.');
+            return { emailTaken: true };
+          }
+          return null;
+        }),
+        catchError(() => {
+          console.log('Error al comprobar el correo electrónico.');
+          return of(null);
+        })
       );
     };
+
   }
-
 }
-
