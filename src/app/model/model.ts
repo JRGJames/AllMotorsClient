@@ -143,8 +143,8 @@ export interface IMessage extends IEntity {
     sender: IUser;
     chat: IChat;
     receiver: IUser;
-    isRead: Boolean;
-    isLiked: boolean;
+    read: Boolean;
+    liked: boolean;
 }
 
 export interface IMessagePage extends IPage<IMessage> {

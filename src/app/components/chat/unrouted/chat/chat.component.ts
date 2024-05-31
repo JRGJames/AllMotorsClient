@@ -138,10 +138,10 @@ export class ChatComponent implements OnInit {
   }
 
   likeMessage(message: IMessage): void {
-    const liked = !message.isLiked;
+    const liked = !message.liked;
     this.messageService.like(message.id, liked).subscribe(
       () => {
-        message.isLiked = liked;
+        message.liked = liked;
       },
       error => {
         console.error('Error liking message', error);
@@ -150,7 +150,7 @@ export class ChatComponent implements OnInit {
   }
 
   isMessageLiked(message: IMessage): Boolean {
-    return message.isLiked;
+    return message.liked;
   }
 
   fillMessages(): void {

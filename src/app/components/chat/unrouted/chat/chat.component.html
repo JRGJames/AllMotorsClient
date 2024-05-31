@@ -63,11 +63,11 @@
                         | timeOnly}}</span>
                 </span>
                 <!-- Ícono de corazón -->
-                <div [ngClass]="{'opacity-0': !message.isLiked, 'opacity-100': message.isLiked,
+                <div [ngClass]="{'opacity-0': !message.liked, 'opacity-100': message.liked,
                     '-left-10': message.sender.id === currentUser.id, 
                     '-right-10': message.sender.id !== currentUser.id}"
                     class="rounded-lg transition-all duration-500 absolute py-[3px] px-2 bg-opacity-60 backdrop-blur-md bg-white top-0 ">
-                    <i [ngClass]="{'scale-0': !message.isLiked, 'scale-110': message.isLiked}"
+                    <i [ngClass]="{'scale-0': !message.liked, 'scale-110': message.liked}"
                         class="fa fa-heart transition-all duration-500 text-red-500"></i>
                 </div>
 
