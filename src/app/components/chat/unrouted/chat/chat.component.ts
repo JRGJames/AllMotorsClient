@@ -125,9 +125,8 @@ export class ChatComponent implements OnInit {
 
     this.messageService.send(this.message, this.chat.car?.id).subscribe({
       next: (message: IMessage) => {
-        console.log('Mensaje enviado:', message);
         this.messages.push(message);
-        this.chatUpdated.emit();
+        this.chatUpdated.emit(); // Emitimos el evento aquí
         this.scrollToBottom();
       },
       error: (error: HttpErrorResponse) => {
@@ -141,35 +140,35 @@ export class ChatComponent implements OnInit {
   likeMessage(message: IMessage): void {
     const liked = !message.isLiked;
     this.messageService.like(message.id, liked).subscribe(
-        () => {
-            message.isLiked = liked;
-        },
-        error => {
-            console.error('Error liking message', error);
-        }
+      () => {
+        message.isLiked = liked;
+      },
+      error => {
+        console.error('Error liking message', error);
+      }
     );
-}
+  }
 
+  isMessageLiked(message: IMessage): Boolean {
+    return message.isLiked;
+  }
 
   fillMessages(): void {
     try {
-        this.chatService.getMessages(this.chat.id).subscribe({
-            next: (messages: IMessage[]) => {
-                this.messages = messages.map(message => ({
-                    ...message,
-                    isLiked: message.isLiked || false // Asegura que isLiked tenga un valor booleano
-                }));
-                console.log('Mensajes cargados:', messages);
-                this.scrollToBottom();
-            },
-            error: (error: HttpErrorResponse) => {
-                console.error('Error al cargar los mensajes:', error);
-            }
-        });
+      this.chatService.getMessages(this.chat.id).subscribe({
+        next: (messages: IMessage[]) => {
+          this.messages = messages;
+          console.log(this.messages);
+          this.scrollToBottom();
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar los mensajes:', error);
+        }
+      });
     } catch (error) {
-        console.log('Chat sin valor, no se pueden cargar los mensajes');
+      console.log('Chat sin valor, no se pueden cargar los mensajes');
     }
-}
+  }
 
 
   handleKey(event: KeyboardEvent): void {

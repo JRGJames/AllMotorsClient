@@ -1,9 +1,10 @@
+// chat-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { IChat, IUser } from 'src/app/model/model';
 import { ChatService } from 'src/app/service/chat.service';
-import { SessionService } from './../../../../service/session.service';
+import { SessionService } from 'src/app/service/session.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'src/app/service/user.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
 import { MessageService } from 'src/app/service/message.service';
@@ -14,7 +15,6 @@ import { MessageService } from 'src/app/service/message.service';
   styleUrls: ['./chat-list.component.css']
 })
 export class ChatListComponent implements OnInit {
-
   backgroundImage: string = `url(assets/images/image4.webp)`;
   selectedBackgroundImage: string = '';
   chats: IChat[] = [];
@@ -24,7 +24,6 @@ export class ChatListComponent implements OnInit {
   receiver: IUser = {} as IUser;
   seller: IUser = {} as IUser;
 
-
   constructor(
     private chatService: ChatService,
     private sessionService: SessionService,
@@ -32,7 +31,7 @@ export class ChatListComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private messageService: MessageService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getCurrentUser();
@@ -73,18 +72,27 @@ export class ChatListComponent implements OnInit {
     }
   }
 
+  getChats(userId: number): void {
+    this.chatService.getAll(userId).subscribe({
+      next: (data: IChat[]) => {
+        this.chats = data;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar los chats:', error);
+      }
+    });
+  }
+
   subscribeToChatUpdates(): void {
     this.messageService.messageSent.subscribe(() => {
+      console.log(this.selectedChat.id);
+
       this.getChats(this.currentUser.id); // Actualizar la lista de chats después de enviar un mensaje
     });
   }
 
-  getChats(userId: number) {
-    this.chatService.getAll(userId).subscribe(
-      data => {
-        this.chats = data;
-      }
-    );
+  onChatUpdated(): void {
+    this.getChats(this.currentUser.id); // Actualizar la lista de chats después de enviar un mensaje
   }
 
   getUserInitials(user: IUser): string {
@@ -104,7 +112,7 @@ export class ChatListComponent implements OnInit {
 
   setChat(chat: IChat): void {
     this.selectedChat = chat;
-    console.log(this.selectedChat);
+    console.log(this.selectedChat.id);
   }
 
   setBackground(chat: IChat): void {
@@ -114,5 +122,4 @@ export class ChatListComponent implements OnInit {
       this.selectedBackgroundImage = `url('${this.urlImage + chat.car.images[0].imageUrl}')`;
     }
   }
-
 }
