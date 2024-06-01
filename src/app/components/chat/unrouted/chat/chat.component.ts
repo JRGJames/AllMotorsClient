@@ -149,8 +149,26 @@ export class ChatComponent implements OnInit {
     );
   }
 
-  isMessageLiked(message: IMessage): Boolean {
-    return message.liked;
+  markMessagesAsRead(): void {
+    this.messages.forEach((message: IMessage) => {
+      this.messageService.read(message.id).subscribe({
+        next: () => {
+          message.read = true;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al marcar el mensaje como leído:', error);
+        }
+      });
+    });
+  }
+
+  getLastReadMessageIndex(): number {
+    for (let i = this.messages.length - 1; i >= 0; i--) {
+      if (this.messages[i].read) {
+        return i;
+      }
+    }
+    return -1; // Si no hay mensajes leídos
   }
 
   fillMessages(): void {
@@ -158,8 +176,10 @@ export class ChatComponent implements OnInit {
       this.chatService.getMessages(this.chat.id).subscribe({
         next: (messages: IMessage[]) => {
           this.messages = messages;
-          console.log(this.messages);
+          this.markMessagesAsRead();
           this.scrollToBottom();
+
+          console.log(this.messages);
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los mensajes:', error);

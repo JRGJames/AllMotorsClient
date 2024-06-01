@@ -24,11 +24,9 @@ export class ChatService {
         return this.http.get<IMessage[]>(`${this.url}/messages/${chatId}`);
     }
 
-    // getMessagesNotRead(chatId: number, user: IUser): Observable<number> {
-    //     return this.http.get<number>(`${this.url}/getNotRead/${chatId}`, {
-    //         params: { userId: userId.toString() }
-    //     });
-    // }
+    getMessagesNotRead(chatId: number, user: IUser): Observable<number> {
+        return this.http.post<number>(`${this.url}/getUnread`, { chatId, user });
+    }
 
     create(memberOne: IUser, memberTwo: IUser, car: ICar) {
         return this.http.post(this.url + '/create', { memberOne, memberTwo, car });

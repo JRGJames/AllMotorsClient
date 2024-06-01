@@ -23,6 +23,7 @@ export class ChatListComponent implements OnInit {
   selectedChat: IChat = {} as IChat;
   receiver: IUser = {} as IUser;
   seller: IUser = {} as IUser;
+  chatsNotifications: { key: number, notifications: number }[] = [];
 
   constructor(
     private chatService: ChatService,
@@ -76,11 +77,29 @@ export class ChatListComponent implements OnInit {
     this.chatService.getAll(userId).subscribe({
       next: (data: IChat[]) => {
         this.chats = data;
+        this.chats.forEach(chat => {
+          this.getNotifications(chat);
+          console.log(this.chatsNotifications);
+        });
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al cargar los chats:', error);
       }
     });
+  }
+
+  getNotifications(chat: IChat): number {
+    let total = 0;
+    this.chatService.getMessagesNotRead(chat.id, this.currentUser).subscribe({
+      next: (data: number) => {
+        total = data;
+        this.chatsNotifications.push({ key: chat.id, notifications: total });
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar los mensajes no leídos:', error);
+      }
+    });
+    return total;
   }
 
   subscribeToChatUpdates(): void {

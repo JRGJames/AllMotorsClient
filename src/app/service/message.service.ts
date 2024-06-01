@@ -38,6 +38,10 @@ export class MessageService {
     return this.http.put<void>(`${this.url}/like/${id}?liked=${liked}`, {});
   }
 
+  read(id: number): Observable<void> {
+    return this.http.put<void>(`${this.url}/read/${id}`, {});
+  } 
+
   delete(id: number): Observable<number> {
     return this.http.delete<number>(this.url + '/delete/' + id);
   }
