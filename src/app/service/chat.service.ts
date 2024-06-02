@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { API_URL } from '../../environment/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ICar, IChat, IMessage, IUser } from '../model/model';
 import { Observable } from 'rxjs';
 
@@ -25,7 +25,9 @@ export class ChatService {
     }
 
     getMessagesNotRead(chatId: number, user: IUser): Observable<number> {
-        return this.http.post<number>(`${this.url}/getUnread`, { chatId, user });
+        const params = new HttpParams().set('userId', user.id.toString());
+
+        return this.http.get<number>(`${this.url}/getUnread/${chatId}`, { params });
     }
 
     create(memberOne: IUser, memberTwo: IUser, car: ICar) {

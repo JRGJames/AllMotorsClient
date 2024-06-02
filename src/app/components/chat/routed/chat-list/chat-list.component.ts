@@ -23,7 +23,8 @@ export class ChatListComponent implements OnInit {
   selectedChat: IChat = {} as IChat;
   receiver: IUser = {} as IUser;
   seller: IUser = {} as IUser;
-  chatsNotifications: { key: number, notifications: number }[] = [];
+  chatsNotifications: { [key: number]: number } = {};
+
 
   constructor(
     private chatService: ChatService,
@@ -32,7 +33,7 @@ export class ChatListComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getCurrentUser();
@@ -79,7 +80,6 @@ export class ChatListComponent implements OnInit {
         this.chats = data;
         this.chats.forEach(chat => {
           this.getNotifications(chat);
-          console.log(this.chatsNotifications);
         });
       },
       error: (error: HttpErrorResponse) => {
@@ -88,18 +88,17 @@ export class ChatListComponent implements OnInit {
     });
   }
 
-  getNotifications(chat: IChat): number {
-    let total = 0;
+  getNotifications(chat: IChat): void {
     this.chatService.getMessagesNotRead(chat.id, this.currentUser).subscribe({
       next: (data: number) => {
-        total = data;
-        this.chatsNotifications.push({ key: chat.id, notifications: total });
+        console.log(data);
+        this.chatsNotifications[chat.id] = data;
+        console.log(this.chatsNotifications);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al cargar los mensajes no leídos:', error);
       }
     });
-    return total;
   }
 
   subscribeToChatUpdates(): void {
