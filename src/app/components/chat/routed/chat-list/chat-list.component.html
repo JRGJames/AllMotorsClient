@@ -29,22 +29,25 @@
           </div>
           <div class="flex flex-col h-full items-start w-full justify-between overflow-hidden">
             <div class="flex justify-between gap-2 w-full">
-              <div class="h-full w-full justify-start flex">
+              <div class="h-full justify-start flex w-[85%]">
                 <p *ngIf="!chat.car" class="">{{ chat.memberOne.id === currentUser.id ? chat.memberTwo.username :
                   chat.memberOne.username }}</p>
                 <p *ngIf="chat.car"
                   class="flex-shrink-0 text-left align-top overflow-hidden whitespace-nowrap w-[90%] overflow-ellipsis">
                   {{ chat.car.title }}</p>
               </div>
-              <div 
+              <div *ngIf="chatsNotifications[chat.id] > 0"
                 class="w-fit h-4 px-1 bg-sky-500 rounded-full flex items-center justify-center text-white text-[11px]">
-                {{chatsNotifications[chat.id]}}</div>
+                {{ chatsNotifications[chat.id] > 99 ? '+99' : chatsNotifications[chat.id] }}
+              </div>
+
             </div>
             <div class="flex justify-between gap-2 w-full">
               <p class="text-xs text-gray-800 text-left overflow-hidden">{{ chat.messages[chat.messages.length -
                 1].content.length > 12 ? chat.messages[chat.messages.length - 1].content.substring(0, 12) + '...' :
                 chat.messages[chat.messages.length - 1].content }}</p>
-              <p class="text-xs text-gray-600">{{ chat.messages[chat.messages.length - 1].sentTime | date: 'HH:mm' }}</p>
+              <p class="text-xs text-gray-600">{{ chat.messages[chat.messages.length - 1].sentTime | date: 'HH:mm' }}
+              </p>
             </div>
           </div>
         </div>

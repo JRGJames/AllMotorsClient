@@ -149,27 +149,23 @@ export class ChatComponent implements OnInit {
     );
   }
 
+  // mark as read every unread message from the receiver
   markMessagesAsRead(): void {
     this.messages.forEach((message: IMessage) => {
-      this.messageService.read(message.id).subscribe({
-        next: () => {
-          message.read = true;
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error al marcar el mensaje como leído:', error);
-        }
-      });
+      if (message.receiver.id === this.currentUser.id && !message.read) {
+        this.messageService.read(message.id).subscribe({
+          next: () => {
+            message.read = true;
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al marcar el mensaje como leído:', error);
+          }
+        });
+      }
     });
   }
 
-  getLastReadMessageIndex(): number {
-    for (let i = this.messages.length - 1; i >= 0; i--) {
-      if (this.messages[i].read) {
-        return i;
-      }
-    }
-    return -1; // Si no hay mensajes leídos
-  }
+  // Verifica si el último mensaje enviado por el remitente está leído por el receptor
 
   fillMessages(): void {
     try {

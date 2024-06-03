@@ -66,7 +66,8 @@
                 <i [ngClass]="{'scale-0': !message.liked, 'scale-110': message.liked, '-left-6': message.sender.id === currentUser.id, '-right-6': message.sender.id !== currentUser.id}"
                     class="fa fa-heart absolute transition-all py-[3px] duration-300 text-red-500"></i>
                 <!-- Ícono de ojo -->
-                <div *ngIf="i === getLastReadMessageIndex()" class="absolute items-center text-[12px] flex -bottom-5 right-1 gap-2">
+                <div *ngIf="messages[i].read && i === messages.length - 1 && message.sender.id === currentUser.id"
+                    class="absolute items-center text-[12px] flex -bottom-5 right-1 gap-2">
                     <i class="fa fa-eye"></i>
                     <p>Seen</p>
                 </div>
