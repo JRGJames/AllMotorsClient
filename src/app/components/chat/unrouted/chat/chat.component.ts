@@ -26,6 +26,7 @@ export class ChatComponent implements OnInit {
   messages: IMessage[] = [];
   maxWidth: number = 30;
   messageContent: string = '';
+  imageIndex: number = 0;
 
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
 
@@ -207,5 +208,17 @@ export class ChatComponent implements OnInit {
     const currentMessageDate = new Date(this.messages[index].sentTime).toDateString();
     const previousMessageDate = new Date(this.messages[index - 1].sentTime).toDateString();
     return currentMessageDate !== previousMessageDate;
+  }
+
+  prevImage() {
+    this.imageIndex--;
+  }
+
+  nextImage() {
+    this.imageIndex++;
+  }
+
+  changePage(newPage: number) {
+    this.imageIndex = newPage;
   }
 }
