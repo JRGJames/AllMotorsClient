@@ -134,10 +134,18 @@ export class ChatListComponent implements OnInit {
   }
 
   setBackground(chat: IChat): void {
+    const container = document.getElementById('chatContainer');
+
     if (chat.car === null) {
       this.selectedBackgroundImage = this.backgroundImage;
     } else {
       this.selectedBackgroundImage = `url('${this.urlImage + chat.car.images[0].imageUrl}')`;
+    }
+
+    if (window.innerWidth < 640) {
+      if (container) {
+        container.style.transform = 'translateX(-50%)';
+      }
     }
   }
 }

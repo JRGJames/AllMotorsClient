@@ -221,4 +221,12 @@ export class ChatComponent implements OnInit {
   changePage(newPage: number) {
     this.imageIndex = newPage;
   }
+
+  moveToChatList() {
+    const container = document.getElementById('chatContainer');
+
+    if (container) {
+      container.style.transform = 'translateX(0%)';
+    }
+  }
 }

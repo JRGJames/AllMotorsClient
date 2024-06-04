@@ -24,7 +24,12 @@
 .autogrow-textarea {
     resize: none;
     overflow: hidden;
-    min-height: 40px; /* Altura mínima */
-    transform-origin: top; /* Establece el origen de la transformación en la parte superior */
-  }
-  
+    min-height: 40px;
+    /* Altura mínima */
+    transform-origin: top;
+    /* Establece el origen de la transformación en la parte superior */
+}
+
+.scroll-hide::-webkit-scrollbar {
+    display: none;
+}
