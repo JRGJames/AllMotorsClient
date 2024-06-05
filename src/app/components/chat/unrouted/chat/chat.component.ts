@@ -53,6 +53,12 @@ export class ChatComponent implements OnInit {
       this.setBackground(this.chat);
       if (this.chat.id) {
         this.fillMessages();
+        const container = document.getElementById('UserChatContainer');
+
+        if (container) {
+          container.style.transform = 'translateX(0)';
+        }
+
       }
     }
   }
@@ -226,7 +232,23 @@ export class ChatComponent implements OnInit {
     const container = document.getElementById('chatContainer');
 
     if (container) {
-      container.style.transform = 'translateX(0%)';
+      container.style.transform = 'translateX(0)';
+    }
+  }
+
+  moveToOptions() {
+    const container = document.getElementById('UserChatContainer');
+
+    if (container) {
+      container.style.transform = 'translateX(-50.1%)';
+    }
+  }
+
+  moveToChat() {
+    const container = document.getElementById('UserChatContainer');
+
+    if (container) {
+      container.style.transform = 'translateX(0)';
     }
   }
 }

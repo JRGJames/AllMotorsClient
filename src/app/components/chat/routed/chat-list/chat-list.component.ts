@@ -25,7 +25,6 @@ export class ChatListComponent implements OnInit {
   seller: IUser = {} as IUser;
   chatsNotifications: { [key: number]: number } = {};
 
-
   constructor(
     private chatService: ChatService,
     private sessionService: SessionService,
