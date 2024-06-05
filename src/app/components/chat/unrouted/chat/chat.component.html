@@ -119,7 +119,7 @@
                     <div class="flex flex-col gap-4">
                         <div class="flex lg:flex-col gap-4 lg:gap-2">
                             <div [routerLink]="['/user/', receiver.id]"
-                                class="rounded-lg overflow-hidden bg-gray-500 h-32 lg:h-40 2xl:h-72 w-32 lg:w-40 2xl:w-72 aspect-square cursor-pointer transition-all hover:shadow-lg">
+                                class="rounded-lg overflow-hidden bg-gray-500 h-52 md:h-32 lg:h-40 2xl:h-72 w-52 md:w-32 lg:w-40 2xl:w-72 aspect-square cursor-pointer transition-all hover:shadow-lg">
                                 <img *ngIf="receiver.profilePicture" [src]="urlImage + receiver.profilePicture"
                                     alt="chat receiver image" class="h-full w-full object-cover">
                                 <div *ngIf="!receiver.profilePicture"
@@ -172,7 +172,7 @@
                     <div class="h-2/4 flex flex-col gap-4">
                         <div class="flex flex-col gap-1 text-gray-800 px-1">
                             <p class="text-lg">{{chat.car.title}}</p>
-                            <p>{{chat.car.price }} {{chat.car.currency}}</p>
+                            <p>{{chat.car.price | thousandSeparator}} {{chat.car.currency}}</p>
                         </div>
                         <div class="flex gap-2 text-gray-700 px-1 justify-evenly">
                             <div class="flex items-center gap-2 bg-white bg-opacity-50 rounded-full py-1 px-3">

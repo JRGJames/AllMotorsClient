@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { IChat, IUser, ICar, IMessage } from 'src/app/model/model';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/service/session.service';
@@ -28,7 +28,7 @@ export class ChatComponent implements OnInit {
   messageContent: string = '';
   imageIndex: number = 0;
 
-  @ViewChild('messageContainer') private messageContainer!: ElementRef;
+  @ViewChild('messageContainer') messageContainer!: ElementRef;
 
   constructor(
     private userService: UserService,
@@ -36,6 +36,7 @@ export class ChatComponent implements OnInit {
     private sessionService: SessionService,
     private messageService: MessageService,
     private elementRef: ElementRef,
+    private renderer: Renderer2,
     private chatService: ChatService
   ) { }
 
@@ -44,7 +45,7 @@ export class ChatComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    (this.elementRef.nativeElement.querySelector('#message') as HTMLInputElement).focus();
+    // (this.elementRef.nativeElement.querySelector('#message') as HTMLInputElement).focus();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -58,6 +59,9 @@ export class ChatComponent implements OnInit {
         if (container) {
           container.style.transform = 'translateX(0)';
         }
+
+        // SCROLL TO BOTTOM
+        this.scrollToBottom();
 
       }
     }
@@ -113,9 +117,14 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  //scroll to bottom of the chat
+  //scroll to bottom of the chat WITHOUT NATIVE ELEMENT
   scrollToBottom(): void {
-    this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight + 100;
+    try {
+      const scrollHeight = this.renderer.selectRootElement(this.messageContainer.nativeElement).scrollHeight;
+      this.renderer.setProperty(this.messageContainer.nativeElement, 'scrollTop', scrollHeight);
+    } catch (error) {
+      console.log('No se puede hacer scroll al final del chat');
+    }
   }
 
   sendMessage(): void {
@@ -181,8 +190,6 @@ export class ChatComponent implements OnInit {
           this.messages = messages;
           this.markMessagesAsRead();
           this.scrollToBottom();
-
-          console.log(this.messages);
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los mensajes:', error);
@@ -240,7 +247,7 @@ export class ChatComponent implements OnInit {
     const container = document.getElementById('UserChatContainer');
 
     if (container) {
-      container.style.transform = 'translateX(-50.1%)';
+      container.style.transform = 'translateX(-50%)';
     }
   }
 

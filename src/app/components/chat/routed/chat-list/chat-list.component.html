@@ -1,61 +1,63 @@
 <!-- chat-list.component.html -->
-<div class="flex w-[200%] sm:w-full h-screen bg-cover bg-center transition-all duration-200 scroll"
-  [ngStyle]="{'background-image': selectedBackgroundImage}" id="chatContainer" loading="lazy">
-  <div class="h-full bg-transparent overflow-hidden bg-gray-50 bg-opacity-50 w-full sm:w-2/5 md:w-1/4">
-    <div class="flex h-full bg-gray-50 bg-opacity-60 backdrop-blur-lg overflow-y-auto chat-scrollbar flex-col pt-16">
-      <button *ngFor="let chat of chats; let i = index"
-        (click)="checkIfUserIsMember(chat); setBackground(chat); setChat(chat)" [ngClass]="{
-          'shadow-md bg-gray-50 bg-opacity-45': selectedChat.id === chat.id,
-          'bg-opacity-0 bg-gray-100 hover:bg-opacity-30 hover:bg-gray-50 hover:shadow-sm': selectedChat !== chat
-        }" class="p-3 h-16 transition-all items-center duration-300 flex gap-3 focus:outline-none">
-        <div class="flex gap-3 h-full w-full overflow-x-hidden">
-          <div class="rounded-full overflow-hidden bg-gray-500 h-full min-w-10 aspect-square">
-            <ng-container *ngIf="chat.memberTwo.id === currentUser.id; else memberTwoTemplate">
-              <img *ngIf="chat.memberOne.profilePicture" [src]="urlImage + chat.memberOne.profilePicture"
-                alt="chat memberOne image" class="h-full w-full object-cover">
-              <div *ngIf="!chat.memberOne.profilePicture"
-                class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
-                {{ getUserInitials(chat.memberOne) }}
-              </div>
-            </ng-container>
-            <ng-template #memberTwoTemplate>
-              <img *ngIf="chat.memberTwo.profilePicture" [src]="urlImage + chat.memberTwo.profilePicture"
-                alt="chat memberTwo image" class="h-full w-full object-cover">
-              <div *ngIf="!chat.memberTwo.profilePicture"
-                class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
-                {{ getUserInitials(chat.memberTwo) }}
-              </div>
-            </ng-template>
-          </div>
-          <div class="flex flex-col h-full items-start w-full justify-between overflow-hidden">
-            <div class="flex justify-between gap-2 w-full">
-              <div class="h-full justify-start flex w-[85%]">
-                <p *ngIf="!chat.car" class="">{{ chat.memberOne.id === currentUser.id ? chat.memberTwo.username :
-                  chat.memberOne.username }}</p>
-                <p *ngIf="chat.car"
-                  class="flex-shrink-0 text-left align-top overflow-hidden whitespace-nowrap w-[90%] overflow-ellipsis">
-                  {{ chat.car.title }}</p>
-              </div>
-              <div *ngIf="chatsNotifications[chat.id] > 0"
-                class="w-fit h-4 px-1 bg-sky-500 rounded-full flex items-center justify-center text-white text-[11px]">
-                {{ chatsNotifications[chat.id] > 99 ? '+99' : chatsNotifications[chat.id] }}
-              </div>
-
+<div class="w-full h-full overflow-hidden">
+  <div class="flex w-[200%] sm:w-full h-screen bg-cover bg-center transition-all duration-200 scroll"
+    [ngStyle]="{'background-image': selectedBackgroundImage}" id="chatContainer" loading="lazy">
+    <div class="h-full bg-transparent overflow-hidden bg-gray-50 bg-opacity-50 w-full sm:w-2/5 md:w-1/4">
+      <div class="flex h-full bg-gray-50 bg-opacity-60 backdrop-blur-lg overflow-y-auto chat-scrollbar flex-col pt-16">
+        <button *ngFor="let chat of chats; let i = index"
+          (click)="checkIfUserIsMember(chat); setBackground(chat); setChat(chat)" [ngClass]="{
+            'shadow-md bg-gray-50 bg-opacity-45': selectedChat.id === chat.id,
+            'bg-opacity-0 bg-gray-100 hover:bg-opacity-30 hover:bg-gray-50 hover:shadow-sm': selectedChat !== chat
+          }" class="p-3 h-16 transition-all items-center duration-300 flex gap-3 focus:outline-none">
+          <div class="flex gap-3 h-full w-full overflow-x-hidden">
+            <div class="rounded-full overflow-hidden bg-gray-500 h-full min-w-10 aspect-square">
+              <ng-container *ngIf="chat.memberTwo.id === currentUser.id; else memberTwoTemplate">
+                <img *ngIf="chat.memberOne.profilePicture" [src]="urlImage + chat.memberOne.profilePicture"
+                  alt="chat memberOne image" class="h-full w-full object-cover">
+                <div *ngIf="!chat.memberOne.profilePicture"
+                  class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
+                  {{ getUserInitials(chat.memberOne) }}
+                </div>
+              </ng-container>
+              <ng-template #memberTwoTemplate>
+                <img *ngIf="chat.memberTwo.profilePicture" [src]="urlImage + chat.memberTwo.profilePicture"
+                  alt="chat memberTwo image" class="h-full w-full object-cover">
+                <div *ngIf="!chat.memberTwo.profilePicture"
+                  class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
+                  {{ getUserInitials(chat.memberTwo) }}
+                </div>
+              </ng-template>
             </div>
-            <div class="flex justify-between gap-2 w-full">
-              <p class="text-xs text-gray-800 text-left overflow-hidden">{{ chat.messages[chat.messages.length -
-                1].content.length > 12 ? chat.messages[chat.messages.length - 1].content.substring(0, 12) + '...' :
-                chat.messages[chat.messages.length - 1].content }}</p>
-              <p class="text-xs text-gray-600">{{ chat.messages[chat.messages.length - 1].sentTime | date: 'HH:mm' }}
-              </p>
+            <div class="flex flex-col h-full items-start w-full justify-between overflow-hidden">
+              <div class="flex justify-between gap-2 w-full">
+                <div class="h-full justify-start flex w-[85%]">
+                  <p *ngIf="!chat.car" class="">{{ chat.memberOne.id === currentUser.id ? chat.memberTwo.username :
+                    chat.memberOne.username }}</p>
+                  <p *ngIf="chat.car"
+                    class="flex-shrink-0 text-left align-top overflow-hidden whitespace-nowrap w-[90%] overflow-ellipsis">
+                    {{ chat.car.title }}</p>
+                </div>
+                <div *ngIf="chatsNotifications[chat.id] > 0"
+                  class="w-fit h-4 px-1 bg-sky-500 rounded-full flex items-center justify-center text-white text-[11px]">
+                  {{ chatsNotifications[chat.id] > 99 ? '+99' : chatsNotifications[chat.id] }}
+                </div>
+  
+              </div>
+              <div class="flex justify-between gap-2 w-full">
+                <p class="text-xs text-gray-800 text-left overflow-hidden">{{ chat.messages[chat.messages.length -
+                  1].content.length > 12 ? chat.messages[chat.messages.length - 1].content.substring(0, 12) + '...' :
+                  chat.messages[chat.messages.length - 1].content }}</p>
+                <p class="text-xs text-gray-600">{{ chat.messages[chat.messages.length - 1].sentTime | date: 'HH:mm' }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </button>
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="w-full sm:w-3/5 md:w-3/4 overflow-hidden scroll-hide backdrop-blur-sm bg-cover bg-center transition-all duration-200"
-    [ngStyle]="{'background-image': backgroundImage}" loading="lazy">
-    <app-chat [chat]="selectedChat" (chatUpdated)="onChatUpdated()"></app-chat>
+    <div class="w-full sm:w-3/5 md:w-3/4 overflow-hidden scroll-hide backdrop-blur-sm bg-cover bg-center transition-all duration-200"
+      [ngStyle]="{'background-image': backgroundImage}" loading="lazy">
+      <app-chat [chat]="selectedChat" (chatUpdated)="onChatUpdated()"></app-chat>
+    </div>
   </div>
 </div>

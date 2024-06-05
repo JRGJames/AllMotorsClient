@@ -102,8 +102,6 @@ export class ChatListComponent implements OnInit {
 
   subscribeToChatUpdates(): void {
     this.messageService.messageSent.subscribe(() => {
-      console.log(this.selectedChat.id);
-
       this.getChats(this.currentUser.id); // Actualizar la lista de chats después de enviar un mensaje
     });
   }
@@ -129,7 +127,6 @@ export class ChatListComponent implements OnInit {
 
   setChat(chat: IChat): void {
     this.selectedChat = chat;
-    console.log(this.selectedChat.id);
   }
 
   setBackground(chat: IChat): void {
