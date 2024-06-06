@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
-import { IChat, IUser, ICar, IMessage } from 'src/app/model/model';
+import { IChat, IUser, IMessage } from 'src/app/model/model';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/service/session.service';
 import { UserService } from 'src/app/service/user.service';
@@ -35,8 +35,6 @@ export class ChatComponent implements OnInit {
     private router: Router,
     private sessionService: SessionService,
     private messageService: MessageService,
-    private elementRef: ElementRef,
-    private renderer: Renderer2,
     private chatService: ChatService
   ) { }
 
@@ -53,6 +51,7 @@ export class ChatComponent implements OnInit {
       this.checkIfUserIsMember(this.chat);
       this.setBackground(this.chat);
       if (this.chat.id) {
+        this.scrollToBottom();
         this.fillMessages();
         const container = document.getElementById('UserChatContainer');
 
@@ -61,8 +60,6 @@ export class ChatComponent implements OnInit {
         }
 
         // SCROLL TO BOTTOM
-        this.scrollToBottom();
-
       }
     }
   }
@@ -117,15 +114,6 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  //scroll to bottom of the chat WITHOUT NATIVE ELEMENT
-  scrollToBottom(): void {
-    try {
-      const scrollHeight = this.renderer.selectRootElement(this.messageContainer.nativeElement).scrollHeight;
-      this.renderer.setProperty(this.messageContainer.nativeElement, 'scrollTop', scrollHeight);
-    } catch (error) {
-      console.log('No se puede hacer scroll al final del chat');
-    }
-  }
 
   sendMessage(): void {
     let messageContent = (document.getElementById('message') as HTMLInputElement).value.trim();
@@ -141,9 +129,9 @@ export class ChatComponent implements OnInit {
 
     this.messageService.send(this.message, this.chat.car?.id).subscribe({
       next: (message: IMessage) => {
+        this.scrollToBottomSend();
         this.messages.push(message);
         this.chatUpdated.emit(); // Emitimos el evento aquí
-        this.scrollToBottom();
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al enviar el mensaje:', error);
@@ -152,6 +140,25 @@ export class ChatComponent implements OnInit {
 
     (document.getElementById('message') as HTMLInputElement).value = '';
   }
+
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.messageContainer) {
+        const container = this.messageContainer.nativeElement;
+        container.scrollTop = container.scrollHeight;
+      }
+    }, 50); // Adjust timeout value as needed
+  }
+
+  scrollToBottomSend() {
+    setTimeout(() => {
+      if (this.messageContainer) {
+        const container = this.messageContainer.nativeElement;
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      }
+    }, 5); // Adjust timeout value as needed
+  }
+  
 
   likeMessage(message: IMessage): void {
     const liked = !message.liked;
@@ -189,7 +196,6 @@ export class ChatComponent implements OnInit {
         next: (messages: IMessage[]) => {
           this.messages = messages;
           this.markMessagesAsRead();
-          this.scrollToBottom();
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los mensajes:', error);

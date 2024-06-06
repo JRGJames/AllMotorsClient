@@ -33,10 +33,3 @@
 .scroll-hide::-webkit-scrollbar {
     display: none;
 }
-
-.textPercentage {
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    width: 66% !important;
-}

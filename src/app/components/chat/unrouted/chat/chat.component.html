@@ -1,12 +1,10 @@
-<div *ngIf="chat.memberOne === undefined">
-    hola
+<div *ngIf="chat.memberOne === undefined" class="w-full h-full">
+
 </div>
-<div *ngIf="chat.memberOne !== undefined" class="h-full flex w-[200%] bg-cover bg-center"
-    [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
-    <div class="flex w-[200%] h-full transition-all overflow-hidden scroll-hide" id="UserChatContainer">
-        <div class="flex flex-col w-full h-full">
-            <div
-                class="w-full h-[9.5rem] pt-16 bg-gray-50 bg-opacity-[0.63] overflow-hidden backdrop-blur-lg px-4 items-center">
+<div *ngIf="chat.memberOne !== undefined" class="h-full flex w-[200%] bg-cover bg-center" [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
+    <div class="flex w-full h-full transition-all overflow-hidden scroll-hide" id="UserChatContainer">
+        <div class="flex flex-col w-full h-full bg-cover bg-center" [ngStyle]="{'background-image': selectedBackgroundImage}" loading="lazy">
+            <div class="w-full h-[9.5rem] pt-16 bg-gray-50 bg-opacity-[0.63] overflow-hidden backdrop-blur-lg px-4 items-center">
                 <div class="w-full h-full flex items-center">
                     <div class="flex items-center gap-4 overflow-hidden w-full">
                         <div class="flex w-fit gap-2 items-center justify-start">
@@ -14,24 +12,38 @@
                                 class="flex sm:hidden text-xl text-gray-700 pr-3 focus:outline-none">
                                 <i class="fa fa-arrow-left"></i>
                             </button>
-                            <div class="rounded-full overflow-hidden bg-gray-500 flex-shrink-0 h-full w-10 aspect-square">
+                            <div
+                                class="rounded-full flex overflow-hidden bg-gray-500 flex-shrink-0 h-full w-10 aspect-square">
+                                <!-- Imagen del receptor del chat -->
                                 <img *ngIf="receiver.profilePicture" [src]="urlImage + receiver.profilePicture"
-                                    alt="chat receiver image"
-                                    class="flex h-full object-cover w-full items-center justify-center">
+                                    alt="chat receiver image" [ngClass]="{'w-1/2': chat.car, 'w-full': !chat.car}"
+                                    class="flex h-full object-cover items-center justify-center">
+
+                                <!-- Iniciales del receptor del chat si no hay imagen -->
                                 <div *ngIf="!receiver.profilePicture"
+                                    [ngClass]="{'w-1/2': chat.car, 'w-full': !chat.car}"
                                     class="flex w-full h-full justify-center items-center text-xs text-white bg-sky-600">
                                     {{ getUserInitials(receiver) }}
                                 </div>
+
+                                <!-- Imagen del coche del chat -->
+                                <img *ngIf="chat.car" [src]="urlImage + chat.car.images[0].imageUrl"
+                                    alt="chat car image"
+                                    class="flex h-full object-cover w-1/2 items-center justify-center">
                             </div>
                         </div>
                         <div class="flex w-full justify-between gap-2">
-                            <div class="flex gap-3 items-center textPercentage overflow-hidden">
-                                <div class="flex flex-col justify-between overflow-hidden min-w-0 max-w-full">
+                            <div class="flex gap-3 items-center w-full overflow-hidden">
+                                <div class="flex flex-col justify-between overflow-hidden w-[75%]">
                                     <div
-                                        class="flex items-end gap-1 text-gray-800 text-sm text-left align-top overflow-hidden whitespace-nowrap">
-                                        <!-- <div *ngIf="chat.car"
-                                            class="min-w-0 overflow-hidden overflow-ellipsis flex-shrink">{{ chat.car.title
-                                            }} - {{ receiver.username }}</div> -->
+                                        class="flex items-end gap-1 text-gray-800 text-sm text-left align-top w-full overflow-hidden whitespace-nowrap">
+                                        <div *ngIf="chat.car"
+                                            class="min-w-0 w-full overflow-hidden overflow-ellipsis flex-shrink">{{
+                                            chat.car.title
+                                            }}</div>
+                                        <div *ngIf="!chat.car"
+                                            class="min-w-0 overflow-hidden overflow-ellipsis flex-shrink">
+                                            {{ receiver.username }}</div>
                                     </div>
                                     <p class="italic text-xs overflow-hidden w-full text-gray-600">{{ receiver.status ?
                                         'Online' : 'Offline' }}</p>
@@ -39,14 +51,14 @@
                             </div>
                             <button class="w-fit flex flex-shrink-0 gap-2 justify-end items-center"
                                 (click)="moveToOptions()">
-                                <p>Options</p>
+                                <p class="hidden sm:flex">Options</p>
                                 <i class="fa fa-ellipsis-vertical"></i>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="w-full h-full flex flex-col p-3 px-4 overflow-y-auto scroll-chat" #messageContainer>
+            <div class="w-full h-full flex flex-col p-3 px-4 overflow-y-auto scroll-chat" #messageContainer id="messageContainer">
                 <div *ngFor="let message of messages; let i = index" class="w-full flex flex-col py-1">
                     <ng-container *ngIf="shouldShowDate(i)">
                         <div class="text-center w-full my-2 text-gray-700 flex justify-center">
@@ -107,7 +119,7 @@
                 </button>
             </div>
         </div>
-        <div class="flex flex-col bg-gray-50 bg-opacity-[0.63] pt-16 backdrop-blur-lg w-full gap-5">
+        <div class="flex flex-col bg-gray-50 bg-opacity-[0.63] pt-16 backdrop-blur-lg w-full gap-5" >
             <div class=" h-16 flex justify-start items-center ">
                 <button class="px-4 gap-2 flex items-center" (click)="moveToChat()">
                     <i class="fa fa-arrow-left"></i>
@@ -119,7 +131,7 @@
                     <div class="flex flex-col gap-4">
                         <div class="flex lg:flex-col gap-4 lg:gap-2">
                             <div [routerLink]="['/user/', receiver.id]"
-                                class="rounded-lg overflow-hidden bg-gray-500 h-52 md:h-32 lg:h-40 2xl:h-72 w-52 md:w-32 lg:w-40 2xl:w-72 aspect-square cursor-pointer transition-all hover:shadow-lg">
+                                class="rounded-lg overflow-hidden bg-gray-500 h-44 md:h-32 lg:h-40 2xl:h-72 w-44 md:w-32 lg:w-40 2xl:w-72 aspect-square cursor-pointer transition-all hover:shadow-lg">
                                 <img *ngIf="receiver.profilePicture" [src]="urlImage + receiver.profilePicture"
                                     alt="chat receiver image" class="h-full w-full object-cover">
                                 <div *ngIf="!receiver.profilePicture"
@@ -138,10 +150,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col gap-5 w-full h-full px-4">
+                <div *ngIf="chat.car" class="flex flex-col gap-5 w-full h-full px-4">
                     <div
                         class="carousel-container relative h-2/4 lg:h-40 2xl:h-72 w-full transition-all hover:shadow-lg rounded-lg">
-                        <a [routerLink]="['/car/', chat.car.id]"
+                        <a [routerLink]="['/car/', chat.car?.id]"
                             class="carousel-item h-full w-full focus:outline-none flex">
                             <img *ngIf="chat.car && chat.car.images && chat.car.images.length > imageIndex"
                                 class="absolute object-cover w-full h-full rounded-lg"
@@ -249,3 +261,5 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
