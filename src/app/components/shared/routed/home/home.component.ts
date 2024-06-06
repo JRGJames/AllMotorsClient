@@ -76,6 +76,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   startAutoChangePage() {
     this.autoChangePage = setInterval(() => {
       this.nextPage();
+      console.log('Cambiando de página automáticamente');
     }, 15000);
   }
 
@@ -144,58 +145,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       clearInterval(this.autoChangePage);
     }
     this.startAutoChangePage();
-  }
-
-  changePage(newPage: number) {
-    const slider = document.getElementById('slider');
-    const buttons = document.querySelectorAll('.buttons');
-    const slideWidth = 20; // Ancho de cada imagen en porcentaje
-
-    if (slider) {
-      const currentPosition = -(this.currentPage - 1) * slideWidth;
-      const targetPosition = -(newPage - 1) * slideWidth;
-      const displacement = targetPosition - currentPosition;
-
-      // Configuración de la transición
-      slider.style.transition = 'transform 3s';
-
-      // Añadir evento de transición
-      slider.addEventListener('transitionend', () => {
-        // Realizar el desplazamiento y ajustes adicionales al final de la transición
-        if (this.direction === -1) {
-          for (let i = 0; i < Math.abs(displacement / slideWidth); i++) {
-            slider.appendChild(slider.firstElementChild as HTMLElement);
-          }
-        } else if (this.direction === 1) {
-          for (let i = 0; i < Math.abs(displacement / slideWidth); i++) {
-            slider.prepend(slider.lastElementChild as HTMLElement);
-          }
-        }
-
-        // Restablecer la transformación y la transición
-        slider.style.transition = 'none';
-        slider.style.transform = 'translateX(0)';
-        buttons.forEach((button) => {
-          button.setAttribute('disabled', 'true');
-        });
-
-        setTimeout(() => {
-          slider.style.transition = 'all 3s';
-          buttons.forEach((button) => {
-            button.removeAttribute('disabled');
-          });
-
-          // Actualizar la página actual
-          this.currentPage = newPage;
-
-          // Reiniciar el cambio automático de página
-          this.resetAutoChangePage();
-        });
-      });
-
-      // Realizar el desplazamiento inicial
-      slider.style.transform = `translateX(${displacement}%)`;
-    }
   }
 
   resetBehavior(): void {

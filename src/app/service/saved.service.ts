@@ -18,21 +18,24 @@ export class SavedService {
 
   addToSaved(userId: number, carId: number): Observable<number> {
     let params = new HttpParams().set('userId', userId.toString()).set('carId', carId.toString());
-    return this.http.post<number>(this.url + '/add', {}, {params: params});
+    return this.http.post<number>(this.url + '/add', {}, { params: params });
   }
 
   removeFromSaved(userId: number, carId: number): Observable<number> {
     let params = new HttpParams().set('userId', userId.toString()).set('carId', carId.toString());
-    return this.http.delete<number>(this.url + '/remove', {params: params});
+    return this.http.delete<number>(this.url + '/remove', { params: params });
   }
 
   isSaved(userId: number, carId: number): Observable<boolean> {
     return this.http.get<boolean>(this.url + `/status?userId=${userId}&carId=${carId}`);
   }
 
-  getSavedCars(userId: number): Observable<ICar[]> {
-    return this.http.get<ICar[]>(this.url + `/get/${userId}`);
-  }
+  getSavedCars(userId: number, strFilter?: string): Observable<ICar[]> {
+    let url_filter: string = strFilter ? `?filter=${encodeURIComponent(strFilter)}` : "";
+
+    return this.http.get<ICar[]>(`${this.url}/get/${userId}${url_filter}`);
+}
+
 
   countSaves(carId: number): Observable<number> {
     return this.http.get<number>(this.url + `/count/${carId}`);

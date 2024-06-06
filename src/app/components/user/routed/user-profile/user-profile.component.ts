@@ -443,7 +443,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   getSavedCars(): void {
-    this.savedService.getSavedCars(this.user.id).subscribe({
+    this.savedService.getSavedCars(this.user.id, this.searchFilterSaved).subscribe({
       next: (savedCars: ICar[]) => {
         this.savedCars = savedCars;
         this.fillSavedCars();
