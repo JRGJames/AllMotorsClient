@@ -16,9 +16,10 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.hideFooter = event.url === '/login' || event.url === '/signup' || event.url === '/upload' || event.url === '/chats';
+        // Lista de rutas donde se desea ocultar el footer
+        const routesToHideFooter = ['/login', '/signup', '/upload', '/chats'];
+        this.hideFooter = routesToHideFooter.includes(event.url);
       }
     });
   }
-
 }

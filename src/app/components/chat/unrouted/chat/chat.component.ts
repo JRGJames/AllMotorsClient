@@ -7,6 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { API_URL_MEDIA } from 'src/environment/environment';
 import { MessageService } from 'src/app/service/message.service';
 import { ChatService } from 'src/app/service/chat.service';
+import { WebSocketService } from 'src/app/service/webSocket.service';
 
 @Component({
   selector: 'app-chat',
@@ -35,12 +36,29 @@ export class ChatComponent implements OnInit {
     private router: Router,
     private sessionService: SessionService,
     private messageService: MessageService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private webSocketService: WebSocketService
   ) { }
 
   ngOnInit() {
     this.getCurrentUser();
+    // Suscribirse a los mensajes recibidos a través de websockets
+    this.webSocketService.connect().subscribe(
+      (message) => {
+        //convert to json object
+
+        //convert the message to IMessage
+        message.chat = this.chat;
+        this.messages.push(message);
+        // this.fillMessages();
+        this.scrollToBottom();
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
+  
 
   ngAfterViewInit(): void {
     // (this.elementRef.nativeElement.querySelector('#message') as HTMLInputElement).focus();
@@ -120,24 +138,27 @@ export class ChatComponent implements OnInit {
     if (messageContent === '') {
       return;
     }
-
+  
     this.message.content = messageContent;
     this.message.sender = this.sender;
     this.message.receiver = this.receiver;
     this.message.chat = this.chat;
     this.message.sentTime = new Date();
-
+  
     this.messageService.send(this.message, this.chat.car?.id).subscribe({
       next: (message: IMessage) => {
         this.scrollToBottomSend();
         this.messages.push(message);
         this.chatUpdated.emit(); // Emitimos el evento aquí
+        this.webSocketService.sendMessage(message);
+        
+        // Enviar el mensaje también a través de WebSocket
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al enviar el mensaje:', error);
       }
     });
-
+  
     (document.getElementById('message') as HTMLInputElement).value = '';
   }
 
@@ -147,7 +168,7 @@ export class ChatComponent implements OnInit {
         const container = this.messageContainer.nativeElement;
         container.scrollTop = container.scrollHeight;
       }
-    }, 50); // Adjust timeout value as needed
+    }, 75); // Adjust timeout value as needed
   }
 
   scrollToBottomSend() {

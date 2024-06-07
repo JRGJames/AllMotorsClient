@@ -90,9 +90,7 @@ export class ChatListComponent implements OnInit {
   getNotifications(chat: IChat): void {
     this.chatService.getMessagesNotRead(chat.id, this.currentUser).subscribe({
       next: (data: number) => {
-        console.log(data);
         this.chatsNotifications[chat.id] = data;
-        console.log(this.chatsNotifications);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al cargar los mensajes no leídos:', error);

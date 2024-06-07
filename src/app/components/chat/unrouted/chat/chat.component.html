@@ -36,7 +36,7 @@
                             <div class="flex gap-3 items-center w-full overflow-hidden">
                                 <div class="flex flex-col justify-between overflow-hidden w-[75%]">
                                     <div
-                                        class="flex items-end gap-1 text-gray-800 text-sm text-left align-top w-full overflow-hidden whitespace-nowrap">
+                                        class="flex items-end gap-1 text-gray-800 text-base text-left align-top w-full overflow-hidden whitespace-nowrap">
                                         <div *ngIf="chat.car"
                                             class="min-w-0 w-full overflow-hidden overflow-ellipsis flex-shrink">{{
                                             chat.car.title
@@ -72,7 +72,7 @@
                                 'rounded-tr-none': (i !== 0 && messages[i].sender.id !== messages[i - 1].sender.id && message.sender.id === currentUser.id) || (i === 0 && message.sender.id === currentUser.id),
                                 'rounded-tl-none': (i !== 0 && messages[i].sender.id !== messages[i - 1].sender.id && message.sender.id !== currentUser.id) || (i === 0 && message.sender.id !== currentUser.id)
                               }" (dblclick)="likeMessage(message)"
-                        class="bg-opacity-95 rounded-lg p-1 px-3 w-auto flex flex-col relative items-end max-w-[60%] shadow-md">
+                        class="bg-opacity-95 bg-green-500 rounded-lg p-1 px-3 w-auto flex flex-col relative items-end max-w-[60%] shadow-md">
                         <span class="text-[15px] relative min-w-full justify-between">
                             <ng-container *ngFor="let line of message.content.split('\n'); let isLast=last">
                                 <span *ngFor="let word of line.split(' ')" class="w-full inline select-none"
