@@ -702,39 +702,43 @@ export class UserProfileComponent implements OnInit {
   //navigate to chat page with the information of the car and members on the chat attached
   //update the method to check if there is a chat with the user and the currentUser
   loadChat(): void {
-    if (this.user.id === this.currentUser.id) {
-      console.error('No puedes chatear contigo mismo');
-      //toast here
-      return;
+    if (!this.sessionService.isSessionActive()) {
+      this.router.navigate(['/login']);
     } else {
-      // Comprobación de si ya existe un chat entre los usuarios
-      this.chatService.getByUsers(this.currentUser, this.user).subscribe({
-        next: (chat: IChat) => {
-          if (chat) {
+      if (this.user.id === this.currentUser.id) {
+        console.error('No puedes chatear contigo mismo');
+        //toast here
+        return;
+      } else {
+        // Comprobación de si ya existe un chat entre los usuarios
+        this.chatService.getByUsers(this.currentUser, this.user).subscribe({
+          next: (chat: IChat) => {
+            if (chat) {
 
-            chat.memberOne = this.user;
-            chat.memberTwo = this.currentUser;
-            // Si ya existe un chat, redirigir al chat existente
-            this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }]);
-          } else {
-            // Si no existe un chat, crear uno nuevo
-            const newChat = {
-              memberOne: this.user,
-              memberTwo: this.currentUser,
-              car: null,
-              notifications: 0,
-              creationDate: new Date()
-            };
-  
-            const chatData = encodeURIComponent(JSON.stringify(newChat));
-            this.router.navigate(['/chats', { chat: chatData }]);
+              chat.memberOne = this.user;
+              chat.memberTwo = this.currentUser;
+              // Si ya existe un chat, redirigir al chat existente
+              this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }]);
+            } else {
+              // Si no existe un chat, crear uno nuevo
+              const newChat = {
+                memberOne: this.user,
+                memberTwo: this.currentUser,
+                car: null,
+                notifications: 0,
+                creationDate: new Date()
+              };
+
+              const chatData = encodeURIComponent(JSON.stringify(newChat));
+              this.router.navigate(['/chats', { chat: chatData }]);
+            }
+          },
+          error: (error) => {
+            console.error('Error al cargar el chat:', error);
+            //toast here
           }
-        },
-        error: (error) => {
-          console.error('Error al cargar el chat:', error);
-          //toast here
-        }
-      });
+        });
+      }
     }
   }
 }

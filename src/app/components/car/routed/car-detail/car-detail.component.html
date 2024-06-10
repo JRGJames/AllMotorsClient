@@ -4,7 +4,7 @@
       <div class="carousel-container relative h-full w-full">
         <a routerLink="/" class="carousel-item h-full w-full focus:outline-none flex">
           <img *ngIf="car && car.images && car.images.length > imageIndex"
-            class="absolute object-cover w-full h-full hover:shadow-lg rounded-xl"
+            class="absolute object-cover w-full h-full hover:shadow-lg transition-shadow rounded-xl"
             [src]="urlImage + car.images[imageIndex].imageUrl">
         </a>
         <button *ngIf="imageIndex > 0"
