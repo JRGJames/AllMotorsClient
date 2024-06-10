@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from 'src/app/service/user.service';
-import { ICar, IUser } from 'src/app/model/model';
+import { ICar, IChat, IUser } from 'src/app/model/model';
 import { SessionService } from 'src/app/service/session.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RatingService } from 'src/app/service/rating.service';
@@ -706,20 +706,35 @@ export class UserProfileComponent implements OnInit {
       console.error('No puedes chatear contigo mismo');
       //toast here
       return;
-    // } else  if 
-    // (this.chatService.){
-
     } else {
-      const chat = {
-        memberOne: this.user,
-        memberTwo: this.currentUser,
-        car: null,
-        notifications: 0,
-        creationDate: new Date()
-      };
+      // Comprobación de si ya existe un chat entre los usuarios
+      this.chatService.getByUsers(this.currentUser, this.user).subscribe({
+        next: (chat: IChat) => {
+          if (chat) {
 
-      const chatData = encodeURIComponent(JSON.stringify(chat));
-      this.router.navigate(['/chats', { chat: chatData }]);
+            chat.memberOne = this.user;
+            chat.memberTwo = this.currentUser;
+            // Si ya existe un chat, redirigir al chat existente
+            this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }]);
+          } else {
+            // Si no existe un chat, crear uno nuevo
+            const newChat = {
+              memberOne: this.user,
+              memberTwo: this.currentUser,
+              car: null,
+              notifications: 0,
+              creationDate: new Date()
+            };
+  
+            const chatData = encodeURIComponent(JSON.stringify(newChat));
+            this.router.navigate(['/chats', { chat: chatData }]);
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar el chat:', error);
+          //toast here
+        }
+      });
     }
   }
 }

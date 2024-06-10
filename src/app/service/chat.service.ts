@@ -34,4 +34,21 @@ export class ChatService {
         return this.http.post(this.url + '/create', { memberOne, memberTwo, car });
     }
 
+    getByUsers(memberOne: IUser, memberTwo: IUser): Observable<IChat> {
+        const params = new HttpParams()
+            .set('memberOne', memberOne.id.toString())
+            .set('memberTwo', memberTwo.id.toString());
+
+        return this.http.get<IChat>(`${this.url}/getByUsers`, { params });
+    }
+
+    getByUsersCar(memberOne: IUser, memberTwo: IUser, car: ICar): Observable<IChat> {
+        const params = new HttpParams()
+            .set('memberOne', memberOne.id.toString())
+            .set('memberTwo', memberTwo.id.toString())
+            .set('car', car.id.toString());
+
+        return this.http.get<IChat>(`${this.url}/getByUsersCar`, { params });
+    }
+
 }
