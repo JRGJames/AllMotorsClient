@@ -40,23 +40,10 @@ export class ChatComponent implements OnInit {
     private webSocketService: WebSocketService
   ) { }
 
-  ngOnInit() {
-    this.getCurrentUser();
-    // Suscribirse a los mensajes recibidos a través de websockets
-    this.webSocketService.connect().subscribe(
-      (message) => {
-        //convert to json object
+  ngOnInit(): void {
+    this.getCurrentUser(); // Aquí debes obtener el chatId correspondiente
 
-        //convert the message to IMessage
-        message.chat = this.chat;
-        this.messages.push(message);
-        // this.fillMessages();
-        this.scrollToBottom();
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    // Suscribirse a los mensajes recibidos a través de websockets
   }
   
 
@@ -76,6 +63,24 @@ export class ChatComponent implements OnInit {
         if (container) {
           container.style.transform = 'translateX(0)';
         }
+
+        this.webSocketService.connect(this.chat.id).subscribe(
+          (message: IMessage) => {
+            // Convertir el mensaje a formato JSON si es necesario
+            // Aquí puedes agregar lógica adicional según tus necesidades
+    
+            // Agregar el chatId al mensaje (si es necesario)
+            message.chat = this.chat;
+            // Agregar el mensaje a la lista de mensajes
+            this.messages.push(message);
+    
+            // Desplazarse hacia abajo para mostrar el mensaje más reciente
+            this.scrollToBottom();
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
 
         // SCROLL TO BOTTOM
       }
@@ -148,9 +153,7 @@ export class ChatComponent implements OnInit {
     this.messageService.send(this.message, this.chat.car?.id).subscribe({
       next: (message: IMessage) => {
         this.scrollToBottomSend();
-        this.messages.push(message);
         this.chatUpdated.emit(); // Emitimos el evento aquí
-        this.webSocketService.sendMessage(message);
         
         // Enviar el mensaje también a través de WebSocket
       },

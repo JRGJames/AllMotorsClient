@@ -14,6 +14,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ToastService } from './../../../../service/toast.service';
 import { config, Map, MapStyle, Marker } from '@maptiler/sdk';
 import { last } from 'rxjs';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -62,6 +63,7 @@ export class UserProfileComponent implements OnInit {
     private savedService: SavedService, // inyectar SavedService
     private mediaService: MediaService,
     private toastService: ToastService,
+    private chatService: ChatService
   ) { }
 
   ngOnInit() {
@@ -698,11 +700,15 @@ export class UserProfileComponent implements OnInit {
   }
 
   //navigate to chat page with the information of the car and members on the chat attached
+  //update the method to check if there is a chat with the user and the currentUser
   loadChat(): void {
     if (this.user.id === this.currentUser.id) {
       console.error('No puedes chatear contigo mismo');
       //toast here
       return;
+    // } else  if 
+    // (this.chatService.){
+
     } else {
       const chat = {
         memberOne: this.user,
