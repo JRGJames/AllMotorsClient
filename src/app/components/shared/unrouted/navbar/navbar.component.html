@@ -68,7 +68,7 @@
     <button *ngIf="strUserName" [routerLink]="['/chats']" class="items-center text-white focus:outline-none">
       <i class="fas fa-comment text-xl"></i>
     </button>
-    <button *ngIf="strUserName" class="flex h-11 items-center text-white focus:outline-none">
+    <button *ngIf="strUserName" (click)="showMenu = false" class="flex h-11 items-center text-white focus:outline-none">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
     <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton

@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
+import { Observable, catchError, map, min, of, switchMap, tap, throwError } from 'rxjs';
 import { IUser, formOperation } from 'src/app/model/model';
 import { CryptoService } from 'src/app/service/crypto.service';
 import { SessionService } from 'src/app/service/session.service';
@@ -19,13 +19,18 @@ export class SignupComponent implements OnInit {
 
   userForm!: FormGroup;
   user: IUser = {} as IUser;
-  status: HttpErrorResponse | null = null;
+  status: string | null = null;
   submitted: boolean = false;
   passwordVisible: { [key: string]: boolean } = {
     password: false,
     cpassword: false,
   };
-
+  errorEmail: boolean = false;
+  emailMessage: string = '';
+  errorUsername: boolean = false;
+  usernameMessage: string = '';
+  errorPassword: boolean = false;
+  passWordMessage: string = '';
 
   backgroundImage: string = '';
 
@@ -41,9 +46,9 @@ export class SignupComponent implements OnInit {
 
   initializeForm(user: IUser) {
     this.userForm = this.fb.group({
-      email: [user.email, [Validators.required, Validators.email], [this.uniqueEmailValidator(this.userService)]],
-      username: [user.username, [Validators.required], [this.uniqueEmailValidator(this.userService)]],
-      password: [user.password, [Validators.required, Validators.minLength(8)]],
+      email: [user.email, [Validators.required, Validators.email]],
+      username: [user.username, [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+      password: [user.password, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/)]],
       cpassword: ['', [Validators.required, Validators.minLength(8)]],
     }, { validators: this.passwordMatchValidator });
   }
@@ -62,28 +67,52 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
-    this.submitted = true;
-    this.userForm.markAllAsTouched();  // Marca todos los controles como tocados
+    if (this.userForm.invalid) {
+      this.status = 'Please, complete the form correctly.';
+      if (this.userForm.get('email')?.invalid) {
+        this.errorEmail = true;
+        this.emailMessage = 'Email is required.';
+      }
+      if (this.userForm.get('username')?.invalid) {
+        this.errorUsername = true;
+        this.usernameMessage = 'Username is required.';
+      }
+      if (this.userForm.get('password')?.invalid) {
+        this.errorPassword = true;
+        this.passWordMessage = 'Password is required.';
+      }
+      return;
+    } else {
+      this.submitted = true;
+      this.userForm.markAllAsTouched();  // Marca todos los controles como tocados
 
-    if (this.userForm.valid && this.operation === 'NEW') {
-      const formData = { ...this.userForm.value };
-      formData.password = this.cryptoService.getSHA256(formData.password); // Hashea la contraseña directamente
+      if (this.userForm.valid && this.operation === 'NEW') {
+        const formData = { ...this.userForm.value };
+        formData.password = this.cryptoService.getSHA256(formData.password); // Hashea la contraseña directamente
+        //delete formData.cpassword; // Elimina la confirmación de la contraseña
+        delete formData.cpassword; // Elimina la confirmación de la contraseña
 
-      this.userService.create(formData).pipe(
-        switchMap(() => this.sessionService.login(formData.username, formData.password)), // Encadena el inicio de sesión después de la creación
-        tap((data: string) => {
-          this.sessionService.setToken(data);
-          this.sessionService.emit({ type: 'login' });
-        }),
-        catchError((error: HttpErrorResponse) => {
-          this.status = error;
-          return throwError(() => new Error('Error during user creation or login')); // Maneja errores tanto de creación como de inicio de sesión
-        })
-      ).subscribe({
-        next: () => this.router.navigate(['/']),
-        error: (error) => console.error('Error:', error) // Manejo de errores
-      });
+        this.userService.create(formData).pipe(
+          switchMap(() => this.sessionService.login(formData.username, formData.password)), // Encadena el inicio de sesión después de la creación
+          tap((data: string) => {
+            this.sessionService.setToken(data);
+            this.sessionService.emit({ type: 'login' });
+          }),
+          catchError((error: HttpErrorResponse) => {
+            this.status = `Error ${error.status}: ${error.message}`;
+
+
+            return throwError(() => new Error('Error during user creation or login')); // Maneja errores tanto de creación como de inicio de sesión
+          })
+        ).subscribe({
+          next: () => this.router.navigate(['/']),
+          error: (error) =>
+            console.error('Error:', error) // Manejo de errores
+
+        });
+      }
     }
+
   }
 
 
@@ -107,10 +136,34 @@ export class SignupComponent implements OnInit {
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
 
-  getErrorClasses(controlName: string): { [key: string]: boolean } {
+  getErrorEmail(controlName: string): { [key: string]: boolean } {
     const control = this.userForm.get(controlName);
     const isInvalid = control?.invalid ?? false;
-    const shouldShowError = (control?.dirty || control?.touched || this.submitted) && isInvalid;
+    const shouldShowError: boolean = (control?.dirty || this.submitted) && isInvalid;
+
+    if (controlName === 'email' && control) {
+
+      if (control.dirty && control.hasError('required')) {
+        this.emailMessage = 'Email is required.';
+        this.errorEmail = true;
+      } else if (control.dirty && control.invalid) {
+        this.emailMessage = 'Enter a valid email.';
+        this.errorEmail = true;
+      } else if (control.dirty && control.valid) {
+        this.userService.checkEmailNotTaken(control.value).subscribe(isAvailable => {
+          if (!isAvailable) {
+            this.emailMessage = 'Email already taken.';
+            this.errorEmail = true;
+          } else {
+            this.emailMessage = '';
+            this.errorEmail = false;
+          }
+        });
+      } else {
+        this.emailMessage = '';
+        this.errorEmail = false;
+      }
+    }
 
     return {
       'border-b-red-300 border-b-2': shouldShowError,
@@ -118,41 +171,73 @@ export class SignupComponent implements OnInit {
     };
   }
 
-  uniqueUsernameValidator(userService: UserService): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return userService.checkUsernameNotTaken(control.value).pipe(
-        map(isUsernameAvailable => {
-          if (!isUsernameAvailable) {
-            console.log('El nombre de usuario ya está en uso.');
-            return { usernameTaken: true };
+  getErrorUsername(controlName: string): { [key: string]: boolean } {
+    const control = this.userForm.get(controlName);
+    const isInvalid = control?.invalid ?? false;
+    const shouldShowError: boolean = (control?.dirty || this.submitted) && isInvalid;
+
+    if (controlName === 'username' && control) {
+      if (control.dirty && control.hasError('required')) {
+        this.usernameMessage = 'Username is required.';
+        this.errorUsername = true;
+      } else if (control.dirty && control.hasError('minlength')) {
+        this.usernameMessage = 'Username must be at least 3 characters long.';
+        this.errorUsername = true;
+      } else if (control.dirty && control.hasError('maxlength')) {
+        this.usernameMessage = 'Username must be at most 15 characters long.';
+        this.errorUsername = true;
+      } else if (control.dirty && control.valid) {
+        this.userService.checkUsernameNotTaken(control.value).subscribe(isAvailable => {
+          if (!isAvailable) {
+            this.usernameMessage = 'Username already taken.';
+            this.errorUsername = true;
+          } else {
+            this.usernameMessage = '';
+            this.errorUsername = false;
           }
-          return null;
-        }),
-        catchError(() => {
-          console.log('Error al comprobar el nombre de usuario.');
-          return of(null);
-        })
-      );
+        });
+      } else if (control.dirty && control.valid) {
+        this.usernameMessage = '';
+        this.errorUsername = false;
+      } else {
+        this.usernameMessage = '';
+        this.errorUsername = false;
+      }
+    }
+
+    return {
+      'border-b-red-300 border-b-2': shouldShowError,
+      '': !shouldShowError
     };
   }
 
-  // Validador para el correo electrónico
-  uniqueEmailValidator(userService: UserService): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return userService.checkEmailNotTaken(control.value).pipe(
-        map(isEmailAvailable => {
-          if (!isEmailAvailable) {
-            console.log('El correo electrónico ya está en uso.');
-            return { emailTaken: true };
-          }
-          return null;
-        }),
-        catchError(() => {
-          console.log('Error al comprobar el correo electrónico.');
-          return of(null);
-        })
-      );
-    };
+  getErrorPassword(controlName: string): { [key: string]: boolean } {
+    const control = this.userForm.get(controlName);
+    const isInvalid = control?.invalid ?? false;
+    const shouldShowError = (control?.dirty || this.submitted) && isInvalid;
 
+    if (controlName === 'password' && control) {
+      if (control.dirty && control.hasError('required')) {
+        this.passWordMessage = 'Password is required.';
+        this.errorPassword = true;
+      } else if (control.dirty && control.hasError('minlength')) {
+        this.passWordMessage = 'Password must be at least 8 characters long.';
+        this.errorPassword = true;
+      } else if (control.dirty && control.hasError('pattern')) {
+        this.passWordMessage = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one symbol.';
+        this.errorPassword = true;
+      } else if (control.valid) {
+        this.passWordMessage = '';
+        this.errorPassword = false;
+      } else {
+        this.passWordMessage = '';
+        this.errorPassword = false;
+      }
+    }
+
+    return {
+      'border-b-red-300 border-b-2': shouldShowError,
+      '': !shouldShowError
+    };
   }
 }

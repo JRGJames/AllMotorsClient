@@ -2,33 +2,38 @@
   [style.background-image]="backgroundImage" loading="lazy">
   <div class="inset-0 backdrop-blur-sm absolute"></div>
   <div class="login-form relative pt-16 flex items-center justify-center w-full">
-    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 w-[90%] sm:w-[60%] md:w-1/2 lg:w-1/3 xl:w-1/4" (ngSubmit)="onSubmit()" [formGroup]="userForm ">
-      <p class="text-center font-bold text-3xl mb-8">Signup</p>
+    <form class="bg-white shadow-md rounded-lg px-8 pt-4 pb-8 w-[90%] sm:w-[60%] md:w-1/2 lg:w-1/3 xl:w-1/4"
+      (ngSubmit)="onSubmit()" [formGroup]="userForm ">
+      <p class="text-center font-bold text-3xl mb-4">Signup</p>
       <div class="flex flex-col gap-5">
         <input
           class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text" id="email" formControlName="email" placeholder="Email" [ngClass]="getErrorClasses('email')">
+          autocomplete="off" type="text" id="email" formControlName="email" placeholder="Email"
+          (input)="getErrorEmail('email')" [ngClass]="{'border-b-red-300 border-b-2':errorEmail}">
+        <p *ngIf="errorEmail" class="text-xs text-red-600 -my-2 mx-1">{{emailMessage}}</p>
         <input
           class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text" id="username" formControlName="username" placeholder="Username"
-          [ngClass]="getErrorClasses('username')">
+          autocomplete="off" type="text" id="username" formControlName="username" placeholder="Username"
+          (input)="getErrorUsername('username')" [ngClass]="{'border-b-red-300 border-b-2':errorUsername}">
+        <p *ngIf="errorUsername" class="text-xs text-red-600 -my-2 mx-1">{{usernameMessage}}</p>
         <div class="relative">
           <input
             class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
             [type]="getPasswordInputType('password')" id="password" formControlName="password" placeholder="Password"
-            [ngClass]="getErrorClasses('password')"
-            [ngClass]="{ 'border-b-red-300 border-b-2': userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty) }">
+            autocomplete="off" (input)="getErrorPassword('password')"
+            [ngClass]="{ 'border-b-red-300 border-b-2': (userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty)) || errorPassword }">
           <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
             (click)="togglePasswordVisibility('password')" type="button">
             <i
               [ngClass]="{'fas': passwordVisible['password'], 'far': !passwordVisible['password'], 'fa-eye': passwordVisible['password'], 'fa-eye-slash': !passwordVisible['password']}"></i>
           </button>
         </div>
+        <p *ngIf="errorPassword" class="text-xs text-red-600 -my-2 mx-1">{{passWordMessage}}</p>
         <div class="relative">
           <input
             class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
-            [type]="getPasswordInputType('cpassword')" id="cpassword" formControlName="cpassword"
-            placeholder="Confirm password" [ngClass]="getErrorClasses('password')"
+            autocomplete="off" [type]="getPasswordInputType('cpassword')" id="cpassword" formControlName="cpassword"
+            placeholder="Confirm password"
             [ngClass]="{ 'border-b-red-300 border-b-2': userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty) }">
           <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
             (click)="togglePasswordVisibility('cpassword')" type="button">
@@ -36,8 +41,10 @@
               [ngClass]="{'fas': passwordVisible['cpassword'], 'far': !passwordVisible['cpassword'], 'fa-eye': passwordVisible['cpassword'], 'fa-eye-slash': !passwordVisible['cpassword']}"></i>
           </button>
         </div>
+        <p *ngIf="userForm.hasError('passwordMismatch') && (userForm.get('password')?.dirty || userForm.get('cpassword')?.dirty)"
+          class="text-xs text-red-600 -my-2 mx-1">Passwords do not match</p>
       </div>
-      <div class="gap-4 flex flex-col mt-5">
+      <div class="gap-3 flex flex-col mt-5">
         <div>
           <button
             class="bg-sky-500 hover:bg-sky-600 transition-colors text-white w-full py-3 px-4 rounded-lg focus:outline-none focus:bg-sky-600"
