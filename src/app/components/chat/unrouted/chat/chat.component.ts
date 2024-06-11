@@ -16,7 +16,7 @@ import { WebSocketService } from 'src/app/service/webSocket.service';
 })
 export class ChatComponent implements OnInit {
   @Input() chat!: IChat;
-  @Output() chatUpdated: EventEmitter<void> = new EventEmitter<void>();
+  @Output() chatUpdated = new EventEmitter<IChat>(); // Nuevo EventEmitter
 
   backgroundImage: string = `url(assets/images/image4.webp)`;
   receiver: IUser = {} as IUser;
@@ -38,18 +38,12 @@ export class ChatComponent implements OnInit {
     private sessionService: SessionService,
     private messageService: MessageService,
     private chatService: ChatService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private elementRef: ElementRef,
   ) { }
 
   ngOnInit(): void {
     this.getCurrentUser(); // Aquí debes obtener el chatId correspondiente
-
-    // Suscribirse a los mensajes recibidos a través de websockets
-  }
-
-
-  ngAfterViewInit(): void {
-    // (this.elementRef.nativeElement.querySelector('#message') as HTMLInputElement).focus();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -67,14 +61,9 @@ export class ChatComponent implements OnInit {
 
         this.webSocketService.connect(this.chat.id).subscribe(
           (message: IMessage) => {
-            // Convertir el mensaje a formato JSON si es necesario
-            // Aquí puedes agregar lógica adicional según tus necesidades
-
             // Agregar el chatId al mensaje (si es necesario)
             message.chat = this.chat;
-            // Agregar el mensaje a la lista de mensajes
             this.messages.push(message);
-
             // Desplazarse hacia abajo para mostrar el mensaje más reciente
             this.scrollToBottom();
           },
@@ -82,32 +71,8 @@ export class ChatComponent implements OnInit {
             console.error(error);
           }
         );
-
-
-        if (this.chat.car) {
-          if (this.chat.messages.length >= 1) {
-            this.chatService.getByUsersCar(this.currentUser, this.receiver, this.chat.car).subscribe({
-              next: (chat: IChat) => {
-                this.chat = chat;
-              },
-              error: (error: HttpErrorResponse) => {
-                console.error('Error al cargar el chat:', error);
-              }
-            });
-          }
-        } else {
-          if (this.chat.messages.length >= 1) {
-            this.chatService.getByUsers(this.currentUser, this.receiver).subscribe({
-              next: (chat: IChat) => {
-                this.chat = chat;
-              },
-              error: (error: HttpErrorResponse) => {
-                console.error('Error al cargar el chat:', error);
-              }
-            });
-          }
-        }
       }
+      document.getElementById('message')?.focus();
     }
   }
 
@@ -177,11 +142,8 @@ export class ChatComponent implements OnInit {
     this.messageService.send(this.message, this.chat.car?.id).subscribe({
       next: (message: IMessage) => {
         this.scrollToBottomSend();
-        this.chatUpdated.emit(); // Emitimos el evento aquí
-
-        if (this.chat.messages.length >= 1) {
-          this.chat = this.chat.messages[0].chat;
-        }
+        this.chatUpdated.emit(this.chat); // Emite el chat actualizado
+        this.message = {} as IMessage;
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al enviar el mensaje:', error);

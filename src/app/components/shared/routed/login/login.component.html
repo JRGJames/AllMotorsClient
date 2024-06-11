@@ -1,17 +1,16 @@
 <div class="flex items-center justify-center h-auto bg-cover absolute inset-0"
   [style.background-image]="backgroundImage" loading="lazy">
   <div class="inset-0 backdrop-blur-sm absolute"></div>
-  <div class="login-form max-w-md mx-auto my-auto relative">
-    <form class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 " (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+  <div class="login-form relative flex pt-16 items-center justify-center w-full h-full">
+    <form class="bg-white shadow-md w-[85%] rounded-lg sm:w-1/2 md:w-[40%] lg:w-[40%] xl:w-1/4 lg:h-fit px-8 pt-6 pb-8"
+      (ngSubmit)="onSubmit()" [formGroup]="loginForm">
       <p class="text-center font-bold text-3xl mb-8">Login</p>
       <div class="space-y-5">
-        <input
-          class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none "
-          type="text" id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email"
+        <input class="rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none " type="text"
+          id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email"
           [ngClass]="getErrorClasses('usernameOrEmail')">
         <div class="relative">
-          <input
-            class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none pr-10"
+          <input class="rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none pr-10"
             [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password"
             [ngClass]="getErrorClasses('password')">
           <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
@@ -37,9 +36,10 @@
               class="bg-sky-500 hover:bg-sky-600 transition-colors text-white w-1/2 py-3 px-4 rounded-lg focus:outline-none focus:bg-sky-600 ml-1"
               type="button">Admin</button>
           </div>
-        </div>  
+        </div>
         <div class="text-center">
-          <p>Don't have an account? <a routerLink="/signup" class="text-blue-500 hover:underline focus:outline-none focus:underline">Signup</a>
+          <p>Don't have an account? <a routerLink="/signup"
+              class="text-blue-500 hover:underline focus:outline-none focus:underline">Signup</a>
           </p>
         </div>
         <div class="flex items-center">
@@ -48,15 +48,21 @@
           <hr class="w-1/2 border-t-2 border-gray-200">
         </div>
 
-        <div class="space-y-4 ">
-          <button class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg">
-            <i class="fab fa-google mr-5"></i>Login with Google
+        <div class="gap-4 flex flex-col sm:flex-row xl:flex-col">
+          <button
+            class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg items-center flex justify-center gap-3">
+            <i class="fab fa-google"></i>
+            <p class="xl:flex sm:hidden">Login with Google</p>
           </button>
-          <button class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg">
-            <i class="fab fa-facebook mr-5"></i>Login with Facebook
+          <button
+            class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg items-center flex justify-center gap-3">
+            <i class="fab fa-facebook"></i>
+            <p class="xl:flex sm:hidden">Login with Facebook</p>
           </button>
-          <button class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg">
-            <i class="fab fa-microsoft mr-5"></i>Login with Microsoft
+          <button
+            class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg items-center flex justify-center gap-3">
+            <i class="fab fa-microsoft"></i>
+            <p class="xl:flex sm:hidden">Login with Microsoft</p>
           </button>
         </div>
       </div>

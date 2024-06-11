@@ -104,9 +104,30 @@ export class ChatListComponent implements OnInit {
     });
   }
 
-  onChatUpdated(): void {
+  onChatUpdated(updatedChat: IChat): void {
+      if (updatedChat.car) {
+        this.chatService.getByUsersCar(updatedChat.memberOne, updatedChat.memberTwo, updatedChat.car).subscribe({
+          next: (chat: IChat) => {
+            this.setChat(chat);
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al cargar el chat actualizado:', error);
+          }
+        });
+      } else {
+        this.chatService.getByUsers(updatedChat.memberOne, updatedChat.memberTwo).subscribe({
+          next: (chat: IChat) => {
+            this.setChat(chat);
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error al cargar el chat actualizado:', error);
+          }
+        });
+      }
+    
     this.getChats(this.currentUser.id); // Actualizar la lista de chats después de enviar un mensaje
   }
+  
 
   getUserInitials(user: IUser): string {
     if (user.name && user.lastname) {

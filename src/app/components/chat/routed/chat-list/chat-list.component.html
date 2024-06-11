@@ -63,7 +63,7 @@
     <div
       class="w-full sm:w-3/5 lg:w-3/4 overflow-hidden scroll-hide backdrop-blur-sm bg-cover bg-center transition-all duration-200"
       [ngStyle]="{'background-image': backgroundImage}" loading="lazy">
-      <app-chat [chat]="selectedChat" (chatUpdated)="onChatUpdated()"></app-chat>
+      <app-chat [chat]="selectedChat" (chatUpdated)="onChatUpdated($event)"></app-chat>
     </div>
   </div>
 </div>
