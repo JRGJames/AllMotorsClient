@@ -5,20 +5,24 @@
     <form class="bg-white shadow-md w-[85%] rounded-lg sm:w-1/2 md:w-[40%] lg:w-[40%] xl:w-1/4 lg:h-fit px-8 pt-6 pb-8"
       (ngSubmit)="onSubmit()" [formGroup]="loginForm">
       <p class="text-center font-bold text-3xl mb-8">Login</p>
-      <div class="space-y-5">
-        <input class="rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none " type="text"
-          id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email"
-          [ngClass]="getErrorClasses('usernameOrEmail')">
+      <div class="flex flex-col gap-5">
+        <input
+          class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+          type="text" id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Username or email" (focus)="loginError = false" autocomplete="off"
+          (input)="getErrorUser('usernameOrEmail')" [ngClass]="{'border-b-red-300 border-b-2': errorUser}">
+        <p *ngIf="errorUser" class="text-xs text-red-600 -my-2 mx-1">{{userMessage}}</p>
         <div class="relative">
-          <input class="rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none pr-10"
-            [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password"
-            [ngClass]="getErrorClasses('password')">
+          <input
+            class="shadow appearance-none border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+            [type]="getPasswordInputType()" id="password" formControlName="password" placeholder="Password" (focus)="loginError = false"
+            (input)="getErrorPass('password')" [ngClass]="{'border-b-red-300 border-b-2': errorPass}">
           <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 focus:outline-none"
             (click)="togglePasswordVisibility()" type="button">
             <i
               [ngClass]="{'fas': passwordVisible, 'far': !passwordVisible, 'fa-eye': passwordVisible, 'fa-eye-slash': !passwordVisible}"></i>
           </button>
         </div>
+        <p *ngIf="errorPass" class="text-xs text-red-600 -my-2 mx-1">{{passMessage}}</p>
         <div class="text-center">
           <a href="#" class="text-blue-500 hover:underline focus:outline-none focus:underline">Forgot password?</a>
         </div>
@@ -67,5 +71,10 @@
         </div>
       </div>
     </form>
+  </div>
+
+  <!-- toast login error -->
+  <div [ngClass]="{'size-0 -translate-y-96': !loginError, 'size-1 translate-y-0': loginError}" class="absolute transition-all text-black shadow duration-500 top-20 sm:top-24 w-fit h-fit bg-white opacity-60 backdrop-blur-md border-2 border-red-500 px-4 md:px-6 py-2 md:py-4 rounded-lg">
+    <p>{{errorMessage}}</p>
   </div>
 </div>

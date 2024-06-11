@@ -145,4 +145,9 @@ export class NavbarComponent implements OnInit {
   resetBehavior(): void {
     document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' });
   }
+
+  goToSaved(): void {
+    this.router.navigate(['/user', this.sessionUser.id], { queryParams: { showSaved: true } });
+    this.showMenu = false;
+  }
 }

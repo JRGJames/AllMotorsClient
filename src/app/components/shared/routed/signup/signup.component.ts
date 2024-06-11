@@ -27,8 +27,10 @@ export class SignupComponent implements OnInit {
   };
   errorEmail: boolean = false;
   emailMessage: string = '';
+
   errorUsername: boolean = false;
   usernameMessage: string = '';
+
   errorPassword: boolean = false;
   passWordMessage: string = '';
 
@@ -67,19 +69,18 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.userForm.invalid) {
-      this.status = 'Please, complete the form correctly.';
-      if (this.userForm.get('email')?.invalid) {
+    if (this.userForm.invalid || this.errorEmail || this.errorUsername || this.errorPassword) {
+      if (this.userForm.get('email')?.invalid || this.errorEmail) {
         this.errorEmail = true;
-        this.emailMessage = 'Email is required.';
+        this.emailMessage = 'Enter a valid email.';
       }
-      if (this.userForm.get('username')?.invalid) {
+      if (this.userForm.get('username')?.invalid || this.errorUsername) {
         this.errorUsername = true;
-        this.usernameMessage = 'Username is required.';
+        this.usernameMessage = 'Enter a valid username.';
       }
-      if (this.userForm.get('password')?.invalid) {
+      if (this.userForm.get('password')?.invalid || this.errorPassword) {
         this.errorPassword = true;
-        this.passWordMessage = 'Password is required.';
+        this.passWordMessage = 'Enter a valid password.';
       }
       return;
     } else {

@@ -17,18 +17,26 @@ export class LoginComponent implements OnInit {
   status: HttpErrorResponse | null = null;
   passwordVisible = false; // Variable para controlar la visibilidad de la contraseña
   backgroundImage: string = '';
-  
+  errorMessage: string = '';
+  loginError: boolean = false;
+
+  userMessage: string = '';
+  errorUser: boolean = false;
+
+  passMessage: string = '';
+  errorPass: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private sessionService: SessionService,
     private router: Router,
     private cryptoService: CryptoService,
-    ) {
-      this.loginForm = this.fb.group({
-        usernameOrEmail: ['', [Validators.required]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
-      });
-    }
+  ) {
+    this.loginForm = this.fb.group({
+      usernameOrEmail: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
 
   ngOnInit() {
     const images = [
@@ -37,30 +45,45 @@ export class LoginComponent implements OnInit {
       'image3.webp',
       'image4.webp'
     ];
-  
+
     const randomImage = images[Math.floor(Math.random() * images.length)];
-  
+
     this.backgroundImage = `url(assets/images/${randomImage})`;
   }
 
   onSubmit() {
-    this.submitted = true;
-    if (this.loginForm.valid) {
-      const username = this.loginForm.value.usernameOrEmail;
-      const hashedPassword = this.cryptoService.getSHA256(this.loginForm.value.password);
+    if (this.loginForm.invalid) {
+      if (this.loginForm.get('usernameOrEmail')?.invalid) {
+        this.userMessage = 'Please, enter a username or email.';
+        this.errorUser = true;
+      } 
+      if (this.loginForm.get('password')?.invalid) {
+        this.passMessage = 'Please, enter a password.';
+        this.errorPass = true;
+      }
+      return;
+    } else {
+      this.submitted = true;
+      if (this.loginForm.valid) {
+        const username = this.loginForm.value.usernameOrEmail;
+        const hashedPassword = this.cryptoService.getSHA256(this.loginForm.value.password);
 
-      this.sessionService.login(username, hashedPassword).subscribe({
-        next: (data: string) => {
-          this.sessionService.setToken(data);
-          this.sessionService.emit({ type: 'login' });
-          this.router.navigate(['/']);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.status = error;
-          this.loginForm.reset();
-        }
-      });
+        this.sessionService.login(username, hashedPassword).subscribe({
+          next: (data: string) => {
+            this.sessionService.setToken(data);
+            this.sessionService.emit({ type: 'login' });
+            this.router.navigate(['/']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.loginError = true;
+            this.errorMessage = 'Invalid username/email or password.'
+            this.status = error;
+            this.loginForm.reset();
+          }
+        });
+      }
     }
+
   }
 
   loginAdmin() {
@@ -90,12 +113,41 @@ export class LoginComponent implements OnInit {
     const control = this.loginForm.get(controlName);
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
-  
-  getErrorClasses(controlName: string): {[key: string]: boolean} {
+
+  getErrorUser(controlName: string): { [key: string]: boolean } {
     const control = this.loginForm.get(controlName);
     const isInvalid = control?.invalid ?? false;
     const shouldShowError = (control?.dirty || control?.touched || this.submitted) && isInvalid;
-  
+
+    if (controlName === 'usernameOrEmail' && control) {
+      if (control.dirty && control.hasError('required')) {
+        this.userMessage = 'Please, enter a username or email.';
+        this.errorUser = true;
+      } else {
+        this.userMessage = '';
+        this.errorUser = false;
+      }
+    }
+    return {
+      'border-b-red-300 border-b-2': shouldShowError,
+      '': !shouldShowError
+    };
+  }
+
+  getErrorPass(controlName: string): { [key: string]: boolean } {
+    const control = this.loginForm.get(controlName);
+    const isInvalid = control?.invalid ?? false;
+    const shouldShowError = (control?.dirty || control?.touched || this.submitted) && isInvalid;
+
+    if (controlName === 'password' && control) {
+      if (control.dirty && control.hasError('required')) {
+        this.passMessage = 'Please, enter a password.';
+        this.errorPass = true;
+      } else {
+        this.passMessage = '';
+        this.errorPass = false;
+      }
+    }
     return {
       'border-b-red-300 border-b-2': shouldShowError,
       '': !shouldShowError

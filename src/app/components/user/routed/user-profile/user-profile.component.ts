@@ -23,6 +23,8 @@ import { ChatService } from 'src/app/service/chat.service';
 })
 export class UserProfileComponent implements OnInit {
 
+  @ViewChild('tabContainer', { static: true }) tabContainer!: ElementRef;
+
   @ViewChild('map')
   private mapContainer!: ElementRef;
   map: Map | undefined;
@@ -52,6 +54,8 @@ export class UserProfileComponent implements OnInit {
   usernameIsTaken: boolean = false;
   coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
   mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
+  description: string = '';
+  isComingFromSaved: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -76,7 +80,11 @@ export class UserProfileComponent implements OnInit {
             return;
           }
           this.getCurrentUser();
-          this.showPosts();
+          this.route.queryParams.subscribe(params => {
+            if (params['showSaved']) {
+              this.isComingFromSaved = true;
+            }
+          });
         });
         config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
       } else {
@@ -84,6 +92,7 @@ export class UserProfileComponent implements OnInit {
         this.router.navigate(['/']); // Redirige a la página de inicio si no hay ID
       }
     });
+
   }
 
   getUser(): Promise<boolean> {
@@ -140,11 +149,22 @@ export class UserProfileComponent implements OnInit {
       this.userService.getByUsername(username).subscribe({
         next: (user: IUser) => {
           this.currentUser = user;
+          this.description = this.user.description;
+          if (user.id === this.user.id) {
+            this.showInfo();
+          } else {
+            this.showPosts();
+          }
+
+          if (this.isComingFromSaved) {
+            this.showSaved();
+          }
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los datos del usuario actual:', error);
         }
       });
+      
     }
   }
 
@@ -432,6 +452,11 @@ export class UserProfileComponent implements OnInit {
     this.isPostsShown = false;
     this.isSavedShown = true;
 
+    if (innerWidth < 768) {
+      document.scrollingElement?.scrollTo({ top: 630, behavior: 'smooth' });
+    }
+
+
     if (container) {
       if (this.savedCars.length === 0) {
         container.classList.add('h-[30]');
@@ -570,7 +595,7 @@ export class UserProfileComponent implements OnInit {
       this.user.lastname = document.getElementById('lastname')?.textContent || '';
       let username: string = document.getElementById('username')?.textContent || '';
       this.user.phone = document.getElementById('phone')?.textContent || '';
-      this.user.description = document.getElementById('description')?.textContent || '';
+      this.user.description = this.description;
 
       if (this.checkUsername(username)) {
         // toast here

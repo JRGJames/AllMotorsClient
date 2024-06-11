@@ -140,11 +140,11 @@
         <p>{{user.country}}, {{user.city}}</p>
       </div>
     </div>
-    <div class="px-3">
-      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none text-gray-700"
+    <div class="px-3 h-32 md:h-12">
+      <textarea [ngClass]="{'animate-pulse italic':setContentEditable}" [readOnly]="!setContentEditable" [(ngModel)]="description" class="editable bg-transparent w-full rounded-scrollbar h-full resize-none focus:outline-none text-gray-700"
         id="description">
-        {{user.description}}
-      </p>
+        {{description}}
+      </textarea>
     </div>
   </div>
   <div class="flex h-full">
@@ -164,7 +164,7 @@
         </button>
       </div>
       <div class="overflow-hidden bg-transparent rounded-md">
-        <div class="flex bg-gray-100 rounded-md w-[300%] overflow-hidden transition-all duration-500" id="tabContainer"
+        <div class="flex bg-gray-100 rounded-md w-[300%] overflow-hidden transition-all duration-500" id="tabContainer" #tabContainer
           [ngClass]="{'h-[66.75rem] md:h-[41rem] lg:h-[22rem]': isInfoShown && currentUser.role, 'h-[49.3rem] md:h-[31.5rem] lg:h-[17.25rem]': isInfoShown, 'h-[26rem] md:h-[30rem]': (isPostsShown && cars.length === 0) || (isSavedShown && savedCars.length === 0), 'h-[47rem] md:h-[51rem]': (isPostsShown && cars.length !== 0) || (isSavedShown && savedCars.length !== 0)}">
           <div class="flex flex-col justify-start w-full rounded-md overflow-y-auto scroll-hide">
             <div class="flex flex-col md:flex-row p-10 gap-8 md:gap-4">
@@ -186,7 +186,8 @@
                     <p class="font-bold text-4xl">@</p>
                     <div class="flex flex-col">
                       <p class="text-sm">Username:</p>
-                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none" id="username">{{user.username}}</p>
+                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none"
+                        id="username">{{user.username}}</p>
                     </div>
                   </div>
                 </div>
@@ -483,8 +484,7 @@
           <div class="block 2xl:flex space-y-3 2xl:space-y-0 items-center 2xl:space-x-10 lg:text-base 2xl:text-lg">
             <div class="flex space-x-2 items-center">
               <div class="rounded-full overflow-hidden bg-gray-500 lg:h-5 2xl:w-7 lg:w-5 2xl:h-7">
-                <img *ngIf="selectedCar.owner.profilePicture"
-                  [src]='urlImage + selectedCar.owner.profilePicture'
+                <img *ngIf="selectedCar.owner.profilePicture" [src]='urlImage + selectedCar.owner.profilePicture'
                   class="flex h-full object-cover w-full items-center justify-center">
                 <div *ngIf="!selectedCar.owner.profilePicture"
                   class="w-full h-full bg-sky-600 justify-center items-center flex tracking-[-0.1rem] text-[10px] text-white">

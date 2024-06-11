@@ -20,7 +20,7 @@
         class="flex items-start hover:bg-gray-500 focus:bg-gray-500 hover:bg-opacity-40 focus:bg-opacity-40 focus:outline-none transition-all text-white w-full py-2 px-6">
         Messages
       </button>
-      <button *ngIf="strUserName" (click)="showMenu = false"
+      <button *ngIf="strUserName" (click)="goToSaved()"
         class="flex items-start hover:bg-gray-500 focus:bg-gray-500 hover:bg-opacity-40 focus:bg-opacity-40focus:outline-none transition-all text-white w-full py-2 px-6">
         Saved
       </button>
@@ -68,7 +68,7 @@
     <button *ngIf="strUserName" [routerLink]="['/chats']" class="items-center text-white focus:outline-none">
       <i class="fas fa-comment text-xl"></i>
     </button>
-    <button *ngIf="strUserName" (click)="showMenu = false" class="flex h-11 items-center text-white focus:outline-none">
+    <button *ngIf="strUserName" (click)="goToSaved()" class="flex h-11 items-center text-white focus:outline-none">
       <i class="fas fa-bookmark text-xl"></i>
     </button>
     <button *ngIf="strUserName" (click)="toggleDropdown()" #dropdownButton
