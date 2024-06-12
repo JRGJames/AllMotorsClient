@@ -48,7 +48,6 @@ export class ChatListComponent implements OnInit {
           const chatData = JSON.parse(decodeURIComponent(chat));
           this.selectedChat = chatData;
           this.checkIfUserIsMember(this.selectedChat);
-          this.setBackground(this.selectedChat);
         } catch (error) {
           console.error('Error parsing chat data:', error);
         }
@@ -105,29 +104,29 @@ export class ChatListComponent implements OnInit {
   }
 
   onChatUpdated(updatedChat: IChat): void {
-      if (updatedChat.car) {
-        this.chatService.getByUsersCar(updatedChat.memberOne, updatedChat.memberTwo, updatedChat.car).subscribe({
-          next: (chat: IChat) => {
-            this.setChat(chat);
-          },
-          error: (error: HttpErrorResponse) => {
-            console.error('Error al cargar el chat actualizado:', error);
-          }
-        });
-      } else {
-        this.chatService.getByUsers(updatedChat.memberOne, updatedChat.memberTwo).subscribe({
-          next: (chat: IChat) => {
-            this.setChat(chat);
-          },
-          error: (error: HttpErrorResponse) => {
-            console.error('Error al cargar el chat actualizado:', error);
-          }
-        });
-      }
-    
+    if (updatedChat.car) {
+      this.chatService.getByUsersCar(updatedChat.memberOne, updatedChat.memberTwo, updatedChat.car).subscribe({
+        next: (chat: IChat) => {
+          this.setChat(chat);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar el chat actualizado:', error);
+        }
+      });
+    } else {
+      this.chatService.getByUsers(updatedChat.memberOne, updatedChat.memberTwo).subscribe({
+        next: (chat: IChat) => {
+          this.setChat(chat);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al cargar el chat actualizado:', error);
+        }
+      });
+    }
+
     this.getChats(this.currentUser.id); // Actualizar la lista de chats después de enviar un mensaje
   }
-  
+
 
   getUserInitials(user: IUser): string {
     if (user.name && user.lastname) {
@@ -146,10 +145,20 @@ export class ChatListComponent implements OnInit {
 
   setChat(chat: IChat): void {
     this.selectedChat = chat;
+
+    const container = document.getElementById('chatContainer');
+
+    if (container) {
+      if (window.innerWidth < 640) {
+        container.style.transform = 'translateX(-50%)';
+      }
+    }
   }
 
   setBackground(chat: IChat): void {
     const container = document.getElementById('chatContainer');
+
+    this.selectedChat = chat;
 
     if (chat.car === null) {
       this.selectedBackgroundImage = this.backgroundImage;
@@ -157,8 +166,8 @@ export class ChatListComponent implements OnInit {
       this.selectedBackgroundImage = `url('${this.urlImage + chat.car.images[0].imageUrl}')`;
     }
 
-    if (window.innerWidth < 640) {
-      if (container) {
+    if (container) {
+      if (window.innerWidth < 640) {
         container.style.transform = 'translateX(-50%)';
       }
     }

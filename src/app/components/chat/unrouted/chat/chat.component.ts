@@ -17,6 +17,7 @@ import { WebSocketService } from 'src/app/service/webSocket.service';
 export class ChatComponent implements OnInit {
   @Input() chat!: IChat;
   @Output() chatUpdated = new EventEmitter<IChat>(); // Nuevo EventEmitter
+  @Output() moveToChatListEvent = new EventEmitter<void>();
 
   backgroundImage: string = `url(assets/images/image4.webp)`;
   receiver: IUser = {} as IUser;
@@ -254,10 +255,11 @@ export class ChatComponent implements OnInit {
   }
 
   moveToChatList() {
+    this.moveToChatListEvent.emit();
     const container = document.getElementById('chatContainer');
 
     if (container) {
-      container.style.transform = 'translateX(0)';
+      container.style.transform = 'translateX(0%)';
     }
   }
 
@@ -273,7 +275,7 @@ export class ChatComponent implements OnInit {
     const container = document.getElementById('UserChatContainer');
 
     if (container) {
-      container.style.transform = 'translateX(0)';
+      container.style.transform = 'translateX(0%)';
     }
   }
 }

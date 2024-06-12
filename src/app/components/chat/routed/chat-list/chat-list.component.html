@@ -5,7 +5,7 @@
     <div class="h-full bg-transparent overflow-hidden bg-gray-50 bg-opacity-50 w-full sm:w-2/5 lg:w-1/4">
       <div class="flex h-full bg-gray-50 bg-opacity-60 backdrop-blur-lg overflow-y-auto chat-scrollbar flex-col pt-16">
         <button *ngFor="let chat of chats; let i = index"
-          (click)="checkIfUserIsMember(chat); setBackground(chat); setChat(chat)" [ngClass]="{
+          (click)="checkIfUserIsMember(chat); setBackground(chat)" [ngClass]="{
             'shadow-md bg-gray-50 bg-opacity-45': selectedChat.id === chat.id,
             'bg-opacity-0 bg-gray-100 hover:bg-opacity-30 hover:bg-gray-50 hover:shadow-sm': selectedChat !== chat
           }" class="p-3 h-16 transition-all items-center duration-300 flex gap-3 focus:outline-none">
@@ -63,7 +63,7 @@
     <div
       class="w-full sm:w-3/5 lg:w-3/4 overflow-hidden scroll-hide backdrop-blur-sm bg-cover bg-center transition-all duration-200"
       [ngStyle]="{'background-image': backgroundImage}" loading="lazy">
-      <app-chat [chat]="selectedChat" (chatUpdated)="onChatUpdated($event)"></app-chat>
+      <app-chat [chat]="selectedChat" (chatUpdated)="onChatUpdated($event)" ></app-chat>
     </div>
   </div>
 </div>

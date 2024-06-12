@@ -52,21 +52,21 @@
           <hr class="w-1/2 border-t-2 border-gray-200">
         </div>
 
-        <div class="gap-4 flex flex-col sm:flex-row xl:flex-col">
+        <div class="gap-4 flex 2xl:flex-col">
           <button
             class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg items-center flex justify-center gap-3">
             <i class="fab fa-google"></i>
-            <p class="xl:flex sm:hidden">Login with Google</p>
+            <p class="2xl:flex hidden">Login with Google</p>
           </button>
           <button
             class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg items-center flex justify-center gap-3">
             <i class="fab fa-facebook"></i>
-            <p class="xl:flex sm:hidden">Login with Facebook</p>
+            <p class="2xl:flex hidden">Login with Facebook</p>
           </button>
           <button
             class="bg-gray-100 transition-all hover:bg-gray-200 focus:outline-none focus:bg-gray-200 text-black w-full py-3 px-4 rounded-lg items-center flex justify-center gap-3">
             <i class="fab fa-microsoft"></i>
-            <p class="xl:flex sm:hidden">Login with Microsoft</p>
+            <p class="2xl:flex hidden">Login with Microsoft</p>
           </button>
         </div>
       </div>
@@ -74,7 +74,7 @@
   </div>
 
   <!-- toast login error -->
-  <div [ngClass]="{'size-0 -translate-y-96': !loginError, 'size-1 translate-y-0': loginError}" class="absolute transition-all text-black shadow duration-500 top-20 sm:top-24 w-fit h-fit bg-white opacity-60 backdrop-blur-md border-2 border-red-500 px-4 md:px-6 py-2 md:py-4 rounded-lg">
+  <div [ngClass]="{'size-0 -translate-y-96': !loginError, 'size-1 translate-y-0': loginError}" class="absolute transition-all text-black shadow duration-500 top-20 sm:top-24 w-fit h-fit bg-white opacity-95 backdrop-blur-md border-2 border-red-500 px-4 md:px-6 py-2 md:py-4 rounded-lg">
     <p>{{errorMessage}}</p>
   </div>
 </div>
