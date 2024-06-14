@@ -74,7 +74,15 @@ export class CarDetailComponent implements OnInit {
   doors: number = 0;
   seats: number = 0;
 
-  contactError: boolean = false;
+  hasError: boolean = false;
+  errorMessage: string = '';
+
+  titleBrand: string = '';
+  titleModel: string = '';
+  title: string = '';
+  titleText: string = '';
+
+  place: any = {};
 
   colors: { color: string, hex: string }[] = [
     { color: 'black', hex: '#1F2937' },
@@ -224,6 +232,7 @@ export class CarDetailComponent implements OnInit {
             this.increaseViews(this.id);
           }
         });
+
         config.apiKey = 'Apyyhkp723bQ0aHy4fgs';
       } else {
         console.error('ID is undefined');
@@ -262,6 +271,9 @@ export class CarDetailComponent implements OnInit {
           this.selectedBrand = this.car.brand;
           this.doors = this.car.doors;
           this.seats = this.car.seats;
+          this.titleBrand = this.car.brand;
+          this.titleModel = this.car.model;
+          this.title = this.titleBrand + ' ' + this.titleModel;
           this.coords = {
             lng: parseFloat(this.car.location.split(' ')[0]),
             lat: parseFloat(this.car.location.split(' ')[1])
@@ -529,6 +541,9 @@ export class CarDetailComponent implements OnInit {
     this.models = [];
     this.car.model = '';
 
+    this.title = brand;
+    this.titleBrand = brand;
+
     this.carService.getModelsByBrand(brand).subscribe({
       next: (response) => {
         for (let i = 0; i < response.data.length; i++) {
@@ -549,6 +564,10 @@ export class CarDetailComponent implements OnInit {
     }
   }
 
+  changeTitleModel(event: any) {
+    this.title += ' ' + event.target.value;
+  }
+
   setEditable(): void {
     const editables = document.querySelectorAll('.editable');
 
@@ -558,6 +577,7 @@ export class CarDetailComponent implements OnInit {
     this.loadYears();
 
     if (this.setContentEditable) {
+      this.isEditingYear = false;
       this.isEditingFuel = false;
       this.isEditingOwner = false;
       this.isEditingColor = false;
@@ -567,10 +587,9 @@ export class CarDetailComponent implements OnInit {
       this.isEditingBrand = false;
       this.isEditingModel = false;
       this.isEditingImages = false;
-      this.isEditingYear = false;
 
       // Actualizamos los datos del usuario
-      this.car.title = document.getElementById('title')?.innerText || '';
+      this.car.title = this.title;
 
       const priceText = document.getElementById('price')?.innerText || '';
       this.car.price = Number(priceText.replace('.', ''));
@@ -579,27 +598,85 @@ export class CarDetailComponent implements OnInit {
 
       this.seats = Number(document.getElementById('seats')?.innerText);
       this.car.seats = this.seats
-      
+
       this.doors = Number(document.getElementById('doors')?.innerText);
       this.car.doors = this.doors;
-      this.car.description = (document.getElementById('description') as HTMLTextAreaElement)?.value;
+
+      const description = (document.getElementById('description') as HTMLTextAreaElement)?.value;
+      this.car.description = description;
 
       const distanceText = document.getElementById('distance')?.innerText || '';
-      this.car.distance = Number(distanceText.replace('.', ''));
+      const distance = Number(distanceText.replace('.', ''));
+      this.car.distance = distance;
 
       const horsepowerText = document.getElementById('horsepower')?.innerText || '';
-      this.car.horsepower = Number(horsepowerText.replace('.', ''));
+      const horsepower = Number(horsepowerText.replace('.', ''));
+      this.car.horsepower = horsepower;
 
       this.car.consumption = Number(document.getElementById('consumption')?.innerText);
       this.car.emissions = Number(document.getElementById('emissions')?.innerText);
       this.car.acceleration = Number(document.getElementById('acceleration')?.innerText);
       this.car.lastUpdate = new Date();
 
-      if (this.seats < 1  || this.seats > 8) {
-        return;
+      if (this.car.model === '') {
+        this.hasError = true;
+        this.errorMessage = 'The model is required';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.seats < 1 || this.seats > 8) {
+        this.hasError = true;
+        this.errorMessage = 'The number of seats must be between 1 and 8';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.doors < 1 || this.doors > 5) {
+        this.hasError = true;
+        this.errorMessage = 'The number of doors must be between 1 and 5';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (distance && distance > 20000000) {
+        this.hasError = true;
+        this.errorMessage = 'The distance is too high';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (horsepower && horsepower > 3000) {
+        this.hasError = true;
+        this.errorMessage = 'The horsepower is too high';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (description && (description.length > 2000 || description.length < 10)) {
+        this.hasError = true;
+        this.errorMessage = 'The description must be between 10 and 2000 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.car.price < 1) {
+        this.hasError = true;
+        this.errorMessage = 'The price must be greater than 0!';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.car.title.length < 2 || this.car.title.length > 30) {
+        this.hasError = true;
+        this.errorMessage = 'The title must be between 2 and 30 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
       }
 
-      if (this.doors < 1 || this.doors > 5) {
+      if (this.car.model === '' || this.seats < 1 || this.seats > 8 || this.doors < 1 || this.doors > 5 || (distance && distance > 20000000) || (horsepower && horsepower > 3000) || (description && (description.length > 2000 || description.length < 10)) || this.car.price < 1 || this.car.title.length < 2 || this.car.title.length > 30 || this.place.length === 0) {
         return;
       }
 
@@ -661,6 +738,7 @@ export class CarDetailComponent implements OnInit {
     fetch(url)
       .then(response => response.json())
       .then(data => {
+        this.place = data.features;
         if (data.features && data.features.length > 0) {
 
           this.car.city = data.features[2].place_name.split(',')[0].trim();
@@ -672,7 +750,12 @@ export class CarDetailComponent implements OnInit {
             this.car.city = data.features[2].place_name.split(',')[1].trim();
           }
         } else {
-          console.log('No features in data');
+          this.hasError = true;
+          this.errorMessage = 'The location is invalid';
+
+          setTimeout(() => {
+            this.hasError = false;
+          }, 3000);
         }
       })
       .catch(error => console.log('Error:', error));
@@ -713,8 +796,14 @@ export class CarDetailComponent implements OnInit {
 
   deleteImage(imageId: number): void {
     if (this.car.images.length <= 2) {
-      console.error('Se deben subir minimo 2 imágenes');
+      this.hasError = true;
+      this.errorMessage = 'The minimum number of images is 2';
+
+      setTimeout(() => {
+        this.hasError = false;
+      }, 3000);
     } else {
+      this.hasError = false;
       this.mediaService.deleteCarImage(imageId).subscribe({
         next: () => {
           this.getOne(this.car.id);
@@ -733,8 +822,12 @@ export class CarDetailComponent implements OnInit {
 
   addImage(file: File): void {
     if (this.car.images.length >= 8) {
-      console.error('No se pueden añadir más de 8 imágenes');
-      // toast here
+      this.hasError = true;
+      this.errorMessage = 'The maximum number of images is 8';
+
+      setTimeout(() => {
+        this.hasError = false;
+      }, 3000);
     } else {
       const formData = new FormData();
       formData.append('file', file);
@@ -758,13 +851,21 @@ export class CarDetailComponent implements OnInit {
         if (this.checkFileType(file)) {
           this.addImage(file);
         } else {
-          //this.toastService.show('El archivo seleccionado no es una imagen.');
-          console.error('El archivo seleccionado no es una imagen.');
+          this.hasError = true;
+          this.errorMessage = 'The selected file is not an image';
+
+          setTimeout(() => {
+            this.hasError = false;
+          }, 3000);
           return;
         }
       } else {
-        //this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
-        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        this.hasError = true;
+        this.errorMessage = 'The selected file is too large';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
         return;
       }
     }
@@ -781,6 +882,7 @@ export class CarDetailComponent implements OnInit {
   }
 
   closeDropdowns(): void {
+    this.isEditingYear = false;
     this.isEditingFuel = false;
     this.isEditingOwner = false;
     this.isEditingColor = false;
@@ -798,10 +900,11 @@ export class CarDetailComponent implements OnInit {
       this.router.navigate(['/login']);
     } else {
       if (this.car.owner.id === this.currentUser.id) {
-        this.contactError = true;
+        this.hasError = true;
+        this.errorMessage = 'You cannot chat with yourself';
 
         setTimeout(() => {
-          this.contactError = false;
+          this.hasError = false;
         }, 3000);
 
         return;

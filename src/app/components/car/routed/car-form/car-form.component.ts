@@ -115,6 +115,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   imageMessage: string = 'At least 2 images must be uploaded';
   modelMessage: string = 'Select a model';
 
+  selectedModel: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -300,6 +301,8 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   changeTitleBrand(event: any) {
     this.title = event.target.value;
     this.titleBrand = event.target.value;
+    this.titleModel = '';
+    this.selectedModel = '';
     document.getElementById('title')?.setAttribute('value', this.title);
     document.getElementById('model')?.focus();
     this.carForm.patchValue({
@@ -352,6 +355,9 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onBrandChange(brand: string) {
     this.models = [];
+    this.selectedModel = '';
+    this.titleModel = '';
+    this.title = this.titleBrand;
 
     this.carService.getModelsByBrand(brand).subscribe({
       next: (response) => {
@@ -367,6 +373,23 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async fillFormWithDefaults() {
+
+    this.imageError = false;
+    this.titleError = false;
+    this.brandError = false;
+    this.modelError = false;
+    this.priceError = false;
+    this.currencyError = false;
+    this.yearError = false;
+    this.colorError = false;
+    this.seatsError = false;
+    this.doorsError = false;
+    this.descriptionError = false;
+    this.locationError = false;
+    this.gearboxError = false;
+    this.fuelError = false;
+    this.distanceError = false;
+
     this.carForm.patchValue({
       owner: this.currentUser.username,
       title: 'BMW 320ci E46 2001',
@@ -623,22 +646,23 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     const files = event.target.files;
 
     if (files) {
+
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (this.checkFileSizeImage(file)) {
-          if (this.checkFileType(file)) {
-            // add the image to the preview
-            this.addImage(file);
+        setTimeout(() => {
+          const file = files[i];
+          if (this.checkFileSizeImage(file)) {
+            if (this.checkFileType(file)) {
+              // add the image to the preview
+              this.addImage(file);
+            } else {
+              this.imageError = true;
+              this.imageMessage = 'The file selected is not an image';
+            }
           } else {
-            //this.toastService.show('El archivo seleccionado no es una imagen.');
             this.imageError = true;
-            this.imageMessage = 'The file selected is not an image';
+            this.imageMessage = 'The file selected exceeds the maximum allowed size';
           }
-        } else {
-          //this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
-          this.imageError = true;
-          this.imageMessage = 'The file selected exceeds the maximum allowed size';
-        }
+        }, 200);
       }
     }
   }

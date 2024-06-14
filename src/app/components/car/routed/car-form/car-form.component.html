@@ -87,10 +87,10 @@
             <!--Owner-->
             <div *ngIf="currentUser.role" class="w-full sm:w-2/5 order-1 sm:order-2 relative">
               <label for="owner" class="font-base">Owner</label>
-              <input type="text" id="owner" formControlName="owner" autocomplete="off"
+              <input type="text" id="owner" formControlName="owner" autocomplete="off" readonly
                 (click)="showUsers = !showUsers; showCarTypes = false; showBrands = false; showModels = false; showYears = false; showColors = false"
                 #ownerInput
-                class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
+                class="mt-2 placeholder:text-xs cursor-pointer placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2"
                 [value]="currentUser.username" placeholder="User">
               <div [ngClass]="{'h-0': !showUsers, 'h-36 py-2': showUsers}"
                 class="z-10 gap-2 flex flex-col absolute top-20 w-full overflow-y-auto transition-all rounded-xl shadow-lg bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none scroll-hide focus:ring-2 focus:ring-offset-2 px-2 ">
@@ -167,14 +167,14 @@
               <input type="text" id="model" formControlName="model" placeholder="Search a model" autocomplete="off"
                 readonly
                 (click)="showModels = !showModels; showCarTypes = false; showUsers = false; showBrands = false; showYears = false; showColors = false; checkBrandSelected()"
-                class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full cursor-pointer rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2">
+                class="mt-2 placeholder:text-xs placeholder:xl:text-base w-full cursor-pointer rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2" [value]="selectedModel">
               <p *ngIf="modelError" class="absolute text-red-600 text-xs z-[2] -my-2 -bottom-4">{{modelMessage}}
               </p>
 
               <div (change)="changeTitleModel($event)" [ngClass]="{'h-0': !showModels, 'h-36 py-2': showModels && models.length > 0}"
                 class="z-10 gap-2 flex flex-col absolute top-20 w-full overflow-y-auto transition-all rounded-xl shadow-lg bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none scroll-hide focus:ring-2 focus:ring-offset-2 px-2 ">
                 <button *ngFor="let model of models; let i = index"
-                  (click)="carForm.patchValue({model: model}); showModels = !showModels; titleModel = models[i].toString(); title = titleBrand + ' ' + titleModel; modelError = false"
+                  (click)="carForm.patchValue({model: model}); selectedModel = model; showModels = !showModels; titleModel = models[i].toString(); title = titleBrand + ' ' + titleModel; modelError = false"
                   [ngClass]="{'bg-gray-400':carForm.get('model')?.value === model}"
                   class="bg-gray-300 hover:bg-gray-400 rounded-xl transition-colors focus:bg-gray-400 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 duration-150 px-3 py-1">{{
                   model
