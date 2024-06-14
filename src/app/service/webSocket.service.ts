@@ -7,7 +7,7 @@ import { IMessage } from '../model/model';
 })
 export class WebSocketService {
   private socket!: WebSocket;
-  private readonly socketUrl = 'ws://initial/chat';
+  private readonly socketUrl = 'ws://localhost:8083/chat';
 
   constructor() { }
 

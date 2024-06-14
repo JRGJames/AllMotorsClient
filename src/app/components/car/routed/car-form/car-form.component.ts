@@ -51,12 +51,8 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   images: IImage[] = [];
   users: IUser[] = [];
   years: number[] = [];
-  brands: string[] = [
-    'Audi', 'Rolls Royce', 'BMW', 'Chevrolet', 'Citroen', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Kia', 'Mazda', 'Mercedes-Benz', 'Nissan', 'Opel', 'Peugeot', 'Renault', 'Seat', 'Skoda', 'Toyota', 'Volkswagen', 'Volvo'
-  ];
-  models: string[] = [
-    'E46 X', 'E90', 'E92', 'F30', 'F32', 'F80', 'F82', 'F87', 'G20', 'G22', 'G80', 'G82', 'G87', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q3', 'Q5', 'Q7', 'Q8', 'TT', 'R8', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7', 'RSQ3', 'RSQ8', 'RSQ5', 'RSQ7'
-  ];
+  brands: string[] = [];
+  models: string[] = [];
   gearboxTypes: string[] = ['manual', 'automatic'];
   fuelTypes: string[] = ['gasoline', 'diesel', 'electric', 'hybrid'];
   currencies: string[] = ['€', '$', '£', '¥', '₽'];
@@ -96,6 +92,30 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
   showUsers: boolean = false;
   showCarTypes: boolean = false;
 
+  imageError: boolean = false;
+  titleError: boolean = false;
+  brandError: boolean = false;
+  modelError: boolean = false;
+  priceError: boolean = false;
+  currencyError: boolean = false;
+  yearError: boolean = false;
+  colorError: boolean = false;
+  seatsError: boolean = false;
+  doorsError: boolean = false;
+  descriptionError: boolean = false;
+  locationError: boolean = false;
+  gearboxError: boolean = false;
+  fuelError: boolean = false;
+  distanceError: boolean = false;
+
+  titleMessage: string = 'There has to be a title';
+  seatsMessage: string = 'Select seat number';
+  doorsMessage: string = 'Select door number';
+  priceMessage: string = 'Please, set a price';
+  imageMessage: string = 'At least 2 images must be uploaded';
+  modelMessage: string = 'Select a model';
+
+
   constructor(
     private formBuilder: FormBuilder,
     private carService: CarService,
@@ -121,7 +141,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       color: [car.color, [Validators.required]],
       seats: [car.seats, [Validators.required, Validators.min(1), Validators.max(8)]],
       doors: [car.doors, [Validators.required, Validators.min(1), Validators.max(5)]],
-      description: [car.description, [Validators.required, Validators.minLength(5), Validators.maxLength(2000)]],
+      description: [car.description, [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       location: [car.location, [Validators.required]],
       city: [car.city, [Validators.required]],
       gearbox: [car.gearbox, [Validators.required]],
@@ -129,7 +149,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       dateUploaded: [car.dateUploaded],
 
       horsepower: [car.horsepower],
-      distance: [car.distance],
+      distance: [car.distance, [Validators.max(20000000)]],
       type: [car.type],
       emissions: [car.emissions, [Validators.min(0)]],
       consumption: [car.consumption, [Validators.min(0)]],
@@ -205,6 +225,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.map.on('click', (e) => {
       const lngLat = e.lngLat;
+      this.locationError = false;
       this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
       this.carForm.patchValue({ location: lngLat.lng.toString() + ' ' + lngLat.lat.toString() });
       this.reverseGeocode(lngLat.lng, lngLat.lat);
@@ -239,6 +260,16 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
       .catch(error => console.log('Error:', error));
+  }
+
+  checkBrandSelected(): void {
+    if (this.carForm.get('brand')?.value === '' || this.carForm.get('brand')?.value === null) {
+      this.modelError = true;
+      this.modelMessage = 'Select a brand first';
+    } else {
+      this.modelError = false;
+      this.modelMessage = 'Select a model';
+    }
   }
 
   getCurrentUser(): void {
@@ -300,6 +331,7 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
         for (let i = 0; i < response.data.length; i++) {
           this.brands.push(response.data[i].name);
         }
+        this.brands.push('Other');
       },
       error: (error) => {
         console.error(error);
@@ -318,15 +350,15 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  onBrandChange(event: any) {
-    const selectedBrand = event.target.value;
+  onBrandChange(brand: string) {
     this.models = [];
 
-    this.carService.getModelsByBrand(selectedBrand).subscribe({
+    this.carService.getModelsByBrand(brand).subscribe({
       next: (response) => {
         for (let i = 0; i < response.data.length; i++) {
           this.models.push(response.data[i].name);
         }
+        this.models.push('Other');
       },
       error: (error) => {
         console.error('Error al cargar modelos:', error);
@@ -420,9 +452,56 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate(['/login']);
     } else {
       if (this.selectedFiles.length < 2 && this.images.length < 2) {
-        // this.toastService.show('Debes subir 2 fotos como minimo');
-        console.error('Debes subir 2 fotos como minimo');
+        this.imageError = true;
+        this.imageMessage = 'At least 2 images must be uploaded';
       } else {
+        this.imageError = false;
+        if (this.carForm.get('title')?.valid) {
+          this.titleError = false;
+          this.titleMessage = 'There has to be a title';
+        }
+        if (this.carForm.get('brand')?.valid) {
+          this.brandError = false;
+        }
+        if (this.carForm.get('model')?.valid) {
+          this.modelError = false;
+        }
+        if (this.carForm.get('price')?.valid) {
+          this.priceError = false;
+          this.priceMessage = 'Please, set a price';
+        }
+        if (this.carForm.get('currency')?.valid) {
+          this.currencyError = false;
+        }
+        if (this.carForm.get('year')?.valid) {
+          this.yearError = false;
+        }
+        if (this.carForm.get('color')?.valid) {
+          this.colorError = false;
+        }
+        if (this.carForm.get('seats')?.valid) {
+          this.seatsError = false;
+          this.seatsMessage = 'Select seat number';
+        }
+        if (this.carForm.get('doors')?.valid) {
+          this.doorsError = false;
+          this.doorsMessage = 'Select door number';
+        }
+        if (this.carForm.get('description')?.valid) {
+          this.descriptionError = false;
+        }
+        if (this.carForm.get('location')?.valid) {
+          this.locationError = false;
+        }
+        if (this.carForm.get('gearbox')?.valid) {
+          this.gearboxError = false;
+        }
+        if (this.carForm.get('fuel')?.valid) {
+          this.fuelError = false;
+        }
+        if (this.carForm.get('distance')?.valid) {
+          this.distanceError = false;
+        }
 
         if (this.carForm.valid) {
           if (this.operation === 'NEW') {
@@ -447,8 +526,68 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
               });
           }
         } else {
-          console.error('Formulario no válido');
-
+          if (this.carForm.get('title')?.invalid) {
+            this.titleError = true;
+            if (this.carForm.get('title')?.value === '') {
+              this.titleMessage = 'There has to be a title';
+            } else if (this.carForm.get('title')?.value.length < 2) {
+              this.titleMessage = 'Minimum length is 2';
+            } else if (this.carForm.get('title')?.value.length > 30) {
+              this.titleMessage = 'Maximum length is 30';
+            }
+          }
+          if (this.carForm.get('brand')?.invalid) {
+            this.brandError = true;
+          }
+          if (this.carForm.get('model')?.invalid) {
+            this.modelError = true;
+          }
+          if (this.carForm.get('price')?.invalid) {
+            this.priceError = true;
+            if (this.carForm.get('price')?.value < 1) {
+              this.priceMessage = 'Minimum value is 1';
+            }
+          }
+          if (this.carForm.get('currency')?.invalid) {
+            this.currencyError = true;
+          }
+          if (this.carForm.get('year')?.invalid) {
+            this.yearError = true;
+          }
+          if (this.carForm.get('color')?.invalid) {
+            this.colorError = true;
+          }
+          if (this.carForm.get('seats')?.invalid) {
+            this.seatsError = true;
+            if (this.carForm.get('seats')?.value < 1) {
+              this.seatsMessage = 'Minimum value is 1';
+            } else if (this.carForm.get('seats')?.value > 8) {
+              this.seatsMessage = 'Maximum value is 8';
+            }
+          }
+          if (this.carForm.get('doors')?.invalid) {
+            this.doorsError = true;
+            if (this.carForm.get('doors')?.value < 1) {
+              this.doorsMessage = 'Minimum value is 1';
+            } else if (this.carForm.get('doors')?.value > 5) {
+              this.doorsMessage = 'Maximum value is 5';
+            }
+          }
+          if (this.carForm.get('description')?.invalid) {
+            this.descriptionError = true;
+          }
+          if (this.carForm.get('location')?.invalid) {
+            this.locationError = true;
+          }
+          if (this.carForm.get('gearbox')?.invalid) {
+            this.gearboxError = true;
+          }
+          if (this.carForm.get('fuel')?.invalid) {
+            this.fuelError = true;
+          }
+          if (this.carForm.get('distance')?.invalid) {
+            this.distanceError = true;
+          }
         }
       }
     }
@@ -490,14 +629,15 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
           if (this.checkFileType(file)) {
             // add the image to the preview
             this.addImage(file);
-
           } else {
             //this.toastService.show('El archivo seleccionado no es una imagen.');
-            console.error('El archivo seleccionado no es una imagen.');
+            this.imageError = true;
+            this.imageMessage = 'The file selected is not an image';
           }
         } else {
           //this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
-          console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+          this.imageError = true;
+          this.imageMessage = 'The file selected exceeds the maximum allowed size';
         }
       }
     }
@@ -506,9 +646,10 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   addImage(file: File): void {
     if (this.images.length >= 8) {
-      // this.toastService.show('No puedes añadir más de 8 imágenes.');
-      console.error('No puedes añadir más de 8 imágenes.');
+      this.imageError = true;
+      this.imageMessage = 'The limit of images to upload is 8';
     } else {
+      this.imageError = false;
       const image: IImage = {
         imageUrl: URL.createObjectURL(file),
         car: this.car,

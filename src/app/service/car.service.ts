@@ -24,7 +24,7 @@ export class CarService {
   }
 
   getModelsByBrand(brand: string): Observable<any> {
-    const url = this.baseUrl+`/api/models?sort=id&make=${brand}&direction=asc`;
+    const url = this.baseUrl+`/api/models?verbose=yes&sort=id&make=${brand}&direction=asc`;
     return this.http.get(url, { headers: this.headers });
   }
 

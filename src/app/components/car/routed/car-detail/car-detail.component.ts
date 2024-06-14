@@ -57,6 +57,7 @@ export class CarDetailComponent implements OnInit {
   coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
   mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
   seller: IUser = {} as IUser;
+  selectedBrand: string = "";
 
   isEditingOwner: boolean = false;
   selectedUser: string = "";
@@ -68,6 +69,12 @@ export class CarDetailComponent implements OnInit {
   isEditingBrand: boolean = false;
   isEditingModel: boolean = false;
   isEditingImages: boolean = false;
+  isEditingYear: boolean = false;
+
+  doors: number = 0;
+  seats: number = 0;
+
+  contactError: boolean = false;
 
   colors: { color: string, hex: string }[] = [
     { color: 'black', hex: '#1F2937' },
@@ -94,9 +101,10 @@ export class CarDetailComponent implements OnInit {
   fuelTypes: string[] = ['gasoline', 'diesel', 'hybrid', 'electric'];
   gearboxTypes: string[] = ['manual', 'automatic'];
   driveTypes: string[] = ['FWD', 'RWD', '4WD', 'AWD'];
-  brands: string[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-  models: string[] = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+  brands: string[] = [];
+  models: string[] = [];
   carTypes: string[] = ['sedan', 'coupe', 'convertible', 'hatchback', 'SUV', 'pickup', 'van', 'truck', 'other'];
+  years: number[] = [];
 
   chartOptions: Partial<ChartOptions> = {
     series: [
@@ -251,6 +259,9 @@ export class CarDetailComponent implements OnInit {
           this.getRatingAverage(this.car.owner.id);
           this.checkIfCarIsSaved(this.car.id);
           this.selectedUser = this.car.owner.username;
+          this.selectedBrand = this.car.brand;
+          this.doors = this.car.doors;
+          this.seats = this.car.seats;
           this.coords = {
             lng: parseFloat(this.car.location.split(' ')[0]),
             lat: parseFloat(this.car.location.split(' ')[1])
@@ -486,10 +497,66 @@ export class CarDetailComponent implements OnInit {
     }
   }
 
+  loadBrands() {
+    this.carService.getBrands().subscribe({
+      next: (response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          this.brands.push(response.data[i].name);
+        }
+        this.brands.push('Other');
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  loadModels() {
+    this.carService.getModelsByBrand(this.selectedBrand).subscribe({
+      next: (response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          this.models.push(response.data[i].name);
+        }
+        this.models.push('Other');
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  onBrandChange(brand: string) {
+    this.models = [];
+    this.car.model = '';
+
+    this.carService.getModelsByBrand(brand).subscribe({
+      next: (response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          this.models.push(response.data[i].name);
+        }
+        this.models.push('Other');
+      },
+      error: (error) => {
+        console.error('Error al cargar modelos:', error);
+      }
+    });
+  }
+
+  loadYears() {
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= 1900; year--) {
+      this.years.push(year);
+    }
+  }
+
   setEditable(): void {
     const editables = document.querySelectorAll('.editable');
 
     this.loadUsers();
+    this.loadBrands();
+    this.loadModels();
+    this.loadYears();
+
     if (this.setContentEditable) {
       this.isEditingFuel = false;
       this.isEditingOwner = false;
@@ -500,8 +567,7 @@ export class CarDetailComponent implements OnInit {
       this.isEditingBrand = false;
       this.isEditingModel = false;
       this.isEditingImages = false;
-
-
+      this.isEditingYear = false;
 
       // Actualizamos los datos del usuario
       this.car.title = document.getElementById('title')?.innerText || '';
@@ -510,8 +576,12 @@ export class CarDetailComponent implements OnInit {
       this.car.price = Number(priceText.replace('.', ''));
 
       this.car.year = Number(document.getElementById('year')?.innerText);
-      this.car.seats = Number(document.getElementById('seats')?.innerText);
-      this.car.doors = Number(document.getElementById('doors')?.innerText);
+
+      this.seats = Number(document.getElementById('seats')?.innerText);
+      this.car.seats = this.seats
+      
+      this.doors = Number(document.getElementById('doors')?.innerText);
+      this.car.doors = this.doors;
       this.car.description = (document.getElementById('description') as HTMLTextAreaElement)?.value;
 
       const distanceText = document.getElementById('distance')?.innerText || '';
@@ -524,6 +594,14 @@ export class CarDetailComponent implements OnInit {
       this.car.emissions = Number(document.getElementById('emissions')?.innerText);
       this.car.acceleration = Number(document.getElementById('acceleration')?.innerText);
       this.car.lastUpdate = new Date();
+
+      if (this.seats < 1  || this.seats > 8) {
+        return;
+      }
+
+      if (this.doors < 1 || this.doors > 5) {
+        return;
+      }
 
       this.carService.update(this.car).subscribe({
         next: (car: ICar) => {
@@ -716,12 +794,16 @@ export class CarDetailComponent implements OnInit {
 
   //navigate to chat page with the information of the car and members on the chat attached
   loadChat(): void {
-    if (!this.sessionService.isSessionActive()) {      
+    if (!this.sessionService.isSessionActive()) {
       this.router.navigate(['/login']);
     } else {
       if (this.car.owner.id === this.currentUser.id) {
-        console.error('No puedes chatear contigo mismo');
-        //toast here
+        this.contactError = true;
+
+        setTimeout(() => {
+          this.contactError = false;
+        }, 3000);
+
         return;
       } else {
         // Comprobación de si ya existe un chat entre los usuarios
@@ -733,7 +815,7 @@ export class CarDetailComponent implements OnInit {
               chat.memberTwo = this.currentUser;
               chat.car = this.car;
               // Si ya existe un chat, redirigir al chat existente
-              this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }]);
+              this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }], { queryParams: { showChat: true } });
             } else {
               // Si no existe un chat, crear uno nuevo
               const newChat = {
@@ -745,7 +827,7 @@ export class CarDetailComponent implements OnInit {
               };
 
               const chatData = encodeURIComponent(JSON.stringify(newChat));
-              this.router.navigate(['/chats', { chat: chatData }]);
+              this.router.navigate(['/chats', { chat: chatData }], { queryParams: { showChat: true } });
             }
           },
           error: (error) => {

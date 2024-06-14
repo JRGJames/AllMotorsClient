@@ -52,6 +52,17 @@ export class ChatListComponent implements OnInit {
           console.error('Error parsing chat data:', error);
         }
       }
+      const container = document.getElementById('chatContainer');
+
+      if (container) {
+        this.route.queryParams.subscribe(params => {
+          if (params['showChat']) {
+            if (window.innerWidth < 640) {
+              container.style.transform = 'translateX(-50%)';
+            }
+          }
+        });
+      }
     });
   }
 
