@@ -9,10 +9,8 @@ import { CarService } from 'src/app/service/car.service';
 import { API_URL_MEDIA } from 'src/environment/environment';
 import { SavedService } from 'src/app/service/saved.service';
 import { MediaService } from 'src/app/service/media.service';
-import { ToastComponent } from 'src/app/components/shared/unrouted/toast/toast.component';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastService } from './../../../../service/toast.service';
-import { config, Map, MapStyle, Marker } from '@maptiler/sdk';
+import { config, GeolocationType, LngLat, Map, MapStyle, Marker } from '@maptiler/sdk';
 import { last } from 'rxjs';
 import { ChatService } from 'src/app/service/chat.service';
 
@@ -98,6 +96,62 @@ export class UserProfileComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+    this.map = new Map({
+      container: this.mapContainer.nativeElement,
+      // center: [initialState.lng, initialState.lat],
+      // zoom: initialState.zoom,
+      style: MapStyle.STREETS,
+      geolocateControl: true,
+      geolocate: GeolocationType.POINT,
+      fullscreenControl: true,
+    });
+
+    this.marker = new Marker({
+      color: 'red',
+      draggable: true
+    });
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const userLngLat = new LngLat(position.coords.longitude, position.coords.latitude);
+
+        if (this.map) {
+          this.marker?.setLngLat(userLngLat).addTo(this.map);
+        }
+
+        this.reverseGeocode(position.coords.longitude, position.coords.latitude);
+      }, (error) => {
+        console.error('Error al obtener la geolocalización:', error);
+      });
+    } else {
+      console.error('Geolocalización no soportada por el navegador.');
+    }
+
+    this.marker.setLngLat([this.map.getCenter().lng, this.map.getCenter().lat]).addTo(this.map);
+
+    this.marker.on('dragend', () => {
+      const lngLat = this.marker?.getLngLat();
+
+      if (lngLat) {
+        this.currentUser.location = lngLat.lng.toString() + ' ' + lngLat.lat.toString();
+
+        this.reverseGeocode(lngLat.lng, lngLat.lat);
+      }
+    });
+
+    this.map.on('click', (e) => {
+      const lngLat = e.lngLat;
+      this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
+      this.currentUser.location = lngLat.lng.toString() + ' ' + lngLat.lat.toString();
+      this.reverseGeocode(lngLat.lng, lngLat.lat);
+    });
+  }
+
+  ngOnDestroy() {
+    this.map?.remove();
+  }
+
   getUser(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.userService.get(this.id).subscribe({
@@ -134,8 +188,6 @@ export class UserProfileComponent implements OnInit {
             draggable: false
           });
 
-          this.marker.setLngLat([initialState.lng, initialState.lat]).addTo(this.map);
-          this.marker.addClassName('hidden');
           resolve(true); // El usuario existe
         },
         error: (error: HttpErrorResponse) => {
@@ -153,11 +205,15 @@ export class UserProfileComponent implements OnInit {
         next: (user: IUser) => {
           this.currentUser = user;
           this.description = this.user.description;
+          if ((user.id === this.user.id) && !user.actived) {
+            this.router.navigate(['/activate']);
+          }
           if (user.id === this.user.id) {
             this.showInfo();
           } else {
             this.showPosts();
           }
+
 
           if (this.isComingFromSaved) {
             this.showSaved();
@@ -168,6 +224,8 @@ export class UserProfileComponent implements OnInit {
         }
       });
 
+    } else {
+      this.showPosts();
     }
   }
 
@@ -829,39 +887,44 @@ export class UserProfileComponent implements OnInit {
     if (!this.sessionService.isSessionActive()) {
       this.router.navigate(['/login']);
     } else {
-      if (this.user.id === this.currentUser.id) {
-        console.error('No puedes chatear contigo mismo');
-        //toast here
-        return;
+      if (!this.currentUser.actived) {
+        this.router.navigate(['/activate']);
       } else {
-        // Comprobación de si ya existe un chat entre los usuarios
-        this.chatService.getByUsers(this.currentUser, this.user).subscribe({
-          next: (chat: IChat) => {
-            if (chat) {
 
-              chat.memberOne = this.user;
-              chat.memberTwo = this.currentUser;
-              // Si ya existe un chat, redirigir al chat existente
-              this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }]);
-            } else {
-              // Si no existe un chat, crear uno nuevo
-              const newChat = {
-                memberOne: this.user,
-                memberTwo: this.currentUser,
-                car: null,
-                notifications: 0,
-                creationDate: new Date()
-              };
+        if (this.user.id === this.currentUser.id) {
+          console.error('No puedes chatear contigo mismo');
+          //toast here
+          return;
+        } else {
+          // Comprobación de si ya existe un chat entre los usuarios
+          this.chatService.getByUsers(this.currentUser, this.user).subscribe({
+            next: (chat: IChat) => {
+              if (chat) {
 
-              const chatData = encodeURIComponent(JSON.stringify(newChat));
-              this.router.navigate(['/chats', { chat: chatData }]);
+                chat.memberOne = this.user;
+                chat.memberTwo = this.currentUser;
+                // Si ya existe un chat, redirigir al chat existente
+                this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }]);
+              } else {
+                // Si no existe un chat, crear uno nuevo
+                const newChat = {
+                  memberOne: this.user,
+                  memberTwo: this.currentUser,
+                  car: null,
+                  notifications: 0,
+                  creationDate: new Date()
+                };
+
+                const chatData = encodeURIComponent(JSON.stringify(newChat));
+                this.router.navigate(['/chats', { chat: chatData }]);
+              }
+            },
+            error: (error) => {
+              console.error('Error al cargar el chat:', error);
+              //toast here
             }
-          },
-          error: (error) => {
-            console.error('Error al cargar el chat:', error);
-            //toast here
-          }
-        });
+          });
+        }
       }
     }
   }

@@ -142,12 +142,43 @@ export class NavbarComponent implements OnInit {
     window.location.href = '/home';
   }
 
+  goToPublish() {
+    if (this.sessionUser.actived) {
+      this.router.navigate(['/upload']);
+      this.showMenu = false;
+    } else {
+      this.router.navigate(['/activate']);
+    }
+  }
+
   resetBehavior(): void {
     document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' });
   }
 
   goToSaved(): void {
-    this.router.navigate(['/user', this.sessionUser.id], { queryParams: { showSaved: true } });
-    this.showMenu = false;
+    if (this.sessionUser.actived) {
+      this.router.navigate(['/user', this.sessionUser.id], { queryParams: { showSaved: true } });
+      this.showMenu = false;
+    } else {
+      this.router.navigate(['/activate']);
+    }
+  }
+
+  goToChats(): void {
+    if (this.sessionUser.actived) {
+      this.router.navigate(['/chats']);
+      this.showMenu = false;
+    } else {
+      this.router.navigate(['/activate']);
+    }
+  }
+
+  goToProfile(): void {
+    if (this.sessionUser.actived) {
+      this.router.navigate(['/user', this.sessionUser.id]);
+      this.showMenu = false;
+    } else {
+      this.router.navigate(['/activate']);
+    }
   }
 }

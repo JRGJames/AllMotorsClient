@@ -915,45 +915,49 @@ export class CarDetailComponent implements OnInit {
     if (!this.sessionService.isSessionActive()) {
       this.router.navigate(['/login']);
     } else {
-      if (this.car.owner.id === this.currentUser.id) {
-        this.hasError = true;
-        this.errorMessage = 'You cannot chat with yourself';
-
-        setTimeout(() => {
-          this.hasError = false;
-        }, 3000);
-
-        return;
+      if (!this.currentUser.actived) {
+        this.router.navigate(['/activate']);
       } else {
-        // Comprobación de si ya existe un chat entre los usuarios
-        this.chatService.getByUsersCar(this.currentUser, this.car.owner, this.car).subscribe({
-          next: (chat: IChat) => {
-            if (chat) {
+        if (this.car.owner.id === this.currentUser.id) {
+          this.hasError = true;
+          this.errorMessage = 'You cannot chat with yourself';
 
-              chat.memberOne = this.car.owner;
-              chat.memberTwo = this.currentUser;
-              chat.car = this.car;
-              // Si ya existe un chat, redirigir al chat existente
-              this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }], { queryParams: { showChat: true } });
-            } else {
-              // Si no existe un chat, crear uno nuevo
-              const newChat = {
-                memberOne: this.car.owner,
-                memberTwo: this.currentUser,
-                car: this.car,
-                notifications: 0,
-                creationDate: new Date()
-              };
+          setTimeout(() => {
+            this.hasError = false;
+          }, 3000);
 
-              const chatData = encodeURIComponent(JSON.stringify(newChat));
-              this.router.navigate(['/chats', { chat: chatData }], { queryParams: { showChat: true } });
+          return;
+        } else {
+          // Comprobación de si ya existe un chat entre los usuarios
+          this.chatService.getByUsersCar(this.currentUser, this.car.owner, this.car).subscribe({
+            next: (chat: IChat) => {
+              if (chat) {
+
+                chat.memberOne = this.car.owner;
+                chat.memberTwo = this.currentUser;
+                chat.car = this.car;
+                // Si ya existe un chat, redirigir al chat existente
+                this.router.navigate(['/chats', { chat: encodeURIComponent(JSON.stringify(chat)) }], { queryParams: { showChat: true } });
+              } else {
+                // Si no existe un chat, crear uno nuevo
+                const newChat = {
+                  memberOne: this.car.owner,
+                  memberTwo: this.currentUser,
+                  car: this.car,
+                  notifications: 0,
+                  creationDate: new Date()
+                };
+
+                const chatData = encodeURIComponent(JSON.stringify(newChat));
+                this.router.navigate(['/chats', { chat: chatData }], { queryParams: { showChat: true } });
+              }
+            },
+            error: (error) => {
+              console.error('Error al cargar el chat:', error);
+              //toast here
             }
-          },
-          error: (error) => {
-            console.error('Error al cargar el chat:', error);
-            //toast here
-          }
-        });
+          });
+        }
       }
     }
   }

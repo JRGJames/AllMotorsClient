@@ -8,6 +8,7 @@ import { CarFormComponent } from './components/car/routed/car-form/car-form.comp
 import { CarDetailComponent } from './components/car/routed/car-detail/car-detail.component';
 import { UserProfileComponent } from './components/user/routed/user-profile/user-profile.component';
 import { ChatListComponent } from './components/chat/routed/chat-list/chat-list.component';
+import { UserFormComponent } from './components/user/routed/user-form/user-form.component';
 
 const routes: Routes = [
 
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'upload', component: CarFormComponent },
   { path: 'car/:id' , component: CarDetailComponent },
   { path: 'user/:id', component: UserProfileComponent },
-  { path: 'chats', component: ChatListComponent }
+  { path: 'chats', component: ChatListComponent },
+  { path: 'activate', component: UserFormComponent },
 ];
 
 @NgModule({

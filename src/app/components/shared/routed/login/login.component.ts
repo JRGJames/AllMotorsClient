@@ -65,10 +65,10 @@ export class LoginComponent implements OnInit {
     } else {
       this.submitted = true;
       if (this.loginForm.valid) {
-        const username = this.loginForm.value.usernameOrEmail;
+        const sIdentifier = this.loginForm.value.usernameOrEmail;
         const hashedPassword = this.cryptoService.getSHA256(this.loginForm.value.password);
 
-        this.sessionService.login(username, hashedPassword).subscribe({
+        this.sessionService.login(sIdentifier, hashedPassword).subscribe({
           next: (data: string) => {
             this.sessionService.setToken(data);
             this.sessionService.emit({ type: 'login' });

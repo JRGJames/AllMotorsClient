@@ -275,10 +275,14 @@ export class CarFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCurrentUser(): void {
     if (this.sessionService.isSessionActive()) {
+      
       const username = this.sessionService.getUsername();
       this.userService.getByUsername(username).subscribe({
         next: (user: IUser) => {
           this.currentUser = user;
+          if (!user.actived) {
+            this.router.navigate(['/activate']);
+          }
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al cargar los datos del usuario actual:', error);

@@ -1,0 +1,92 @@
+<div class="w-full h-screen flex items-center justify-center bg-cover bg-center absolute"
+  [style.background-image]="backgroundImage" loading="lazy">
+  <div class="inset-0 backdrop-blur-sm absolute"></div>
+  <div
+    class="rounded-3xl flex flex-col md:flex-row bg-white w-2/3 h-2/3 md:h-1/2 p-10 backdrop-blur-md bg-opacity-75 gap-10 absolute overflow-scroll md:overflow-visible">
+
+    <div class="h-full w-full flex-col flex md:flex-row gap-10">
+
+      <div class="flex flex-col w-full h-full gap-10">
+        <h1 class="text-5xl md:text-6xl uppercase font-bold">Tell us more</h1>
+        <div class="flex flex-col gap-5 h-full">
+          <div class="flex flex-col md:flex-row gap-10 w-full">
+            <div class="flex flex-col gap-2 w-full md:w-1/2">
+              <label for="name">Name *</label>
+              <input type="text" id="name" [(ngModel)]="currentUser.name"
+                class="placeholder:text-xs cursor-pointer placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2" />
+            </div>
+  
+            <div class="flex flex-col gap-2  w-full md:w-1/2">
+              <label for="lastname">Lastname *</label>
+              <input type="text" id="lastname" [(ngModel)]="currentUser.lastname"
+                class="placeholder:text-xs cursor-pointer placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2" />
+            </div>
+          </div>
+  
+  
+          <!-- Gender bbutton-->
+  
+          <div class="flex flex-col md:flex-row gap-10 items-center w-full">
+            <div class="flex flex-col gap-2 w-full md:w-1/3">
+              <label for="phone">Phone *</label>
+              <input type="text" id="phone" [(ngModel)]="currentUser.phone" maxlength="9" minlength="9" pattern="[0-9]*" (keydown)="onlyNumberKey($event)"
+                class="placeholder:text-xs cursor-pointer placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2" />
+            </div>
+  
+            <div class="flex flex-col gap-2 w-full md:w-1/3">
+              <label for="gender">Gender *</label>
+              <div class="rounded-lg h-auto bg-gray-100 flex gap-3 items-center justify-center p-2">
+                <button [ngClass]="{'bg-gray-300': currentUser.gender === true}"
+                  class="px-2 py-1 h-fit w-full rounded-lg bg-gray-200 hover:bg-gray-300 transition-all focus:bg-gray-300"
+                  (click)="selectGender(true)">Man
+                </button>
+                <button [ngClass]="{'bg-gray-300': currentUser.gender === false}"
+                  class="px-2 py-1 h-fit w-full rounded-lg bg-gray-200 hover:bg-gray-300 transition-all focus:bg-gray-300"
+                  (click)="selectGender(false)">Woman
+                </button>
+              </div>
+            </div>
+  
+            <div class="flex flex-col gap-2 w-full md:w-1/3">
+              <label for="dob">Birthdate *</label>
+              <input type="date" id="dob" [(ngModel)]="birthdate"
+                class="placeholder:text-xs cursor-pointer placeholder:xl:text-base w-full rounded-lg shadow-sm bg-gray-200 focus:bg-gray-200 focus:ring-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 px-3 py-2" />
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-10 h-96 md:h-full ">
+  
+          <div class="md:h-full h-32 flex flex-col justify-end w-full md:w-10/12 overflow-hidden">
+            <div class="flex w-full h-auto px-10 items-end justify-around relative text-gray-800">
+              <i class="fa fa-car-side text-4xl md:text-6xl absolute md:left-20"></i>
+              <i class="fa fa-car-side text-4xl absolute left-80"></i>
+              <i class="fa fa-car-side text-5xl absolute left-[37rem]"></i>
+  
+            </div>
+            <div class="bg-gray-800 h-[2px] m-3 rounded-2xl"></div>
+  
+          </div>
+          <div class="w-full md:w-2/12">
+            <button class="w-full h-full bg-sky-600 hover:bg-sky-700 transition-all rounded-2xl text-white"
+              (click)="activateUser()">
+              <i class="fa fa-check text-3xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="flex md:w-1/3 h-60 md:h-full flex-col gap-5">
+        <label for="location">Location *</label>
+        <div class="rounded-2xl overflow-hidden w-full h-full">
+          <div id="map" #map class="h-full w-full"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div [ngClass]="{'size-0 translate-y-0': !hasError, 'size-1 translate-y-96': hasError}"
+    class="flex w-full fixed transition-all justify-center duration-500 -top-72">
+    <div
+      class="text-white shadow w-fit max-w-[80%] text-center h-fit bg-red-600 bg-opacity-70 backdrop-blur-md px-4 md:px-6 py-2 md:py-4 rounded-2xl">
+      <p>{{errorMessage}}</p>
+    </div>
+  </div>

@@ -28,12 +28,18 @@ export class SessionService {
     }
 
     login(sIdentifier: string, sPassword: string): Observable<string> {
-        const isEmail = sIdentifier.includes('@');
-        const payload = isEmail
-            ? { email: sIdentifier, password: sPassword }
-            : { username: sIdentifier, password: sPassword };
-
-        return this.http.post<string>(`${this.url}/login`, payload);
+        let body: any;
+        if (this.isValidEmail(sIdentifier)) {
+            body = { email: sIdentifier, password: sPassword };
+        } else {
+            body = { username: sIdentifier, password: sPassword };
+        }
+        return this.http.post<string>(`${this.url}/login`, body);
+    }
+    
+    private isValidEmail(email: string): boolean {
+        // Aquí puedes implementar una lógica simple para validar si `email` tiene un formato de correo electrónico válido
+        return /\S+@\S+\.\S+/.test(email);
     }
 
 

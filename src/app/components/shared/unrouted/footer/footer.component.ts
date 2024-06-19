@@ -17,7 +17,7 @@ export class FooterComponent implements OnInit {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Lista de rutas donde se desea ocultar el footer
-        const routesToHideFooter = ['/login', '/signup', '/upload', '/chats'];
+        const routesToHideFooter = ['/login', '/signup', '/upload', '/chats', '/activate'];
         this.hideFooter = routesToHideFooter.includes(event.url);
       }
     });

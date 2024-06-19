@@ -39,6 +39,7 @@ import { ChatListComponent } from './components/chat/routed/chat-list/chat-list.
 import { ChatComponent } from './components/chat/unrouted/chat/chat.component';
 import { DatePipe } from '@angular/common';
 import { TimeOnlyPipe } from './pipes/timeOnly.pipe';
+import { UserFormComponent } from './components/user/routed/user-form/user-form.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { TimeOnlyPipe } from './pipes/timeOnly.pipe';
     UserProfileComponent,
     ChatListComponent,
     ChatComponent,
+    UserFormComponent
   ],
   imports: [
     HttpClientModule,

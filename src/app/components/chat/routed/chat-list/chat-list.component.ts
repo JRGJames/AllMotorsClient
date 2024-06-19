@@ -72,6 +72,9 @@ export class ChatListComponent implements OnInit {
       this.userService.getByUsername(username).subscribe({
         next: (user: IUser) => {
           this.currentUser = user;
+          if (!user.actived) {
+            this.router.navigate(['/activate']);
+          }
           this.getChats(user.id);
         },
         error: (error: HttpErrorResponse) => {
