@@ -197,7 +197,7 @@
                     <i class="fa-solid text-4xl text-gray-800 fa-phone"></i>
                     <div class="flex flex-col">
                       <p class="text-sm">Phone number:</p>
-                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none"
+                      <p [ngClass]="{'animate-pulse italic':setContentEditable}" class="editable focus:outline-none" (keydown)="onlyNumberKey($event)"
                         id="phone">{{user.phone}}</p>
                     </div>
                   </div>
@@ -650,5 +650,13 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div [ngClass]="{'size-0 translate-y-0': !hasError, 'size-1 translate-y-96': hasError}"
+  class="flex w-full fixed transition-all justify-center duration-500 -top-72">
+  <div
+    class="text-white shadow w-fit max-w-[80%] text-center h-fit bg-red-600 bg-opacity-70 backdrop-blur-md px-4 md:px-6 py-2 md:py-4 rounded-2xl">
+    <p>{{errorMessage}}</p>
   </div>
 </div>

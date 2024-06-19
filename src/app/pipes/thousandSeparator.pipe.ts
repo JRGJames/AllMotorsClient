@@ -25,12 +25,7 @@ export class ThousandSeparatorPipe implements PipeTransform {
   private addThousandSeparator(value: number): string {
     const stringValue = value.toFixed(0); // Convierte a entero y garantiza que no haya decimales
 
-    const parts = stringValue.split('.');
-    const integerPart = parts[0];
-
-    const formattedInteger = this.addSeparator(integerPart);
-
-    return parts.length > 1 ? `${formattedInteger}.${parts[1]}` : formattedInteger;
+    return this.addSeparator(stringValue);
   }
 
   private addSeparator(value: string): string {

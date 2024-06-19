@@ -58,6 +58,7 @@ export class CarDetailComponent implements OnInit {
   mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
   seller: IUser = {} as IUser;
   selectedBrand: string = "";
+  priceText: string = '';
 
   isEditingOwner: boolean = false;
   selectedUser: string = "";
@@ -592,7 +593,7 @@ export class CarDetailComponent implements OnInit {
       this.car.title = this.title;
 
       const priceText = document.getElementById('price')?.innerText || '';
-      this.car.price = Number(priceText.replace('.', ''));
+      this.car.price = Number(priceText.replace(',', ''));
 
       this.car.year = Number(document.getElementById('year')?.innerText);
 
@@ -674,9 +675,16 @@ export class CarDetailComponent implements OnInit {
         setTimeout(() => {
           this.hasError = false;
         }, 3000);
+      } else if (this.car.price >= 999999999) {
+        this.hasError = true;
+        this.errorMessage = 'The price is too high';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
       }
 
-      if (this.car.model === '' || this.seats < 1 || this.seats > 8 || this.doors < 1 || this.doors > 5 || (distance && distance > 20000000) || (horsepower && horsepower > 3000) || (description && (description.length > 2000 || description.length < 10)) || this.car.price < 1 || this.car.title.length < 2 || this.car.title.length > 30 || this.place.length === 0) {
+      if (this.car.model === '' || this.seats < 1 || this.seats > 8 || this.doors < 1 || this.doors > 5 || (distance && distance > 20000000) || (horsepower && horsepower > 3000) || (description && (description.length > 2000 || description.length < 10)) || this.car.price < 1 || this.car.title.length < 2 || this.car.title.length > 30 || this.place.length === 0 || this.car.price >= 999999999) {
         return;
       }
 
@@ -792,6 +800,14 @@ export class CarDetailComponent implements OnInit {
       return `${user.name.charAt(0)}${user.lastname.charAt(0)}`.toUpperCase();
     }
     return '';
+  }
+
+  // a function that only allows numbers to be entered into an input field
+  onlyNumberKey(event: any) {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
   }
 
   deleteImage(imageId: number): void {

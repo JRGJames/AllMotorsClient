@@ -51,11 +51,14 @@ export class UserProfileComponent implements OnInit {
   ratingCount: { [key: number]: number } = {};
   ratingAverage: { [key: number]: number } = {};
   setContentEditable: boolean = false;
-  usernameIsTaken: boolean = false;
+  isUsernameAvaible: boolean = false;
   coords: { lat: number, lng: number } = { lat: 0, lng: 0 };
   mapboxApiKey: string = 'pk.eyJ1IjoiamF1bWVyb3NlbGxvLTMzIiwiYSI6ImNsd2lma2ZrNDBrMmsyaXVrNjg5MHdwaXMifQ.XAI3t3FSV6-z-RE8NbJ-cw';
   description: string = '';
   isComingFromSaved: boolean = false;
+  hasError: boolean = false;
+  errorMessage: string = '';
+  place: any = {};
 
   constructor(
     private userService: UserService,
@@ -164,7 +167,7 @@ export class UserProfileComponent implements OnInit {
           console.error('Error al cargar los datos del usuario actual:', error);
         }
       });
-      
+
     }
   }
 
@@ -495,13 +498,19 @@ export class UserProfileComponent implements OnInit {
         if (this.checkFileType(file)) {
           this.uploadPicture(file);
         } else {
-          this.toastService.show('El archivo seleccionado no es una imagen.');
-          console.error('El archivo seleccionado no es una imagen.');
+          this.hasError = true;
+          this.errorMessage = 'The file selected is not an image';
+          setTimeout(() => {
+            this.hasError = false;
+          }, 3000);
           return;
         }
       } else {
-        this.toastService.show('El archivo seleccionado excede el tamaño máximo permitido.');
-        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        this.hasError = true;
+        this.errorMessage = 'The file selected exceeds the maximum allowed size';
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
         return;
       }
     }
@@ -514,13 +523,19 @@ export class UserProfileComponent implements OnInit {
         if (this.checkFileType(file)) {
           this.uploadBackground(file);
         } else {
-          // this.toast.show('El archivo seleccionado no es una imagen.');
-          console.error('El archivo seleccionado no es una imagen.');
+          this.hasError = true;
+          this.errorMessage = 'The file selected is not an image';
+          setTimeout(() => {
+            this.hasError = false;
+          }, 3000);
           return;
         }
       } else {
-        // this.toast.show('El archivo seleccionado excede el tamaño máximo permitido.');
-        console.error('El archivo seleccionado excede el tamaño máximo permitido.');
+        this.hasError = true;
+        this.errorMessage = 'The file selected exceeds the maximum allowed size';
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
         return;
       }
     }
@@ -585,33 +600,111 @@ export class UserProfileComponent implements OnInit {
     return new Date(date).toLocaleDateString();
   }
 
-  setEditable(): void {
+  async setEditable(): Promise<void> {
     const editables = document.querySelectorAll('.editable');
-
     if (this.setContentEditable) {
-
-      // Actualizamos los datos del usuario
       this.user.name = document.getElementById('name')?.textContent || '';
       this.user.lastname = document.getElementById('lastname')?.textContent || '';
       let username: string = document.getElementById('username')?.textContent || '';
       this.user.phone = document.getElementById('phone')?.textContent || '';
       this.user.description = this.description;
 
-      if (this.checkUsername(username)) {
-        // toast here
-      } else {
-        this.user.username = username;
+      // Validaciones de los campos de texto
+      if (this.user.name === '' || this.user.lastname === '' || username === '' || this.user.phone === '') {
+        this.hasError = true;
+        this.errorMessage = 'All fields are required';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.phone.length !== 9) {
+        this.hasError = true;
+        this.errorMessage = 'The phone number must be 9 digits';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.name.length > 20) {
+        this.hasError = true;
+        this.errorMessage = 'The name limit is 20 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.lastname.length > 20) {
+        this.hasError = true;
+        this.errorMessage = 'The lastname limit is 20 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (username.length > 15) {
+        this.hasError = true;
+        this.errorMessage = 'The username limit is 15 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.name.length < 3) {
+        this.hasError = true;
+        this.errorMessage = 'The name must have at least 3 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.lastname.length < 3) {
+        this.hasError = true;
+        this.errorMessage = 'The lastname must have at least 3 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (username.length < 3) {
+        this.hasError = true;
+        this.errorMessage = 'The username must have at least 3 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.description.length > 500) {
+        this.hasError = true;
+        this.errorMessage = 'The description limit is 500 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      } else if (this.user.description.length < 5) {
+        this.hasError = true;
+        this.errorMessage = 'The description must have at least 5 characters';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
       }
 
+      // Verificación de la disponibilidad del nombre de usuario
+      const isAvailable = await this.checkUsername(username);
+      if (isAvailable) {
+        this.user.username = username;
+      } else {
+        this.hasError = true;
+        this.errorMessage = 'The username is already taken';
+
+        setTimeout(() => {
+          this.hasError = false;
+        }, 3000);
+      }
+
+      if (this.hasError) return;
+
+      // Actualización de los datos del usuario
       this.userService.update(this.user).subscribe({
         next: (user: IUser) => {
           this.user = user;
-
           if (user.id === this.currentUser.id) {
             const token = localStorage.getItem('token');
-
             if (token) {
-              this.login(user.username, token)
+              this.login(user.username, token);
             }
           }
         },
@@ -619,7 +712,6 @@ export class UserProfileComponent implements OnInit {
           console.error('Error al actualizar los datos del usuario:', error);
         }
       });
-
     } else {
       this.toastService.show('Aun no se ha actualizado la información');
     }
@@ -627,11 +719,7 @@ export class UserProfileComponent implements OnInit {
     this.setContentEditable = !this.setContentEditable;
     this.showInfo();
 
-    // Update the user location, country and city
-
     if (this.marker) {
-
-      // Mostramos el marcador en el mapa y lo hacemos draggable
       this.marker.setDraggable(this.setContentEditable);
 
       if (this.setContentEditable) {
@@ -642,7 +730,6 @@ export class UserProfileComponent implements OnInit {
 
       this.marker.on('dragend', () => {
         const lngLat = this.marker?.getLngLat();
-
         if (lngLat) {
           this.user.location = `${lngLat.lng} ${lngLat.lat}`;
           this.reverseGeocode(lngLat.lng, lngLat.lat);
@@ -651,10 +738,8 @@ export class UserProfileComponent implements OnInit {
 
       if (this.map) {
         this.map.on('click', (e) => {
-
           if (this.setContentEditable) {
             const lngLat = e.lngLat;
-
             this.marker?.setLngLat([lngLat.lng, lngLat.lat]);
             this.user.location = `${lngLat.lng} ${lngLat.lat}`;
             this.reverseGeocode(lngLat.lng, lngLat.lat);
@@ -664,11 +749,7 @@ export class UserProfileComponent implements OnInit {
     }
 
     editables.forEach((editable) => {
-      if (this.setContentEditable) {
-        editable.setAttribute('contenteditable', 'true');
-      } else {
-        editable.setAttribute('contenteditable', 'false');
-      }
+      editable.setAttribute('contenteditable', this.setContentEditable.toString());
     });
   }
 
@@ -678,6 +759,7 @@ export class UserProfileComponent implements OnInit {
     fetch(url)
       .then(response => response.json())
       .then(data => {
+        this.place = data.features;
         if (data.features && data.features.length > 0) {
 
           this.user.city = data.features[2].place_name.split(',')[0].trim();
@@ -689,26 +771,43 @@ export class UserProfileComponent implements OnInit {
             this.user.city = data.features[2].place_name.split(',')[1].trim();
           }
         } else {
-          console.log('No features in data');
+          this.hasError = true;
+          this.errorMessage = 'The location is invalid';
+
+          setTimeout(() => {
+            this.hasError = false;
+          }, 3000);
         }
       })
       .catch(error => console.log('Error:', error));
   }
 
-  checkUsername(username: string): boolean {
-    this.userService.getByUsername(username).subscribe({
-      next: (user: IUser) => {
-        if (user) {
-          this.usernameIsTaken = true;
-        } else {
-          this.usernameIsTaken = false;
+  onlyNumberKey(event: any) {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  }
+
+  // Método para verificar la disponibilidad del nombre de usuario
+  checkUsername(username: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.userService.getByUsername(username).subscribe({
+        next: (user: IUser) => {
+          if (this.user.username === username) {
+            console.log('El nombre de usuario es el mismo');
+            resolve(true);
+          } else {
+            console.log('El nombre de usuario ya está en uso por otro usuario');
+            resolve(false);
+          }
+        },
+        error: () => {
+          console.log('Está libre el nombre de usuario');
+          resolve(true);
         }
-      },
-      error: () => {
-        return false;
-      }
+      });
     });
-    return this.usernameIsTaken;
   }
 
   login(username: string, passw: string): void {

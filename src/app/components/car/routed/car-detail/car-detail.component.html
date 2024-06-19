@@ -58,9 +58,9 @@
 
               <div class="text-xl md:text-3xl flex gap-2 text-gray-800 lg:pb-0 pb-4">
                 <p id="price" [ngClass]="{'animate-pulse italic': setContentEditable}"
-                  (focus)="closeDropdowns()"
+                  (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)"
                   class="font-bold focus:outline-none editable">
-                  {{ car.price | thousandSeparator }}
+                  {{ car.price }}
                 </p>
                 <p *ngIf="!setContentEditable" id="currency" [ngClass]="{'animate-pulse italic':setContentEditable}"
                   class="font-bold focus:outline-none editable">
@@ -426,7 +426,7 @@
               <path d="M18 19v2" />
             </svg>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex items-center gap-1 font-semibold">
-              <p id="seats" class="focus:outline-none text-sm text-gray-800 editable" (focus)="closeDropdowns()">
+              <p id="seats" class="focus:outline-none text-sm text-gray-800 editable" (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
                 {{car.seats}}
               </p>
               <p class="text-sm text-gray-800">
@@ -437,7 +437,7 @@
           <div class="flex flex-col items-center gap-3">
             <i [ngClass]="{'text-red-600': doors < 1 || doors > 5}" class="fas fa-door-open text-3xl text-gray-700"></i>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex items-center gap-1 font-semibold">
-              <p id="doors" class="focus:outline-none text-sm text-gray-800 editable" (focus)="closeDropdowns()">
+              <p id="doors" class="focus:outline-none text-sm text-gray-800 editable" (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
                 {{car.doors}}
               </p>
               <p class="text-sm text-gray-800">
@@ -458,8 +458,8 @@
             <p class="text-sm px-1">Distance:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
               <p id="distance" class="focus:outline-none text-sm text-gray-800 font-bold editable"
-                (focus)="closeDropdowns()">
-                {{ car.distance | thousandSeparator}}
+                (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
+                {{ car.distance}}
               </p>
               <p class="text-sm text-gray-800 font-bold">
                 km
@@ -485,8 +485,8 @@
             <p class="text-sm px-1">Horsepower:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
               <p id="horsepower" class="focus:outline-none text-sm text-gray-800 font-bold editable"
-                (focus)="closeDropdowns()">
-                {{ car.horsepower | thousandSeparator }}
+                (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
+                {{ car.horsepower  }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
                 hp
@@ -497,7 +497,7 @@
             <p class="text-sm px-1">Consumption:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
               <p id="consumption" class="focus:outline-none text-sm text-gray-800 font-bold editable"
-                (focus)="closeDropdowns()">
+                (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
                 {{ car.consumption }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -509,7 +509,7 @@
             <p class="text-sm px-1">Emissions:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
               <p id="emissions" class="focus:outline-none text-sm text-gray-800 font-bold editable"
-                (focus)="closeDropdowns()">
+                (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
                 {{ car.emissions }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
@@ -522,7 +522,7 @@
             <p class="text-sm px-1">0-100 km/h:</p>
             <div [ngClass]="{'animate-pulse italic':setContentEditable}" class="flex gap-1 p-2">
               <p id="acceleration" class="focus:outline-none text-sm text-gray-800 font-bold editable"
-                (focus)="closeDropdowns()">
+                (focus)="closeDropdowns()" (keydown)="onlyNumberKey($event)">
                 {{ car.acceleration }}
               </p>
               <p class="text-sm text-gray-800 font-bold">
